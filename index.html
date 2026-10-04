@@ -132,6 +132,9 @@ button.tile .glyph { color: var(--accent-text); }
 .tool-head { display: grid; gap: 10px; justify-items: start; padding-block: 18px 20px; }
 .lede { max-width: 62ch; color: var(--muted); }
 .panels { display: grid; gap: 16px; }
+.subhead { margin-top: 18px; font: 500 12px/1.2 var(--font-mono); letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+#panel-var details, #panel-course details { margin-top: 12px; }
+#panel-var .readout { margin-top: 14px; }
 .panels > .is-setup { order: -1; }
 .panel { min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; }
 .panel.is-setup { border-color: var(--accent); }
@@ -235,7 +238,7 @@ details[open] > summary { margin-bottom: 10px; }
         <button class="tile" type="button" data-open="compass">
           <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="19"/><path d="M24 9v4M24 35v4M9 24h4M35 24h4"/><path d="M30 18l-4 8-8 4 4-8z"/></svg>
           <span class="tile-name">Compass error</span>
-          <span class="tile-desc">Photo of the chart variation and your deviation card in. Variation, deviation, compass course and error out.</span>
+          <span class="tile-desc">Error logbook entries, and error from a bearing.</span>
           <span class="chip chip-ready">Ready</span>
         </button>
         <div class="tile is-planned">
@@ -259,35 +262,63 @@ details[open] > summary { margin-bottom: 10px; }
       </div>
     </section>
 
-    <!-- Compass error -->
+    <!-- Compass error menu -->
     <section id="view-compass" hidden aria-labelledby="compass-title">
       <div class="tool-head">
+        <div class="tool-bar"><button class="btn" type="button" id="back">‹ Duties</button></div>
+        <h1 id="compass-title" tabindex="-1">Compass error</h1>
+        <p class="lede">What do you need to work out?</p>
+      </div>
+      <div class="tiles">
+        <button class="tile" type="button" data-open="logbook">
+          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><path d="M12 8h24v32H12z"/><path d="M18 16h12M18 23h12M18 30h8"/></svg>
+          <span class="tile-name">Error logbook</span>
+          <span class="tile-desc">Variation from the chart or ECDIS and your course in. True, magnetic, compass and gyro courses, variation, deviation and error out, ready for the book.</span>
+        </button>
+        <button class="tile" type="button" data-open="bearing">
+          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="4"/><path d="M24 4v10M24 34v10M4 24h10M34 24h10"/><path d="M33 15l-6 6"/></svg>
+          <span class="tile-name">Error by observation</span>
+          <span class="tile-desc">Check the compass or gyro against a true bearing from a sun or star azimuth, a transit or ECDIS.</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Error logbook -->
+    <section id="view-logbook" hidden aria-labelledby="logbook-title">
+      <div class="tool-head">
         <div class="tool-bar">
-          <button class="btn" type="button" id="back">‹ Duties</button>
+          <button class="btn" type="button" id="back-log">‹ Compass error</button>
           <button class="btn" id="top-dev" type="button">Deviation card</button>
         </div>
-        <h1 id="compass-title" tabindex="-1">Compass error</h1>
-        <p class="lede">Save your deviation card once. Then photograph the chart variation, enter the course, and read off variation, deviation, compass course and error.</p>
+        <h1 id="logbook-title" tabindex="-1">Error logbook</h1>
       </div>
 
       <div class="panels">
         <!-- Variation -->
         <section class="panel" id="panel-var" aria-labelledby="h-var">
           <div class="panel-head">
-            <h2 id="h-var">Variation</h2>
+            <h2 id="h-var">1. Variation</h2>
             <span class="pill" id="var-pill" hidden>Read from photo</span>
           </div>
-          <div class="split">
+          <div class="actions">
+            <input class="vh" type="file" id="var-file" accept="image/*" hidden>
+            <input class="vh" type="file" id="var-cam" accept="image/*" capture="environment" hidden>
+            <label class="btn btn-primary" id="var-cam-btn" for="var-cam" hidden>Take photo</label>
+            <label class="btn" id="var-photo-btn" for="var-file" hidden>Gallery</label>
+            <button class="btn" type="button" id="var-manual">Enter by hand</button>
+            <button class="btn" type="button" id="var-stop" hidden>Stop</button>
+          </div>
+          <p class="note" id="var-photo-note">Photograph the ECDIS or chart variation rose with the year and annual change in view.</p>
+          <p class="msg" id="var-read-msg" role="status"></p>
+          <div class="readout" aria-live="polite">
+            <span class="k">Variation now</span>
+            <span class="big" id="var-big">—</span>
+            <span class="sub" id="var-sub">Waiting for a photo or values.</span>
+          </div>
+          <p class="msg" id="var-msg"></p>
+          <details id="var-details">
+            <summary>Check or edit the values</summary>
             <div class="form">
-              <div class="actions">
-                <input class="vh" type="file" id="var-file" accept="image/*" hidden>
-                <input class="vh" type="file" id="var-cam" accept="image/*" capture="environment" hidden>
-                <label class="btn btn-primary" id="var-cam-btn" for="var-cam" hidden>Take photo of chart</label>
-                <label class="btn" id="var-photo-btn" for="var-file" hidden>Choose from gallery</label>
-                <button class="btn" type="button" id="var-stop" hidden>Stop</button>
-              </div>
-              <p class="note" id="var-photo-note">Photograph the compass rose with the year and annual change in view. Check what was read against the chart.</p>
-              <p class="msg" id="var-read-msg" role="status"></p>
               <div class="field">
                 <label for="var-deg">Charted variation</label>
                 <div class="pair">
@@ -319,22 +350,14 @@ details[open] > summary { margin-bottom: 10px; }
                   </div>
                 </div>
               </div>
+              <p class="rule">Annual change toward E or W is the way the variation moves each year. A chart bracket such as (8′E) is toward E. "Decreasing" on a West variation is also toward E. ECDIS shows West as negative, so a variation of −4° with a change of −7′ is 4°W moving 7′ a year toward W.</p>
             </div>
-            <div class="results" aria-live="polite">
-              <div class="readout">
-                <span class="k">Variation now</span>
-                <span class="big" id="var-big">—</span>
-                <span class="sub" id="var-sub">Take a photo of the chart variation, or enter it by hand.</span>
-              </div>
-              <p class="msg" id="var-msg"></p>
-            </div>
-          </div>
-          <p class="rule">Annual change toward E or W is the way the variation moves each year. A chart bracket such as (8′E) is toward E. "Decreasing" on a West variation is also toward E. ECDIS shows West as negative, so a variation of −4° with a change of −7′ is 4°W moving 7′ a year toward W.</p>
+          </details>
         </section>
 
         <!-- Course and results -->
         <section class="panel" id="panel-course" aria-labelledby="h-course">
-          <div class="panel-head"><h2 id="h-course">Course</h2></div>
+          <div class="panel-head"><h2 id="h-course">2. Course</h2></div>
           <div class="form">
             <div class="grid2">
               <fieldset class="field">
@@ -342,6 +365,7 @@ details[open] > summary { margin-bottom: 10px; }
                 <div class="seg fill" role="radiogroup" aria-label="Known course">
                   <input type="radio" id="cr-known-T" name="cr-known" value="T" checked><label for="cr-known-T">True</label>
                   <input type="radio" id="cr-known-C" name="cr-known" value="C"><label for="cr-known-C">Compass</label>
+                  <input type="radio" id="cr-known-G" name="cr-known" value="G"><label for="cr-known-G">Gyro</label>
                   <input type="radio" id="cr-known-M" name="cr-known" value="M"><label for="cr-known-M">Magnetic</label>
                 </div>
               </fieldset>
@@ -350,13 +374,28 @@ details[open] > summary { margin-bottom: 10px; }
                 <input type="number" id="cr-course" inputmode="decimal" step="any" min="0" max="360" autocomplete="off">
               </div>
             </div>
+            <div class="field" id="cr-gerr-field">
+              <label for="cr-gerr" id="cr-gerr-label">Gyro error (optional, gives the gyro course)</label>
+              <div class="pair">
+                <input type="number" id="cr-gerr" inputmode="decimal" step="any" min="0" autocomplete="off">
+                <div class="seg" role="radiogroup" aria-label="Gyro error direction">
+                  <input type="radio" id="cr-gdir-E" name="cr-gdir" value="E" checked><label for="cr-gdir-E">E</label>
+                  <input type="radio" id="cr-gdir-W" name="cr-gdir" value="W"><label for="cr-gdir-W">W</label>
+                </div>
+              </div>
+            </div>
           </div>
 
+          <h3 class="subhead">For the log</h3>
           <div class="stats" aria-live="polite">
+            <div class="stat"><span class="k">True course</span><span class="big" id="st-true">—</span><span class="sub" id="st-true-sub"></span></div>
+            <div class="stat"><span class="k">Magnetic course</span><span class="big" id="st-mag">—</span><span class="sub" id="st-mag-sub"></span></div>
+            <div class="stat is-main"><span class="k">Compass course</span><span class="big" id="st-cc">—</span><span class="sub" id="st-cc-sub"></span></div>
+            <div class="stat" id="stat-gyro" hidden><span class="k">Gyro course</span><span class="big" id="st-gyro">—</span><span class="sub" id="st-gyro-sub"></span></div>
             <div class="stat"><span class="k">Variation</span><span class="big" id="st-var">—</span><span class="sub" id="st-var-sub"></span></div>
             <div class="stat"><span class="k">Deviation</span><span class="big" id="st-dev">—</span><span class="sub" id="st-dev-sub"></span></div>
-            <div class="stat is-main"><span class="k">Compass course</span><span class="big" id="st-cc">—</span><span class="sub" id="st-cc-sub"></span></div>
-            <div class="stat"><span class="k">Compass error</span><span class="big" id="st-err">—</span><span class="sub" id="st-err-sub"></span></div>
+            <div class="stat is-main"><span class="k">Compass error</span><span class="big" id="st-err">—</span><span class="sub" id="st-err-sub"></span></div>
+            <div class="stat" id="stat-gerr" hidden><span class="k">Gyro error</span><span class="big" id="st-gerr">—</span><span class="sub" id="st-gerr-sub"></span></div>
           </div>
           <p class="msg" id="cr-msg"></p>
 
@@ -453,9 +492,22 @@ details[open] > summary { margin-bottom: 10px; }
           <p class="rule" id="dev-tip">Fill the frame with the table, hold the phone square to the card and avoid glare. If the table is long, pick two photos. Check every row before saving.</p>
         </section>
 
+      </div>
+
+      <p class="foot">Calculation aid only. Photos are read by AI and can be misread, so check every value against the chart and the card. Results do not replace ECDIS or your Master's orders. Check results before they go in the log.</p>
+    </section>
+
+    <!-- Error by observation -->
+    <section id="view-bearing" hidden aria-labelledby="bearing-title">
+      <div class="tool-head">
+        <div class="tool-bar"><button class="btn" type="button" id="back-bearing">‹ Compass error</button></div>
+        <h1 id="bearing-title" tabindex="-1">Error by observation</h1>
+        <p class="lede">Compare the compass or gyro with a true bearing.</p>
+      </div>
+      <div class="panels">
         <!-- Error from a bearing -->
         <section class="panel" id="panel-obs" aria-labelledby="h-obs">
-          <div class="panel-head"><h2 id="h-obs">Error from a bearing</h2></div>
+          <div class="panel-head"><h2 id="h-obs">Bearing and observed reading</h2></div>
           <div class="split">
             <div class="form">
               <fieldset class="field">
@@ -476,7 +528,7 @@ details[open] > summary { margin-bottom: 10px; }
                 </div>
               </div>
               <div class="field" id="ob-var-field">
-                <label for="ob-var">Variation (°), set from the variation above</label>
+                <label for="ob-var">Variation (°). Filled in from the Error logbook if you set it there</label>
                 <div class="pair">
                   <input type="number" id="ob-var" inputmode="decimal" step="any" min="0" autocomplete="off">
                   <div class="seg" role="radiogroup" aria-label="Variation direction">
@@ -1396,6 +1448,7 @@ details[open] > summary { margin-bottom: 10px; }
       if (c.year === null) notes.push('No chart year was found. Enter it.');
       if (c.rate === null || c.toward === null) notes.push('No annual change was found. Enter it.');
       setMsg('#var-read-msg', notes.length ? notes.join(' ') : 'Read from the photo. Check it against the chart.', notes.length ? 'warn' : '');
+      if (notes.length) $('#var-details').open = true;
       renderVar();
     }).catch(function (e) {
       busy = false; $('#var-stop').hidden = true;
@@ -1404,6 +1457,10 @@ details[open] > summary { margin-bottom: 10px; }
       applyPhotoState();
     });
   }
+  $('#var-manual').addEventListener('click', function () {
+    var d = $('#var-details'); d.open = true;
+    $('#var-deg').focus();
+  });
   $('#var-stop').addEventListener('click', function () { if (ctl) ctl.abort(); });
   bindFile('#var-file', readVarPhoto);
   bindFile('#var-cam', readVarPhoto);
@@ -1436,6 +1493,10 @@ details[open] > summary { margin-bottom: 10px; }
     setText('#st-dev', '—'); setText('#st-dev-sub', '');
     setText('#st-cc', '—'); setText('#st-cc-sub', '');
     setText('#st-err', '—'); setText('#st-err-sub', '');
+    setText('#st-true', '—'); setText('#st-true-sub', '');
+    setText('#st-mag', '—'); setText('#st-mag-sub', '');
+    setText('#st-gyro', '—'); setText('#st-gyro-sub', '');
+    setText('#st-gerr', '—'); setText('#st-gerr-sub', '');
     $('#cr-ladder').textContent = '';
     setText('#cr-working', '');
   }
@@ -1451,18 +1512,30 @@ details[open] > summary { margin-bottom: 10px; }
   }
   function renderCourse() {
     var known = checked('cr-known');
-    var labels = { T: 'True course', C: 'Compass course', M: 'Magnetic course' };
+    var labels = { T: 'True course', C: 'Compass course', G: 'Gyro course', M: 'Magnetic course' };
     setText('#cr-course-label', labels[known] + ' (°)');
+    setText('#cr-gerr-label', known === 'G' ? 'Gyro error (needed to convert the gyro course)' : 'Gyro error (optional, adds the gyro course)');
     var c = readField($('#cr-course'), 'Course', 360, false);
     var mf = readField($('#cr-mdev'), 'Deviation', 45, true);
-    if (c.state === 'bad' || mf.state === 'bad') {
+    var gf = readField($('#cr-gerr'), 'Gyro error', 180, true);
+    var ge = gf.state === 'ok' ? round1(signedValue(gf.value, checked('cr-gdir'))) : null;
+    var stG = ge !== null;
+    $('#stat-gyro').hidden = !stG; $('#stat-gerr').hidden = !stG;
+    if (c.state === 'bad' || mf.state === 'bad' || gf.state === 'bad') {
       blankCourse(curVar !== null);
-      setMsg('#cr-msg', (c.state === 'bad' ? c : mf).msg, 'bad');
+      setMsg('#cr-msg', firstBad([c, mf, gf]).msg, 'bad');
       return;
     }
+    if (known === 'G' && c.state !== 'empty' && ge === null) {
+      blankCourse(curVar !== null);
+      setMsg('#cr-msg', 'Enter the gyro error to convert a gyro course.', '');
+      return;
+    }
+    var cval = c.value, kn = known;
+    if (known === 'G' && ge !== null && c.state === 'ok') { cval = norm360(c.value + ge); kn = 'T'; }
     if (curVar === null) {
       blankCourse(false);
-      setMsg('#cr-msg', 'Add the chart variation above to get a result.', '');
+      setMsg('#cr-msg', 'Add the variation above to get a result.', '');
       return;
     }
     if (c.state === 'empty') {
@@ -1473,11 +1546,11 @@ details[open] > summary { margin-bottom: 10px; }
     var v = round1(curVar), r, mode, d;
     if (mf.state === 'ok') {
       d = round1(signedValue(mf.value, checked('cr-mdir')));
-      r = convertCourse(known, c.value, v, d);
+      r = convertCourse(kn, cval, v, d);
       r.v = v; r.d = d; r.error = round1(v + d);
       mode = 'manual';
     } else if (devTable) {
-      r = convertWithTable(known, c.value, v, devTable);
+      r = convertWithTable(kn, cval, v, devTable);
       mode = 'table';
       if (!r) {
         blankCourse(true);
@@ -1486,7 +1559,7 @@ details[open] > summary { margin-bottom: 10px; }
       }
     } else {
       blankCourse(true);
-      var extra = known === 'T' ? ' Magnetic course is ' + fmtCourse(c.value - v) + '.' : known === 'M' ? ' True course is ' + fmtCourse(c.value + v) + '.' : '';
+      var extra = kn === 'T' ? ' Magnetic course is ' + fmtCourse(cval - v) + '.' : kn === 'M' ? ' True course is ' + fmtCourse(cval + v) + '.' : '';
       setMsg('#cr-msg', 'Press Deviation card (top right) to add your table and get deviation and compass course.' + extra, 'warn');
       return;
     }
@@ -1494,13 +1567,18 @@ details[open] > summary { margin-bottom: 10px; }
     setText('#st-var-sub', fmtDM(r.v));
     setText('#st-dev', fmtSigned(r.d));
     setText('#st-dev-sub', mode === 'manual' ? 'entered by hand' : (r.bracket.exact ? 'from the card' : 'interpolated'));
-    setText('#st-cc', fmtCourse(r.C));
-    setText('#st-cc-sub', 'True ' + fmtCourse(r.T));
+    setText('#st-true', fmtCourse(r.T)); setText('#st-true-sub', known === 'T' ? 'given' : '');
+    setText('#st-mag', fmtCourse(r.M)); setText('#st-mag-sub', known === 'M' ? 'given' : '');
+    setText('#st-cc', fmtCourse(r.C)); setText('#st-cc-sub', known === 'C' ? 'given' : '');
+    if (stG) {
+      setText('#st-gyro', fmtCourse(r.T - ge)); setText('#st-gyro-sub', known === 'G' ? 'given' : '');
+      setText('#st-gerr', fmtSigned(ge)); setText('#st-gerr-sub', 'True = Gyro ' + (ge >= 0 ? '+' : '−') + ' ' + Math.abs(ge).toFixed(1) + '°');
+    }
     setText('#st-err', fmtSigned(r.error));
     var e = round1(r.error);
     setText('#st-err-sub', e === 0 ? 'No error' : 'True = Compass ' + (e > 0 ? '+' : '−') + ' ' + Math.abs(e).toFixed(1) + '°');
-    $('#cr-ladder').innerHTML = ladderHTML(r, known, r.v, r.d);
-    setText('#cr-working', workingText(r, mode, known));
+    $('#cr-ladder').innerHTML = ladderHTML(r, kn, r.v, r.d);
+    setText('#cr-working', (known === 'G' ? 'True = Gyro ' + (ge >= 0 ? '+' : '−') + ' ' + Math.abs(ge).toFixed(1) + '° gives ' + fmtCourse(cval) + '. ' : '') + workingText(r, mode, kn));
     var warn = '';
     if (r.multiple) warn = 'More than one compass course fits this table. Check the table for a misread row.';
     else if (Math.abs(r.d) > 15) warn = 'Deviation over 15° is large. Check the card.';
@@ -1554,9 +1632,11 @@ details[open] > summary { margin-bottom: 10px; }
   function show(name) {
     $('#view-hub').hidden = name !== 'hub';
     $('#view-compass').hidden = name !== 'compass';
+    $('#view-logbook').hidden = name !== 'logbook';
+    $('#view-bearing').hidden = name !== 'bearing';
     $('#view-settings').hidden = name !== 'settings';
     window.scrollTo(0, 0);
-    var h = name === 'hub' ? $('#hub-title') : name === 'settings' ? $('#settings-title') : $('#compass-title');
+    var h = $('#' + (name === 'hub' ? 'hub' : name) + '-title');
     h.focus({ preventScroll: true });
   }
   function go(name) {
@@ -1566,16 +1646,18 @@ details[open] > summary { margin-bottom: 10px; }
   function route() {
     var h = '';
     try { h = (location.hash || '').replace('#', ''); } catch (e) { h = ''; }
-    show(h === 'compass' ? 'compass' : h === 'settings' ? 'settings' : 'hub');
+    show(['compass', 'logbook', 'bearing', 'settings'].indexOf(h) >= 0 ? h : 'hub');
   }
   document.querySelectorAll('[data-open]').forEach(function (b) {
     b.addEventListener('click', function () { go(b.getAttribute('data-open')); });
   });
   $('#back').addEventListener('click', function () { go('hub'); });
+  $('#back-log').addEventListener('click', function () { go('compass'); });
+  $('#back-bearing').addEventListener('click', function () { go('compass'); });
   $('#back-settings').addEventListener('click', function () { go('hub'); });
   $('#top-ai').addEventListener('click', function () { go('settings'); });
   $('#top-dev').addEventListener('click', function () {
-    go('compass');
+    go('logbook');
     devPanelOpen = true;
     if (busy) { renderDev(); return; }
     if (devState === 'saved') { changing = true; devState = 'empty'; setMsg('#dev-msg', ''); renderDev(); }
@@ -1681,6 +1763,7 @@ details[open] > summary { margin-bottom: 10px; }
   loadTable().then(function (t) {
     devTable = t;
     devState = t ? 'saved' : 'empty';
+    if (!t) devPanelOpen = true;
     renderDev();
     renderCourse();
   });
