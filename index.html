@@ -157,6 +157,22 @@ input[type=number].has-unit::-webkit-outer-spin-button, input[type=number].has-u
 .gl-row.is-total .name { font: 500 12px var(--font-mono); letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
 .gl-split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .gl-split .field > label { text-transform: none; letter-spacing: 0; font: 500 13px var(--font-body); color: var(--fg); }
+#mp-map { height: min(62vh, 560px); min-height: 340px; margin-top: 12px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #cfd8dc; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+.chips .legend { width: 100%; }
+.chip-toggle { position: relative; }
+.chip-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+.chip-toggle span { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px; border: 1px solid var(--line); border-radius: 20px; background: var(--surface-2); color: var(--muted); cursor: pointer; font: 500 14px var(--font-body); user-select: none; }
+.chip-toggle input:checked + span { border-color: var(--accent); color: var(--fg); background: var(--surface); box-shadow: inset 0 0 0 1px var(--accent); }
+.chip-toggle input:focus-visible + span { outline: 2px solid var(--accent-text); outline-offset: 2px; }
+.sw { width: 14px; height: 4px; border-radius: 2px; display: inline-block; }
+.spot-line { display: grid; grid-template-columns: 22px 1fr; gap: 8px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 15px; }
+.spot-line b { font-weight: 600; }
+.spot-line .m { font: 600 16px var(--font-mono); text-align: center; }
+.spot-ok .m { color: #2f9e44; } .spot-no .m { color: #e03131; } .spot-q .m { color: var(--muted); }
+.spot-head { font: 600 22px/1.1 var(--font-display); letter-spacing: 0.04em; text-transform: uppercase; }
+.spot-sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
+.spot-h3 { margin-top: 14px; font: 500 12px/1.2 var(--font-mono); letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
 .panels { display: grid; gap: 16px; }
 .subhead { margin-top: 18px; font: 500 12px/1.2 var(--font-mono); letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
 #panel-var details, #panel-course details { margin-top: 12px; }
@@ -277,6 +293,12 @@ details[open] > summary { margin-bottom: 10px; }
           <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><path d="M13 15h22l-2 25H15z"/><path d="M10 15h28M19 15v-4h10v4"/><path d="M21 21v13M27 21v13"/></svg>
           <span class="tile-name">Garbage</span>
           <span class="tile-desc">Bags in, volumes by MARPOL category out, for port receipts and the Garbage Record Book.</span>
+          <span class="chip chip-ready">Ready</span>
+        </button>
+        <button class="tile" type="button" data-open="marpol">
+          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="17"/><path d="M7 24h34M24 7c-7 8-7 26 0 34M24 7c7 8 7 26 0 34"/></svg>
+          <span class="tile-name">MARPOL map</span>
+          <span class="tile-desc">Your position on a map with shore distance lines, special areas and what MARPOL allows at any spot you tap.</span>
           <span class="chip chip-ready">Ready</span>
         </button>
         <div class="tile is-planned">
@@ -676,6 +698,46 @@ details[open] > summary { margin-bottom: 10px; }
       <div class="panels" id="garlog-list"></div>
     </section>
 
+    <!-- MARPOL map -->
+    <section id="view-marpol" hidden aria-labelledby="marpol-title">
+      <div class="tool-head">
+        <div class="tool-bar">
+          <button class="btn" type="button" id="back-marpol">‹ Duties</button>
+          <button class="btn btn-primary" type="button" id="mp-gps">My position</button>
+        </div>
+        <h1 id="marpol-title" tabindex="-1">MARPOL map</h1>
+      </div>
+      <div class="panel" id="panel-marpol">
+        <div class="chips" role="group" aria-label="Distance from shore">
+          <span class="legend">Distance from shore</span>
+          <label class="chip-toggle"><input type="checkbox" id="mp-l3" checked><span><i class="sw" style="background:#d6336c"></i>3 nm</span></label>
+          <label class="chip-toggle"><input type="checkbox" id="mp-l6"><span><i class="sw" style="background:#e8590c"></i>6 nm</span></label>
+          <label class="chip-toggle"><input type="checkbox" id="mp-l12" checked><span><i class="sw" style="background:#f08c00"></i>12 nm</span></label>
+          <label class="chip-toggle"><input type="checkbox" id="mp-l50"><span><i class="sw" style="background:#1971c2"></i>50 nm</span></label>
+        </div>
+        <div class="chips" role="group" aria-label="Special areas">
+          <span class="legend">Special areas</span>
+          <label class="chip-toggle"><input type="checkbox" id="mp-aV" checked><span><i class="sw" style="background:#e8590c"></i>Garbage</span></label>
+          <label class="chip-toggle"><input type="checkbox" id="mp-aI"><span><i class="sw" style="background:#1971c2"></i>Oil</span></label>
+          <label class="chip-toggle"><input type="checkbox" id="mp-aE"><span><i class="sw" style="background:#7048e8"></i>Emissions</span></label>
+          <label class="chip-toggle"><input type="checkbox" id="mp-sea"><span>Sea marks</span></label>
+        </div>
+        <div id="mp-map" role="application" aria-label="Map"></div>
+        <p class="msg" id="mp-status" role="status"></p>
+        <details id="mp-manual">
+          <summary>Enter a position</summary>
+          <div class="grid2">
+            <div class="field"><label for="mp-lat">Latitude</label><input type="text" id="mp-lat" autocomplete="off" placeholder="43 35.2 N"></div>
+            <div class="field"><label for="mp-lon">Longitude</label><input type="text" id="mp-lon" autocomplete="off" placeholder="007 07.5 E"></div>
+          </div>
+          <p class="note">Degrees and minutes (43 35.2 N), degrees only (43.5867), or with a minus sign for S and W.</p>
+          <div class="actions"><button class="btn btn-primary" type="button" id="mp-go">Show this position</button></div>
+        </details>
+      </div>
+      <div class="panel" id="mp-info" hidden aria-live="polite"></div>
+      <p class="foot">Indicative only. Shore distances come from public coastline data and special area outlines are drawn from the IMO descriptions, so confirm anything close to a limit on ECDIS and the official chart. Coastal states, protected areas, your flag and your company can be stricter. Map: OpenStreetMap. Sea marks: OpenSeaMap. Coastline: Natural Earth.</p>
+    </section>
+
     <!-- AI settings -->
     <section id="view-settings" hidden aria-labelledby="settings-title">
       <div class="tool-head">
@@ -1020,6 +1082,388 @@ details[open] > summary { margin-bottom: 10px; }
       if (c > 0) { rows.push({ key: x.key, m3: c / 1000 }); extraMills += c; }
     });
     return { bagM3: bagM3, shareTotal: tot, rows: rows, total: (target * 10 + extraMills) / 1000 };
+  }
+  // ===== MARPOL map: pure functions (coordinates, special areas, coastline distance, contours) =====
+  function parseCoord(text, isLat) {
+    var s = String(text === undefined || text === null ? '' : text).trim().toUpperCase();
+    if (!s) return null;
+    s = s.replace(/[°º˚]/g, ' ').replace(/['′’]/g, ' ').replace(/["″”]/g, ' ').replace(/,/g, '.').replace(/−/g, '-');
+    var hemi = null, m = s.match(/[A-Z]/g);
+    if (m) {
+      if (m.length > 1 || !/[NSEW]/.test(m[0])) return null;
+      hemi = m[0];
+      s = s.replace(/[NSEW]/, ' ');
+    }
+    s = s.trim();
+    var neg = false;
+    if (s.charAt(0) === '-') { neg = true; s = s.slice(1).trim(); } else if (s.charAt(0) === '+') { s = s.slice(1).trim(); }
+    if (!s) return null;
+    var parts = s.split(/\s+/);
+    if (parts.length > 3) return null;
+    for (var i = 0; i < parts.length; i++) if (!/^\d+(\.\d+)?$/.test(parts[i])) return null;
+    var deg = Number(parts[0]), min = parts.length > 1 ? Number(parts[1]) : 0, sec = parts.length > 2 ? Number(parts[2]) : 0;
+    if (parts.length > 1 && (min >= 60 || deg !== Math.floor(deg))) return null;
+    if (parts.length > 2 && (sec >= 60 || min !== Math.floor(min))) return null;
+    var v = deg + min / 60 + sec / 3600;
+    if (hemi) {
+      if (isLat && hemi !== 'N' && hemi !== 'S') return null;
+      if (!isLat && hemi !== 'E' && hemi !== 'W') return null;
+      if (hemi === 'S' || hemi === 'W') neg = true;
+    }
+    if (neg) v = -v;
+    if (Math.abs(v) > (isLat ? 90 : 180)) return null;
+    return v;
+  }
+  function fmtPos(lat, lon) {
+    function one(x, pos, neg, w) {
+      var a = Math.abs(x), d = Math.floor(a), mn = (a - d) * 60;
+      if (Number(mn.toFixed(1)) >= 60) { d += 1; mn = 0; }
+      return String(d).padStart(w, '0') + '°' + mn.toFixed(1).padStart(4, '0') + '′' + (x < 0 ? neg : pos);
+    }
+    return one(lat, 'N', 'S', 2) + ' ' + one(lon, 'E', 'W', 3);
+  }
+  function normLon(x) { return ((x + 180) % 360 + 360) % 360 - 180; }
+
+  // ---- Special areas (indicative outlines drawn from the IMO descriptions; open-water edges are listed in "open")
+  // annex: I oil, V garbage, IV sewage, E = emission control area. st: 'on' in effect, 'pending' not yet in effect.
+  var MAREAS = [
+    { id: 'med', name: 'Mediterranean Sea',
+      polys: [{ pts: [[-5.6, 35.2], [-5.6, 38.0], [1.0, 42.0], [3.6, 43.6], [8.5, 44.7], [10.0, 44.7], [12.0, 45.9], [14.0, 46.0], [22.0, 41.0], [29.2, 41.0], [36.4, 41.0], [36.4, 30.6], [31.5, 30.6], [20.0, 30.0], [15.0, 30.0], [9.0, 33.0], [-1.0, 34.0]], open: [[16, 0], [0, 1]] }],
+      annexes: [{ a: 'I', st: 'on', since: '2 Oct 1983' }, { a: 'V', st: 'on', since: '1 May 2009' }, { a: 'E', st: 'on', since: '1 May 2025', note: 'SOx and particulate (0.10% sulphur)' }] },
+    { id: 'baltic', name: 'Baltic Sea',
+      polys: [{ pts: [[9.0, 53.5], [9.0, 57.75], [12.6, 57.75], [12.6, 66.0], [30.6, 66.0], [30.6, 53.5]], open: [[1, 2]] }],
+      annexes: [{ a: 'I', st: 'on', since: '2 Oct 1983' }, { a: 'V', st: 'on', since: '1 Oct 1989' }, { a: 'IV', st: 'on', since: '2013 (phased 2019 to 2023)', note: 'sewage rules for passenger ships' }, { a: 'E', st: 'on', since: '2006 (SOx), 2021 (NOx)', note: 'SOx and NOx' }] },
+    { id: 'black', name: 'Black Sea',
+      polys: [{ pts: [[28.9, 41.1], [41.9, 41.0], [42.0, 42.6], [41.0, 44.0], [37.5, 45.0], [36.6, 45.2], [33.5, 46.2], [32.5, 46.7], [30.2, 46.7], [29.6, 45.2], [28.5, 44.0], [28.0, 42.5]], open: [[11, 0]] }],
+      annexes: [{ a: 'I', st: 'on', since: '2 Oct 1983' }, { a: 'V', st: 'pending', since: 'not yet in effect' }] },
+    { id: 'red', name: 'Red Sea',
+      polys: [{ pts: [[32.0, 30.2], [43.5, 30.2], [43.5, 12.67], [43.33, 12.48], [32.0, 12.48]], open: [[2, 3], [3, 4]] }],
+      annexes: [{ a: 'I', st: 'on', since: '1 Jan 2025' }, { a: 'V', st: 'on', since: '1 Jan 2025' }] },
+    { id: 'gulfs', name: 'Gulfs area (Persian Gulf and Gulf of Oman)',
+      polys: [{ pts: [[59.8, 22.5], [61.42, 25.07], [61.42, 31.0], [47.5, 31.0], [47.5, 22.5]], open: [[0, 1]] }],
+      annexes: [{ a: 'I', st: 'on', since: '1 Aug 2008' }, { a: 'V', st: 'on', since: '1 Aug 2008' }] },
+    { id: 'aden', name: 'Gulf of Aden',
+      polys: [{ pts: [[43.33, 12.48], [43.5, 12.67], [52.23, 15.58], [51.28, 11.83], [51.28, 10.0], [42.9, 10.0], [42.9, 11.5]], open: [[0, 1], [1, 2], [2, 3], [3, 4]] }],
+      annexes: [{ a: 'I', st: 'on', since: '1 Jan 2025' }] },
+    { id: 'north', name: 'North Sea and English Channel',
+      polys: [
+        { pts: [[-4.0, 62.0], [12.6, 62.0], [12.6, 57.75], [9.0, 57.75], [9.0, 53.0], [4.5, 51.0], [1.5, 51.0], [-1.5, 52.5], [-4.0, 56.0]], open: [[0, 1], [8, 0], [2, 3]] },
+        { pts: [[-5.0, 48.5], [-5.0, 50.7], [0.8, 50.9], [1.8, 51.05], [2.5, 51.0], [2.5, 48.5]], open: [[0, 1], [5, 0]] }
+      ],
+      annexes: [{ a: 'V', st: 'on', since: '18 Feb 1991' }, { a: 'E', st: 'on', since: '2007 (SOx), 2021 (NOx)', note: 'SOx and NOx' }] },
+    { id: 'antarctic', name: 'Antarctic area',
+      polys: [{ pts: [[-180, -60], [180, -60], [180, -90], [-180, -90]], open: [[0, 1]] }],
+      annexes: [{ a: 'I', st: 'on', since: '17 Mar 1992' }, { a: 'V', st: 'on', since: '17 Mar 1992' }] },
+    { id: 'carib', name: 'Wider Caribbean region',
+      polys: [{ pts: [[-100.0, 30.5], [-81.3, 30.5], [-81.3, 30.0], [-77.5, 30.0], [-59.0, 20.0], [-50.0, 7.33], [-51.65, 4.25], [-56.0, 2.0], [-72.0, 3.0], [-76.5, 5.0], [-77.0, 7.0], [-77.3, 8.2], [-78.0, 9.15], [-83.0, 9.15], [-84.3, 10.6], [-85.0, 12.0], [-86.0, 13.5], [-89.5, 15.0], [-91.0, 16.5], [-93.5, 17.2], [-96.0, 17.2], [-99.5, 19.5], [-100.5, 26.0]], open: [[2, 3], [3, 4], [4, 5], [5, 6]] }],
+      annexes: [{ a: 'V', st: 'on', since: '1 May 2011' }] }
+  ];
+  (function () {
+    MAREAS.forEach(function (ar) {
+      ar.polys.forEach(function (p) {
+        var w = 1e9, e = -1e9, s = 1e9, n = -1e9;
+        p.pts.forEach(function (q) { if (q[0] < w) w = q[0]; if (q[0] > e) e = q[0]; if (q[1] < s) s = q[1]; if (q[1] > n) n = q[1]; });
+        p.box = [w, s, e, n];
+      });
+    });
+  })();
+  function pipPoly(pts, lon, lat) {
+    var inside = false;
+    for (var i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+      var xi = pts[i][0], yi = pts[i][1], xj = pts[j][0], yj = pts[j][1];
+      if ((yi > lat) !== (yj > lat) && lon < (xj - xi) * (lat - yi) / (yj - yi) + xi) inside = !inside;
+    }
+    return inside;
+  }
+  function segDistNm(px, py, ax, ay, bx, by, c) {
+    var x1 = (ax - px) * c * 60, y1 = (ay - py) * 60, x2 = (bx - px) * c * 60, y2 = (by - py) * 60;
+    var dx = x2 - x1, dy = y2 - y1, L = dx * dx + dy * dy, t = L > 0 ? -(x1 * dx + y1 * dy) / L : 0;
+    t = t < 0 ? 0 : t > 1 ? 1 : t;
+    var qx = x1 + t * dx, qy = y1 + t * dy;
+    return Math.sqrt(qx * qx + qy * qy);
+  }
+  // Which special areas hold this position, and how far is the nearest open-water edge of each (nm).
+  function areasAt(lat, lon) {
+    var out = [];
+    MAREAS.forEach(function (ar) {
+      var inside = false, edge = null, c = Math.max(0.05, Math.cos(lat * Math.PI / 180));
+      ar.polys.forEach(function (p) {
+        if (lon >= p.box[0] && lon <= p.box[2] && lat >= p.box[1] && lat <= p.box[3] && pipPoly(p.pts, lon, lat)) inside = true;
+        p.open.forEach(function (o) {
+          var a = p.pts[o[0]], b = p.pts[o[1]];
+          var d = segDistNm(lon, lat, a[0], a[1], b[0], b[1], c);
+          if (edge === null || d < edge) edge = d;
+        });
+      });
+      if (inside || (edge !== null && edge <= 10)) out.push({ id: ar.id, name: ar.name, inside: inside, edgeNm: edge, annexes: ar.annexes });
+    });
+    return out;
+  }
+  // Bit mask for shading: 1 garbage in effect, 2 oil, 4 emission control, 8 garbage pending
+  function areaBits(lat, lon) {
+    var bits = 0;
+    for (var k = 0; k < MAREAS.length; k++) {
+      var ar = MAREAS[k], inside = false;
+      for (var m = 0; m < ar.polys.length && !inside; m++) {
+        var p = ar.polys[m];
+        if (lon >= p.box[0] && lon <= p.box[2] && lat >= p.box[1] && lat <= p.box[3] && pipPoly(p.pts, lon, lat)) inside = true;
+      }
+      if (!inside) continue;
+      ar.annexes.forEach(function (x) {
+        if (x.a === 'V') bits |= x.st === 'on' ? 1 : 8;
+        else if (x.a === 'I' && x.st === 'on') bits |= 2;
+        else if (x.a === 'E' && x.st === 'on') bits |= 4;
+      });
+    }
+    return bits;
+  }
+
+  // ---- What Annex V allows at a position. distNm: nautical miles to nearest land, null if unknown.
+  function annexVAdvice(areas, distNm) {
+    var eff = [], pend = [];
+    areas.forEach(function (a) {
+      if (!a.inside) return;
+      a.annexes.forEach(function (x) {
+        if (x.a === 'V') (x.st === 'on' ? eff : pend).push(a);
+      });
+    });
+    var known = typeof distNm === 'number';
+    var d = known ? distNm : null;
+    function need(n) {
+      if (!known) return { ok: null, extra: 'Enter or read the distance from land.' };
+      var nm = d >= 999 ? 'More than 200' : String(Math.round(d * 10) / 10);
+      return { ok: d >= n, extra: nm + ' nm from land, ' + n + ' nm needed.' };
+    }
+    var items = [], special = eff.length > 0;
+    function add(label, state, text) { items.push({ label: label, ok: state, text: text }); }
+    if (special) {
+      var r12 = need(12);
+      add('Food waste, ground to 25 mm or less', r12.ok, (r12.ok === true ? 'Allowed here. ' : r12.ok === false ? 'Not allowed here. ' : '') + r12.extra);
+      add('Food waste, not ground', false, 'Prohibited in a special area.');
+      add('Animal carcasses', false, 'Prohibited in a special area.');
+      if (eff.some(function (a) { return a.id === 'antarctic'; })) add('Poultry products', false, 'Not allowed unless sterilised (Antarctic area).');
+    } else {
+      var r3 = need(3), r12b = need(12);
+      add('Food waste, ground to 25 mm or less', r3.ok, (r3.ok === true ? 'Allowed here. ' : r3.ok === false ? 'Not allowed here. ' : '') + r3.extra);
+      add('Food waste, not ground', r12b.ok, (r12b.ok === true ? 'Allowed here. ' : r12b.ok === false ? 'Not allowed here. ' : '') + r12b.extra);
+      add('Animal carcasses', null, 'Only as far from land as possible, ship en route, following the IMO guidelines.');
+      add('Deck and hull wash water with cleaning agents', null, 'Allowed only if the agents are not harmful to the marine environment.');
+    }
+    add('Plastics (A)', false, 'Prohibited everywhere.');
+    add('Domestic waste (C), cooking oil (D), ash (E), operational waste (F), e-waste (I), fishing gear (H)', false, 'Prohibited at sea. Keep on board for a port reception facility.');
+    var notes = [];
+    pend.forEach(function (a) { notes.push(a.name + ' is a listed special area but its Annex V rules are not in effect yet, so the normal rules above apply. Local rules may be stricter.'); });
+    if (known && d < 12) notes.push('Inside 12 nm: the coastal state\'s own rules may apply as well.');
+    return { special: special, areas: eff.map(function (a) { return a.name; }), items: items, notes: notes };
+  }
+
+  // ---- Coastline: TopoJSON land to line segments with a latitude-band index
+  function decodeTopoLand(topo) {
+    var sc = topo.transform ? topo.transform.scale : [1, 1], tr = topo.transform ? topo.transform.translate : [0, 0];
+    var arcs = topo.arcs.map(function (arc) {
+      var x = 0, y = 0;
+      return arc.map(function (p) {
+        if (topo.transform) { x += p[0]; y += p[1]; return [x * sc[0] + tr[0], y * sc[1] + tr[1]]; }
+        return [p[0], p[1]];
+      });
+    });
+    function ring(idx) {
+      var pts = [];
+      idx.forEach(function (i) {
+        var a = i < 0 ? arcs[~i].slice().reverse() : arcs[i];
+        for (var k = pts.length ? 1 : 0; k < a.length; k++) pts.push(a[k]);
+      });
+      return pts;
+    }
+    var rings = [];
+    function walk(g) {
+      if (!g) return;
+      if (g.type === 'GeometryCollection') g.geometries.forEach(walk);
+      else if (g.type === 'Polygon') g.arcs.forEach(function (r) { rings.push(ring(r)); });
+      else if (g.type === 'MultiPolygon') g.arcs.forEach(function (poly) { poly.forEach(function (r) { rings.push(ring(r)); }); });
+    }
+    Object.keys(topo.objects).forEach(function (k) { if (/land/i.test(k)) walk(topo.objects[k]); });
+    if (!rings.length) Object.keys(topo.objects).forEach(function (k) { walk(topo.objects[k]); });
+    return rings;
+  }
+  var COAST_BAND = 0.25;
+  function coastBuild(rings) {
+    var n = 0;
+    rings.forEach(function (r) { if (r.length > 1) n += r.length - 1 + ((r[0][0] !== r[r.length - 1][0] || r[0][1] !== r[r.length - 1][1]) ? 1 : 0); });
+    var x1 = new Float64Array(n), y1 = new Float64Array(n), x2 = new Float64Array(n), y2 = new Float64Array(n), k = 0;
+    rings.forEach(function (r) {
+      var m = r.length;
+      if (m < 2) return;
+      var closed = r[0][0] === r[m - 1][0] && r[0][1] === r[m - 1][1];
+      var cnt = closed ? m - 1 : m;
+      for (var i = 0; i < cnt; i++) {
+        var a = r[i], b = closed ? r[i + 1] : r[(i + 1) % m];
+        x1[k] = a[0]; y1[k] = a[1]; x2[k] = b[0]; y2[k] = b[1]; k++;
+      }
+    });
+    var nb = Math.ceil(180 / COAST_BAND) + 2, off = new Int32Array(nb + 1);
+    function bandOf(y) { var b = Math.floor((y + 90) / COAST_BAND); return b < 0 ? 0 : b >= nb ? nb - 1 : b; }
+    var i2;
+    for (i2 = 0; i2 < k; i2++) { var lo = bandOf(Math.min(y1[i2], y2[i2])), hi = bandOf(Math.max(y1[i2], y2[i2])); for (var b = lo; b <= hi; b++) off[b + 1]++; }
+    for (i2 = 0; i2 < nb; i2++) off[i2 + 1] += off[i2];
+    var fill = off.slice(0, nb), ids = new Int32Array(off[nb]);
+    for (i2 = 0; i2 < k; i2++) { var l2 = bandOf(Math.min(y1[i2], y2[i2])), h2 = bandOf(Math.max(y1[i2], y2[i2])); for (var b2 = l2; b2 <= h2; b2++) ids[fill[b2]++] = i2; }
+    return { n: k, x1: x1, y1: y1, x2: x2, y2: y2, off: off, ids: ids, nb: nb, bandOf: bandOf, stamp: new Int32Array(k), q: 0 };
+  }
+  // Segment ids whose bounding box touches the rectangle.
+  function coastRegion(C, w, s, e, n) {
+    C.q++;
+    var out = [], lo = C.bandOf(s), hi = C.bandOf(n);
+    for (var b = lo; b <= hi; b++) {
+      for (var p = C.off[b]; p < C.off[b + 1]; p++) {
+        var id = C.ids[p];
+        if (C.stamp[id] === C.q) continue;
+        C.stamp[id] = C.q;
+        var ax = C.x1[id], bx = C.x2[id], ay = C.y1[id], by = C.y2[id];
+        if (Math.max(ax, bx) < w || Math.min(ax, bx) > e || Math.max(ay, by) < s || Math.min(ay, by) > n) continue;
+        out.push(id);
+      }
+    }
+    return out;
+  }
+  function coastGrid(C, ids, cell) {
+    var g = new Map();
+    for (var t = 0; t < ids.length; t++) {
+      var id = ids[t];
+      var i0 = Math.floor(Math.min(C.x1[id], C.x2[id]) / cell), i1 = Math.floor(Math.max(C.x1[id], C.x2[id]) / cell);
+      var j0 = Math.floor(Math.min(C.y1[id], C.y2[id]) / cell), j1 = Math.floor(Math.max(C.y1[id], C.y2[id]) / cell);
+      if ((i1 - i0 + 1) * (j1 - j0 + 1) > 400) continue;
+      for (var i = i0; i <= i1; i++) for (var j = j0; j <= j1; j++) {
+        var key = i * 100003 + j, a = g.get(key);
+        if (a) a.push(id); else g.set(key, [id]);
+      }
+    }
+    return { g: g, cell: cell };
+  }
+  var NM_CAP = 9999;
+  // Nearest coastline in nm from a prepared grid; returns NM_CAP when nothing lies within maxNm.
+  function coastNearest(C, G, lat, lon, maxNm) {
+    var c = Math.max(0.05, Math.cos(lat * Math.PI / 180)), radii = [4, 15, 55, 200], best = NM_CAP;
+    for (var ri = 0; ri < radii.length; ri++) {
+      var r = Math.min(radii[ri], maxNm), dLat = r / 60, dLon = r / (60 * c);
+      var i0 = Math.floor((lon - dLon) / G.cell), i1 = Math.floor((lon + dLon) / G.cell), j0 = Math.floor((lat - dLat) / G.cell), j1 = Math.floor((lat + dLat) / G.cell);
+      best = NM_CAP;
+      for (var i = i0; i <= i1; i++) for (var j = j0; j <= j1; j++) {
+        var a = G.g.get(i * 100003 + j);
+        if (!a) continue;
+        for (var t = 0; t < a.length; t++) {
+          var id = a[t], d = segDistNm(lon, lat, C.x1[id], C.y1[id], C.x2[id], C.y2[id], c);
+          if (d < best) best = d;
+        }
+      }
+      if (best <= r || r >= maxNm) break;
+    }
+    return best <= maxNm ? best : NM_CAP;
+  }
+  // Sorted x positions where coastline crosses a latitude (even-odd gives land).
+  function coastRow(C, lat) {
+    var b = C.bandOf(lat), xs = [];
+    for (var p = C.off[b]; p < C.off[b + 1]; p++) {
+      var id = C.ids[p], ya = C.y1[id], yb = C.y2[id];
+      if ((ya <= lat && yb > lat) || (yb <= lat && ya > lat)) xs.push(C.x1[id] + (lat - ya) * (C.x2[id] - C.x1[id]) / (yb - ya));
+    }
+    xs.sort(function (a, c2) { return a - c2; });
+    return xs;
+  }
+  function rowLand(xs, lon) {
+    var lo = 0, hi = xs.length;
+    while (lo < hi) { var mid = (lo + hi) >> 1; if (xs[mid] < lon) lo = mid + 1; else hi = mid; }
+    return (lo & 1) === 1;
+  }
+  function coastDescribe(C, lat, lon, maxNm) {
+    var land = rowLand(coastRow(C, lat), lon);
+    if (land) return { land: true, nm: 0 };
+    var dLat = maxNm / 60 + 0.2, dLon = dLat / Math.max(0.05, Math.cos(lat * Math.PI / 180));
+    var ids = coastRegion(C, lon - dLon, lat - dLat, lon + dLon, lat + dLat);
+    var G = coastGrid(C, ids, 0.1);
+    var nm = coastNearest(C, G, lat, lon, maxNm);
+    return { land: false, nm: nm >= NM_CAP ? null : nm };
+  }
+  // Distance field for a view: v[i + j*nx] = nm to coast (capped at capNm), -1 on land.
+  function coastField(C, b, nx, ny, capNm) {
+    var dLon = (b.e - b.w) / (nx - 1), dLat = (b.n - b.s) / (ny - 1);
+    var midLat = (b.n + b.s) / 2, mc = Math.max(0.05, Math.cos(midLat * Math.PI / 180));
+    var mLat = capNm / 60 + 0.2, mLon = mLat / mc;
+    var ids = coastRegion(C, b.w - mLon, b.s - mLat, b.e + mLon, b.n + mLat);
+    var G = coastGrid(C, ids, 0.1), v = new Float32Array(nx * ny);
+    for (var j = 0; j < ny; j++) {
+      var lat = b.s + j * dLat, xs = coastRow(C, lat);
+      for (var i = 0; i < nx; i++) {
+        var lon = b.w + i * dLon;
+        if (rowLand(xs, lon)) { v[i + j * nx] = -1; continue; }
+        var d = coastNearest(C, G, lat, lon, capNm);
+        v[i + j * nx] = d >= NM_CAP ? capNm + 1 : d;
+      }
+    }
+    return { v: v, nx: nx, ny: ny, lon0: b.w, dLon: dLon, lat0: b.s, dLat: dLat };
+  }
+  // Marching squares: line pieces [lat1, lon1, lat2, lon2] where the field crosses t.
+  function fieldContour(F, t) {
+    var v = F.v, nx = F.nx, ny = F.ny, out = [];
+    function pt(i1, j1, i2, j2) {
+      var a = v[i1 + j1 * nx], b = v[i2 + j2 * nx], f = (t - a) / (b - a);
+      return [F.lat0 + (j1 + (j2 - j1) * f) * F.dLat, F.lon0 + (i1 + (i2 - i1) * f) * F.dLon];
+    }
+    for (var j = 0; j < ny - 1; j++) for (var i = 0; i < nx - 1; i++) {
+      var a = v[i + j * nx] >= t ? 1 : 0, b = v[i + 1 + j * nx] >= t ? 2 : 0, c = v[i + 1 + (j + 1) * nx] >= t ? 4 : 0, d = v[i + (j + 1) * nx] >= t ? 8 : 0;
+      var code = a | b | c | d;
+      if (code === 0 || code === 15) continue;
+      var eb = pt(i, j, i + 1, j), er = pt(i + 1, j, i + 1, j + 1), et = pt(i, j + 1, i + 1, j + 1), el = pt(i, j, i, j + 1);
+      function seg(p, q) { out.push([p[0], p[1], q[0], q[1]]); }
+      switch (code) {
+        case 1: case 14: seg(el, eb); break;
+        case 2: case 13: seg(eb, er); break;
+        case 3: case 12: seg(el, er); break;
+        case 4: case 11: seg(er, et); break;
+        case 5: seg(eb, er); seg(el, et); break;
+        case 6: case 9: seg(eb, et); break;
+        case 7: case 8: seg(el, et); break;
+        case 10: seg(el, eb); seg(er, et); break;
+      }
+    }
+    return out;
+  }
+  function mercY(lat) { return Math.log(Math.tan(Math.PI / 4 + Math.max(-85, Math.min(85, lat)) * Math.PI / 360)); }
+  function mercLat(y) { return (2 * Math.atan(Math.exp(y)) - Math.PI / 2) * 180 / Math.PI; }
+  // Sea cells of a view with their special-area bits. Rows are evenly spaced on screen (Mercator).
+  function areaGrid(C, b, nx, ny) {
+    var cells = new Uint8Array(nx * ny), y0 = mercY(b.s), y1 = mercY(b.n);
+    for (var j = 0; j < ny; j++) {
+      var lat = mercLat(y0 + (y1 - y0) * (j + 0.5) / ny), xs = C ? coastRow(C, lat) : [];
+      for (var i = 0; i < nx; i++) {
+        var lon = b.w + (b.e - b.w) * (i + 0.5) / nx;
+        if (C && rowLand(xs, lon)) continue;
+        cells[i + j * nx] = areaBits(lat, lon);
+      }
+    }
+    return cells;
+  }
+  // What Annex I, IV and VI say at a position (short summaries).
+  function otherAnnexes(areas) {
+    var lines = [], oil = false, eca = null, baltic = false;
+    areas.forEach(function (a) {
+      if (!a.inside) return;
+      a.annexes.forEach(function (x) {
+        if (x.a === 'I' && x.st === 'on') oil = true;
+        if (x.a === 'E' && x.st === 'on') eca = a.name + (x.note ? ' (' + x.note + ')' : '');
+        if (x.a === 'IV' && x.st === 'on') baltic = true;
+      });
+    });
+    lines.push(oil
+      ? 'Oil (Annex I): special area. Oily bilge water only through approved 15 ppm equipment with its alarm and stop working, ship en route. Check Annex I Reg 15 and your IOPP certificate for what applies to your yacht.'
+      : 'Oil (Annex I): oily bilge water only through approved 15 ppm equipment with its alarm and stop working, ship en route. Check your IOPP certificate.');
+    lines.push(baltic
+      ? 'Sewage (Annex IV): Baltic special area. Passenger ships have stricter limits. Check what applies to your yacht category.'
+      : 'Sewage (Annex IV): comminuted and disinfected sewage from 3 nm, other sewage from 12 nm, ship making 4 knots or more. An approved treatment plant is governed by your certificate.');
+    lines.push(eca
+      ? 'Emissions (Annex VI): emission control area, ' + eca + '. Fuel sulphur 0.10% or an approved exhaust cleaning system.'
+      : 'Emissions (Annex VI): outside the emission control areas covered here. Fuel sulphur limit 0.50%. North America, US Caribbean, Canadian Arctic and Norwegian Sea control areas are not on this map yet.');
+    return lines;
   }
   /*LOGIC-END*/
 
@@ -2048,8 +2492,227 @@ details[open] > summary { margin-bottom: 10px; }
     setMsg('#gb-msg', 'Saved to the Garbage log.', '');
   });
   $('#top-garlog').addEventListener('click', function () { renderLog(); go('garlog'); });
+  $('#back-marpol').addEventListener('click', function () { go('hub'); });
   $('#back-garlog').addEventListener('click', function () { go('garbage'); });
   renderLogCount();
+
+  /* ---------- MARPOL map ---------- */
+  var MP_LEAFLET = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
+  var MP_LEAFLET_CSS = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';
+  var MP_COAST = ['https://cdn.jsdelivr.net/npm/world-atlas@2/land-10m.json', 'https://cdn.jsdelivr.net/npm/world-atlas@2/land-50m.json'];
+  var MP_LINES = [[3, '#d6336c', 'mp-l3'], [6, '#e8590c', 'mp-l6'], [12, '#f08c00', 'mp-l12'], [50, '#1971c2', 'mp-l50']];
+  var mp = { map: null, L: null, coast: null, coastTried: false, me: null, meAcc: null, pick: null, lines: null, mask: null, sea: null, timer: 0, ready: null, opened: false };
+  (function () {
+    try {
+      var st = JSON.parse(localStorage.getItem('bridge-desk-mp') || 'null');
+      if (st && typeof st === 'object') Object.keys(st).forEach(function (k) { var el = document.getElementById(k); if (el && el.type === 'checkbox') el.checked = !!st[k]; });
+    } catch (e) { /* defaults */ }
+  })();
+  function mpSaveToggles() {
+    var o = {};
+    document.querySelectorAll('#panel-marpol input[type=checkbox]').forEach(function (c) { o[c.id] = c.checked; });
+    try { localStorage.setItem('bridge-desk-mp', JSON.stringify(o)); } catch (e) { /* optional */ }
+  }
+  function mpStatus(t, cls) { setMsg('#mp-status', t, cls || ''); }
+  function loadTag(tag, attrs) {
+    return new Promise(function (resolve, reject) {
+      var el = document.createElement(tag);
+      Object.keys(attrs).forEach(function (k) { el.setAttribute(k, attrs[k]); });
+      el.onload = resolve; el.onerror = function () { reject(new Error('load')); };
+      document.head.appendChild(el);
+    });
+  }
+  function mpEnsure() {
+    if (mp.ready) return mp.ready;
+    mpStatus('Loading the map…');
+    mp.ready = Promise.all([
+      loadTag('link', { rel: 'stylesheet', href: MP_LEAFLET_CSS }).catch(function () { /* css optional */ }),
+      loadTag('script', { src: MP_LEAFLET })
+    ]).then(function () {
+      var Lf = window.L; mp.L = Lf;
+      var start = [43.0, 7.0], z = 6;
+      try { var lp = JSON.parse(localStorage.getItem('bridge-desk-lastpos') || 'null'); if (lp && isFinite(lp[0]) && isFinite(lp[1])) { start = lp; z = 9; } } catch (e) { /* default */ }
+      mp.map = Lf.map('mp-map', { worldCopyJump: true }).setView(start, z);
+      Lf.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '© OpenStreetMap contributors' }).addTo(mp.map);
+      mp.map.on('moveend', mpSchedule);
+      mp.map.on('click', function (e) { mpPick(e.latlng.lat, normLon(e.latlng.lng), 'Tapped position'); });
+      mpSea();
+      mpStatus('');
+      mpLoadCoast();
+    }).catch(function () {
+      mp.ready = null;
+      mpStatus('The map could not load. Check the internet connection and try again.', 'bad');
+    });
+    return mp.ready;
+  }
+  function mpLoadCoast() {
+    if (mp.coast || mp.coastTried) return;
+    mp.coastTried = true;
+    mpStatus('Loading coastline data…');
+    var i = 0;
+    function attempt() {
+      return fetch(MP_COAST[i]).then(function (r) { if (!r.ok) throw new Error('http'); return r.json(); }).then(function (topo) {
+        mp.coast = coastBuild(decodeTopoLand(topo));
+        mpStatus('');
+        mpRefresh();
+        if (mp.spot) mpShowSpot(mp.spot.lat, mp.spot.lon, mp.spot.label);
+      }).catch(function () {
+        if (i < MP_COAST.length - 1) { i++; return attempt(); }
+        mp.coastTried = false;
+        mpStatus('The coastline data could not load, so distance lines and distance from land are missing. Special area rules still work once you pick a spot.', 'warn');
+      });
+    }
+    return attempt();
+  }
+  function mpSea() {
+    if (!mp.map) return;
+    var on = $('#mp-sea').checked;
+    if (on && !mp.sea) mp.sea = mp.L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', { maxZoom: 18 });
+    if (mp.sea) { if (on) mp.sea.addTo(mp.map); else mp.map.removeLayer(mp.sea); }
+  }
+  function mpSchedule() { clearTimeout(mp.timer); mp.timer = setTimeout(mpRefresh, 250); }
+  function mpRefresh() {
+    var map = mp.map, Lf = mp.L;
+    if (!map || !mp.coast) return;
+    if (mp.lines) { map.removeLayer(mp.lines); mp.lines = null; }
+    if (mp.mask) { map.removeLayer(mp.mask); mp.mask = null; }
+    var bb = map.getBounds().pad(0.15);
+    var b = { w: bb.getWest(), e: bb.getEast(), s: Math.max(-84, bb.getSouth()), n: Math.min(84, bb.getNorth()) };
+    var notes = [];
+    if (b.w < -180 || b.e > 180) {
+      mpStatus('Zoom in or move the map to see lines and special areas for this part of the world.', '');
+      return;
+    }
+    var spanLat = b.n - b.s, mc = Math.max(0.1, Math.cos((b.n + b.s) / 2 * Math.PI / 180));
+    var want = MP_LINES.filter(function (x) { return $('#' + x[2]).checked; });
+    if (want.length) {
+      if (spanLat > 20) notes.push('Zoom in to see the shore lines.');
+      else {
+        var cellDeg = Math.max(spanLat, (b.e - b.w) * mc) / 109, cellNm = cellDeg * 60;
+        var nx = Math.max(2, Math.min(110, Math.ceil((b.e - b.w) / (cellDeg / mc)) + 1)), ny = Math.max(2, Math.min(110, Math.ceil(spanLat / cellDeg) + 1));
+        var F = coastField(mp.coast, b, nx, ny, 52), grp = Lf.layerGroup(), skipped = [];
+        want.forEach(function (x) {
+          if (x[0] < cellNm * 1.5) { skipped.push(x[0]); return; }
+          var segs = fieldContour(F, x[0]).map(function (q) { return [[q[0], q[1]], [q[2], q[3]]]; });
+          if (segs.length) Lf.polyline(segs, { color: x[1], weight: 2.5, opacity: 0.95, interactive: false, lineCap: 'butt' }).addTo(grp);
+        });
+        grp.addTo(map); mp.lines = grp;
+        if (skipped.length) notes.push('Zoom in to see the ' + skipped.join(' and ') + ' nm line' + (skipped.length > 1 ? 's' : '') + '.');
+      }
+    }
+    var wantV = $('#mp-aV').checked, wantI = $('#mp-aI').checked, wantE = $('#mp-aE').checked;
+    if (wantV || wantI || wantE) {
+      if (map.getZoom() < 4) notes.push('Zoom in to see the special areas.');
+      else {
+        var nx2 = 140, y0 = mercY(b.s), y1 = mercY(b.n);
+        var ny2 = Math.max(24, Math.min(260, Math.round(nx2 * (y1 - y0) / ((b.e - b.w) * Math.PI / 180))));
+        var cells = areaGrid(mp.coast, b, nx2, ny2), cv = document.createElement('canvas');
+        cv.width = nx2; cv.height = ny2;
+        var cx = cv.getContext('2d');
+        var paints = [[1, wantV, 'rgba(232,89,12,0.30)'], [8, wantV, 'rgba(110,110,110,0.25)'], [2, wantI, 'rgba(25,113,194,0.26)'], [4, wantE, 'rgba(112,72,232,0.26)']];
+        paints.forEach(function (pt) {
+          if (!pt[1]) return;
+          cx.fillStyle = pt[2];
+          for (var j = 0; j < ny2; j++) for (var i = 0; i < nx2; i++) if (cells[i + j * nx2] & pt[0]) cx.fillRect(i, ny2 - 1 - j, 1, 1);
+        });
+        mp.mask = Lf.imageOverlay(cv.toDataURL(), [[b.s, b.w], [b.n, b.e]], { interactive: false, opacity: 1 }).addTo(map);
+      }
+    }
+    mpStatus(notes.join(' '), notes.length ? 'warn' : '');
+  }
+  function mpPick(lat, lon, label) {
+    var map = mp.map, Lf = mp.L;
+    if (mp.pick) map.removeLayer(mp.pick);
+    mp.pick = Lf.circleMarker([lat, lon], { radius: 8, color: '#c92a2a', weight: 3, fillColor: '#ffffff', fillOpacity: 1 }).addTo(map);
+    mpShowSpot(lat, lon, label);
+  }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
+  function mpShowSpot(lat, lon, label) {
+    mp.spot = { lat: lat, lon: lon, label: label };
+    var box = $('#mp-info'); box.hidden = false; box.textContent = '';
+    var cd = mp.coast ? coastDescribe(mp.coast, lat, lon, 200) : null;
+    var areas = areasAt(lat, lon);
+    box.appendChild(el('div', 'spot-head', fmtPos(lat, lon)));
+    var sub = label + '. ';
+    if (!cd) sub += 'Distance from land is not available yet.';
+    else if (cd.land) sub += 'This position is on land.';
+    else if (cd.nm === null) sub += 'More than 200 nm from land.';
+    else sub += 'Nearest land: ' + (Math.round(cd.nm * 10) / 10).toFixed(1) + ' nm.';
+    box.appendChild(el('div', 'spot-sub', sub));
+    var dist = !cd || cd.land ? null : cd.nm === null ? 999 : cd.nm;
+    box.appendChild(el('div', 'spot-h3', 'Special areas here'));
+    var any = false;
+    areas.forEach(function (a) {
+      any = true;
+      var parts = a.annexes.map(function (x) {
+        var nm = { I: 'oil', V: 'garbage', IV: 'sewage', E: 'emissions' }[x.a];
+        return nm + (x.st === 'on' ? ' (' + x.since + ')' : ' (not in effect yet)');
+      });
+      var line = el('div', 'spot-line'); line.appendChild(el('span', 'm', a.inside ? '●' : '○'));
+      var t = el('div'); var bn = el('b', '', a.name); t.appendChild(bn);
+      t.appendChild(document.createTextNode(a.inside ? ': ' + parts.join(', ') + '.' : '. Outside, but within ' + Math.round(a.edgeNm) + ' nm of its boundary. Confirm on the chart.'));
+      if (a.inside && a.edgeNm !== null && a.edgeNm <= 10) t.appendChild(document.createTextNode(' Within ' + Math.round(a.edgeNm) + ' nm of the boundary, so confirm on the chart.'));
+      line.appendChild(t); box.appendChild(line);
+    });
+    if (!any) { var l0 = el('div', 'spot-line spot-q'); l0.appendChild(el('span', 'm', '–')); l0.appendChild(el('div', '', 'None of the special areas on this map.')); box.appendChild(l0); }
+    if (cd && cd.land) { box.appendChild(el('p', 'note', 'Pick a spot at sea to see the garbage rules.')); return; }
+    var adv = annexVAdvice(areas, dist);
+    box.appendChild(el('div', 'spot-h3', 'Garbage (Annex V)' + (adv.special ? ', special area rules' : ', general rules')));
+    adv.items.forEach(function (it) {
+      var line = el('div', 'spot-line ' + (it.ok === true ? 'spot-ok' : it.ok === false ? 'spot-no' : 'spot-q'));
+      line.appendChild(el('span', 'm', it.ok === true ? '✓' : it.ok === false ? '✗' : '•'));
+      var t = el('div'); t.appendChild(el('b', '', it.label)); t.appendChild(document.createTextNode(': ' + it.text)); line.appendChild(t);
+      box.appendChild(line);
+    });
+    adv.notes.forEach(function (n) { box.appendChild(el('p', 'note', n)); });
+    var det = document.createElement('details');
+    det.appendChild(el('summary', '', 'Oil, sewage and emissions'));
+    otherAnnexes(areas).forEach(function (t) { det.appendChild(el('p', 'note', t)); });
+    box.appendChild(det);
+  }
+  function mpSetMe(lat, lon, label, acc) {
+    var map = mp.map, Lf = mp.L;
+    if (mp.me) map.removeLayer(mp.me); if (mp.meAcc) map.removeLayer(mp.meAcc);
+    if (mp.pick) { map.removeLayer(mp.pick); mp.pick = null; }
+    mp.meAcc = acc && acc < 50000 ? Lf.circle([lat, lon], { radius: acc, color: '#1c7ed6', weight: 1, fillOpacity: 0.08, interactive: false }).addTo(map) : null;
+    mp.me = Lf.circleMarker([lat, lon], { radius: 8, color: '#ffffff', weight: 3, fillColor: '#1c7ed6', fillOpacity: 1, interactive: false }).addTo(map);
+    map.setView([lat, lon], Math.max(map.getZoom(), 9));
+    try { localStorage.setItem('bridge-desk-lastpos', JSON.stringify([lat, lon])); } catch (e) { /* optional */ }
+    mpShowSpot(lat, lon, label);
+  }
+  function mpLocate() {
+    if (!navigator.geolocation) { mpStatus('This browser cannot give a GPS position. Enter one below.', 'warn'); $('#mp-manual').open = true; return; }
+    mpStatus('Getting your position…');
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      mpStatus('');
+      mpEnsure().then(function () { if (mp.map) mpSetMe(pos.coords.latitude, pos.coords.longitude, 'Your position (GPS)', pos.coords.accuracy); });
+    }, function (err) {
+      var m = err && err.code === 1 ? 'Location is blocked for this page. Allow it in the browser settings, or enter a position below.'
+        : err && err.code === 3 ? 'The GPS took too long to answer. Try again, or enter a position below.'
+        : 'No GPS position is available. Enter one below.';
+      mpStatus(m, 'warn'); $('#mp-manual').open = true;
+    }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 30000 });
+  }
+  function mpOpen() {
+    mpEnsure().then(function () {
+      if (!mp.map) return;
+      setTimeout(function () { mp.map.invalidateSize(); }, 60);
+      if (!mp.opened) { mp.opened = true; mpLocate(); }
+    });
+  }
+  $('#mp-gps').addEventListener('click', function () { mpEnsure().then(function () { mpLocate(); }); });
+  $('#mp-go').addEventListener('click', function () {
+    var la = parseCoord($('#mp-lat').value, true), lo = parseCoord($('#mp-lon').value, false);
+    if (la === null || lo === null) { mpStatus('Could not read that position. Use for example 43 35.2 N and 007 07.5 E.', 'bad'); return; }
+    mpStatus('');
+    mpEnsure().then(function () { if (mp.map) mpSetMe(la, lo, 'Entered position', 0); });
+  });
+  $('#panel-marpol').addEventListener('change', function (ev) {
+    var id = ev.target && ev.target.id;
+    if (!id || ev.target.type !== 'checkbox') return;
+    mpSaveToggles();
+    if (id === 'mp-sea') mpSea(); else mpRefresh();
+  });
 
   /* ---------- Views ---------- */
   function show(name) {
@@ -2059,6 +2722,8 @@ details[open] > summary { margin-bottom: 10px; }
     $('#view-bearing').hidden = name !== 'bearing';
     $('#view-garbage').hidden = name !== 'garbage';
     $('#view-garlog').hidden = name !== 'garlog';
+    $('#view-marpol').hidden = name !== 'marpol';
+    if (name === 'marpol') mpOpen();
     $('#view-settings').hidden = name !== 'settings';
     window.scrollTo(0, 0);
     var h = $('#' + (name === 'hub' ? 'hub' : name) + '-title');
@@ -2072,7 +2737,7 @@ details[open] > summary { margin-bottom: 10px; }
     var h = '';
     try { h = (location.hash || '').replace('#', ''); } catch (e) { h = ''; }
     if (h === 'garlog') renderLog();
-    show(['compass', 'logbook', 'bearing', 'garbage', 'garlog', 'settings'].indexOf(h) >= 0 ? h : 'hub');
+    show(['compass', 'logbook', 'bearing', 'garbage', 'garlog', 'marpol', 'settings'].indexOf(h) >= 0 ? h : 'hub');
   }
   document.querySelectorAll('[data-open]').forEach(function (b) {
     b.addEventListener('click', function () { go(b.getAttribute('data-open')); });
