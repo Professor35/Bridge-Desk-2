@@ -92,7 +92,7 @@ fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 .topbar-right .clock { justify-self: center; }
 .clock { font: 500 13px/1 var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
 
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 0 16px; border-radius: 6px; border: 1px solid var(--line); background: var(--surface-2); cursor: pointer; font: 500 14px var(--font-body); color: var(--fg); transition: border-color 0.15s; text-align: center; }
+.btn { text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 0 16px; border-radius: 6px; border: 1px solid var(--line); background: var(--surface-2); cursor: pointer; font: 500 14px var(--font-body); color: var(--fg); transition: border-color 0.15s; text-align: center; }
 .btn:hover { border-color: var(--accent); }
 .btn[disabled], .btn.is-disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
 .btn[aria-pressed="true"] { border-color: var(--accent); color: var(--accent-text); }
@@ -256,6 +256,45 @@ details[open] > summary { margin-bottom: 10px; }
 .devtable { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px 14px; max-height: 320px; overflow-y: auto; font: 500 14px var(--font-mono); font-variant-numeric: tabular-nums; }
 .devtable span { display: flex; justify-content: space-between; gap: 10px; padding: 4px 0; border-bottom: 1px solid var(--line); }
 
+input[type="datetime-local"] { width: 100%; background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; font: 500 16px/1.2 var(--font-mono); min-height: 44px; }
+#pp-map { height: min(56vh, 520px); min-height: 320px; margin-top: 4px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #cfd8dc; }
+.ev-list { display: grid; gap: 8px; }
+.ev { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 4px 12px; width: 100%; text-align: left; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); color: var(--fg); font: inherit; }
+button.ev, .ev[data-ev] { cursor: pointer; }
+.ev-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
+.ev-tools .btn { min-height: 38px; font-size: 13px; padding: 0 12px; text-align: left; }
+.ev-tools .chip-toggle span { min-height: 38px; font-size: 13px; }
+.ev .quote { display: block; margin-top: 4px; font-size: 14px; padding-left: 10px; border-left: 2px solid var(--line); }
+.ev.is-done { opacity: 0.72; }
+button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
+.ev .when { font: 500 13px/1.4 var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.ev .when b { display: block; color: var(--fg); font-weight: 500; }
+.ev .ttl { display: block; font: 600 19px/1.15 var(--font-display); letter-spacing: 0.04em; text-transform: uppercase; }
+.ev .txt { display: block; margin-top: 4px; font-size: 14px; }
+.ev .src { display: block; margin-top: 6px; font-size: 12px; color: var(--muted); }
+.ev.is-wide { grid-template-columns: minmax(0, 1fr); }
+.ev .actions { margin-top: 8px; }
+.now-box { margin-top: 12px; padding: 14px; border: 1px solid var(--accent); border-radius: 8px; background: var(--surface-2); }
+.now-box .k { font: 500 12px/1.2 var(--font-mono); letter-spacing: 0.07em; text-transform: uppercase; color: var(--accent-text); }
+.now-box .ttl { margin-top: 4px; font: 600 22px/1.1 var(--font-display); letter-spacing: 0.04em; text-transform: uppercase; }
+.now-box .txt { margin-top: 4px; font-size: 15px; }
+.now-box.is-quiet { border-color: var(--line); }
+.now-box.is-quiet .k { color: var(--muted); }
+.leg { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 2px 10px; align-items: center; padding: 10px 0; border-top: 1px solid var(--line); }
+.leg .n { font: 600 20px/1 var(--font-display); color: var(--accent-text); }
+.leg .nm { font-size: 15px; overflow-wrap: anywhere; }
+.leg .m { grid-column: 2 / -1; font: 500 13px/1.4 var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.leg .sec { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) 130px; gap: 8px; margin-top: 6px; }
+.leg .chip-toggle span { min-height: 36px; font-size: 13px; }
+.leaflet-tooltip.pp-tip { background: #7048e8; color: #fff; border: 1px solid #fff; border-radius: 4px; padding: 2px 6px; font: 600 12px/1.3 system-ui, sans-serif; box-shadow: 0 1px 4px rgba(0,0,0,0.5); white-space: nowrap; }
+.leaflet-tooltip.pp-tip::before { display: none; }
+.pp-pop b { display: block; margin-top: 6px; }
+.pp-pop b:first-child { margin-top: 0; }
+#pdf-wrap { margin-top: 12px; overflow: auto; max-height: 82vh; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+#pdf-canvas { display: block; }
+:root[data-mode="night"] #pdf-wrap { background: #ff2a1a; }
+:root[data-mode="night"] #pdf-canvas { filter: invert(1) grayscale(1); mix-blend-mode: multiply; }
+
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 
@@ -283,12 +322,12 @@ details[open] > summary { margin-bottom: 10px; }
           <span class="tile-desc">Error logbook entries, and error from a bearing.</span>
           <span class="chip chip-ready">Ready</span>
         </button>
-        <div class="tile is-planned">
+        <button class="tile" type="button" data-open="passage">
           <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><path d="M8 38c10 0 6-14 16-14s6-14 16-14" stroke-dasharray="2 4"/><circle cx="8" cy="38" r="3"/><circle cx="24" cy="24" r="3"/><circle cx="40" cy="10" r="3"/></svg>
           <span class="tile-name">Passage planning</span>
-          <span class="tile-desc">Legs, distances, ETAs, cross-track limits and under-keel checks.</span>
-          <span class="chip">Planned</span>
-        </div>
+          <span class="tile-desc">Route file in, map with what to do and where. Your publications library.</span>
+          <span class="chip chip-ready">Ready</span>
+        </button>
         <button class="tile" type="button" data-open="marpol">
           <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><path d="M13 15h22l-2 25H15z"/><path d="M10 15h28M19 15v-4h10v4"/><path d="M21 21v13M27 21v13"/></svg>
           <span class="tile-name">MARPOL</span>
@@ -753,6 +792,216 @@ details[open] > summary { margin-bottom: 10px; }
       <p class="foot">Indicative only. Shore distances come from public coastline data and special area outlines are drawn from the IMO descriptions, so confirm anything close to a limit on ECDIS and the official chart. Coastal states, protected areas, your flag and your company can be stricter. Map: OpenStreetMap. Sea marks: OpenSeaMap. Coastline: Natural Earth.</p>
     </section>
 
+    <!-- Passage planning menu -->
+    <section id="view-passage" hidden aria-labelledby="passage-title">
+      <div class="tool-head">
+        <div class="tool-bar"><button class="btn" type="button" id="back-passage">‹ Duties</button></div>
+        <h1 id="passage-title" tabindex="-1">Passage planning</h1>
+        <p class="lede">What do you need?</p>
+      </div>
+      <div class="tiles">
+        <button class="tile" type="button" data-open="plan">
+          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><path d="M8 38c10 0 6-14 16-14s6-14 16-14" stroke-dasharray="2 4"/><circle cx="8" cy="38" r="3"/><circle cx="24" cy="24" r="3"/><circle cx="40" cy="10" r="3"/></svg>
+          <span class="tile-name">Passage plan</span>
+          <span class="tile-desc">Load a route file, set speed and departure, then move the ship along the route to see what to do and where.</span>
+        </button>
+        <button class="tile" type="button" data-open="plans">
+          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><path d="M10 8h22l6 6v26H10z"/><path d="M17 20h14M17 27h14M17 34h9"/></svg>
+          <span class="tile-name">Saved plans</span>
+          <span class="tile-desc">Open a plan you saved on this device.</span>
+        </button>
+        <button class="tile" type="button" data-open="publib">
+          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><path d="M8 10h10v30H8zM18 10h10v30H18z"/><path d="M30 13l9-2 5 28-9 2z"/></svg>
+          <span class="tile-name">Publications library</span>
+          <span class="tile-desc">Add your own PDFs, search them, and open them at the right page.</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Passage plan -->
+    <section id="view-plan" hidden aria-labelledby="plan-title">
+      <div class="tool-head">
+        <div class="tool-bar">
+          <button class="btn" type="button" id="back-plan">‹ Passage planning</button>
+          <button class="btn btn-primary" type="button" id="pp-save" hidden>Save plan</button>
+        </div>
+        <h1 id="plan-title" tabindex="-1">Passage plan</h1>
+        <p class="lede" id="pp-sum">Load the route you made on ECDIS or TimeZero.</p>
+      </div>
+      <div class="panels">
+        <section class="panel" id="pp-load" aria-label="Route file">
+          <div class="actions">
+            <input class="vh" type="file" id="pp-file" accept=".gpx,.rtz,.xml,application/gpx+xml,application/xml,text/xml">
+            <label class="btn btn-primary" for="pp-file" id="pp-file-btn">Choose route file</label>
+            <button class="btn" type="button" id="pp-sample">Sample route</button>
+          </div>
+          <div class="field" id="pp-pick-wrap" hidden style="margin-top:12px">
+            <label for="pp-pick">This file holds several routes</label>
+            <select id="pp-pick"></select>
+          </div>
+          <p class="msg" id="pp-msg" role="status"></p>
+          <p class="note" id="pp-hint" style="margin-top:10px">GPX with a route, a track or waypoints. RTZ files work too.</p>
+        </section>
+        <section class="panel is-setup" id="pp-pubs" hidden aria-labelledby="h-pp-pubs">
+          <div class="panel-head"><h2 id="h-pp-pubs">Publications for this passage</h2><span class="pill" id="pp-pubs-count"></span></div>
+          <input class="vh" type="file" id="pp-pubfile" accept="application/pdf,.pdf" tabindex="-1" aria-hidden="true">
+          <p class="msg" id="pp-pubmsg" role="status"></p>
+          <div id="pp-pubs-body">
+            <p class="note" id="pp-pubs-note"></p>
+            <div class="ev-list" id="pp-pubs-list" style="margin-top:10px"></div>
+          </div>
+          <div class="actions" style="margin-top:12px"><button class="btn" type="button" id="pp-pubs-hide" aria-expanded="true" aria-controls="pp-pubs-body">Hide list</button></div>
+        </section>
+        <section class="panel" id="pp-main" hidden aria-label="Route">
+          <div class="grid2">
+            <div class="field"><label for="pp-speed">Speed</label><div class="inwrap"><input type="number" class="has-unit" id="pp-speed" min="1" max="60" step="0.5" inputmode="decimal"><span class="u">kn</span></div></div>
+            <div class="field"><label for="pp-dep">Departure (UTC)</label><input type="datetime-local" id="pp-dep"></div>
+          </div>
+          <div class="chips" role="group" aria-label="Map layers" style="margin-top:14px">
+            <label class="chip-toggle"><input type="checkbox" id="pp-tl" checked><span><i class="sw" style="background:#d6336c"></i>3 and 12 nm</span></label>
+            <label class="chip-toggle"><input type="checkbox" id="pp-ta" checked><span><i class="sw" style="background:#e8590c"></i>Special areas</span></label>
+            <label class="chip-toggle"><input type="checkbox" id="pp-tv" checked><span><i class="sw" style="background:#7048e8"></i>VTS and reporting</span></label>
+            <label class="chip-toggle"><input type="checkbox" id="pp-tr"><span><i class="sw" style="background:#c92a2a"></i>Restricted areas</span></label>
+            <label class="chip-toggle"><input type="checkbox" id="pp-ts"><span>Sea marks</span></label>
+          </div>
+          <div id="pp-map" role="application" aria-label="Route map"></div>
+          <p class="msg" id="pp-mapmsg" role="status"></p>
+          <p class="msg" id="pp-osmmsg" role="status"></p>
+          <p class="note">Tap the map to see the special areas and rules at that spot. Tap a marker to move the ship there.</p>
+          <div class="field" style="margin-top:12px">
+            <label for="pp-slide">Move the ship along the route</label>
+            <input type="range" id="pp-slide" min="0" max="100" step="0.1" value="0">
+          </div>
+          <div class="actions">
+            <button class="btn" type="button" id="pp-prev">‹ Previous event</button>
+            <button class="btn" type="button" id="pp-next">Next event ›</button>
+          </div>
+          <div class="stats">
+            <div class="stat"><span class="k">Position</span><span class="big" id="pp-pos" style="font-size:22px;white-space:pre-line">—</span><span class="sub" id="pp-leg"></span></div>
+            <div class="stat"><span class="k">UTC</span><span class="big" id="pp-utc" style="font-size:24px">—</span><span class="sub" id="pp-run"></span></div>
+            <div class="stat"><span class="k">Ship's time</span><span class="big" id="pp-ship" style="font-size:24px">—</span><span class="sub" id="pp-zone"></span></div>
+            <div class="stat"><span class="k">To go</span><span class="big" id="pp-togo" style="font-size:24px">—</span><span class="sub" id="pp-eta"></span></div>
+          </div>
+          <div class="now-box" id="pp-now" aria-live="polite"></div>
+          <details id="pp-spot-wrap">
+            <summary>MARPOL at this point</summary>
+            <div id="pp-spot"></div>
+          </details>
+          <details id="pp-legs-wrap">
+            <summary>Waypoints, legs and sections</summary>
+            <p class="note">Courses and distances are rhumb lines on WGS84. Tick New section at a waypoint to split the passage, for example port to port.</p>
+            <div id="pp-legs"></div>
+          </details>
+          <details id="pp-opt">
+            <summary>Passage options</summary>
+            <div class="form">
+              <label class="chip-toggle"><input type="checkbox" id="pp-ls" checked><span>Always on low-sulphur fuel (0.10%)</span></label>
+              <p class="note">Untick to get fuel changeover reminders at emission control area boundaries.</p>
+              <div class="field" id="pp-view-wrap" hidden>
+                <label for="pp-view">Show</label>
+                <select id="pp-view"></select>
+              </div>
+              <div class="field">
+                <label for="pp-near" id="pp-near-lab">Search corridor</label>
+                <input type="range" id="pp-near" min="2" max="30" step="1" value="10">
+              </div>
+              <p class="note">How far each side of the track the app looks in your publications for VTS, reporting, regulations and restricted areas.</p>
+              <div class="field">
+                <label for="pp-off">Ship's clock at departure</label>
+                <select id="pp-off"></select>
+              </div>
+              <p class="note">Set this to the time the yacht keeps when leaving. It starts at the zone for the departure longitude, which can differ from legal time in port. The clock then moves one hour at each time zone boundary by longitude (15° bands).</p>
+            </div>
+          </details>
+        </section>
+        <section class="panel" id="pp-events" hidden aria-labelledby="h-pp-ev">
+          <div class="panel-head"><h2 id="h-pp-ev">What to do, and where</h2><span class="pill" id="pp-ev-count"></span></div>
+          <div class="ev-list" id="pp-ev-list"></div>
+          <details id="pp-more-wrap" hidden>
+            <summary id="pp-more-sum">More from your publications</summary>
+            <p class="note" id="pp-more-note"></p>
+            <div class="ev-list" id="pp-more" style="margin-top:10px"></div>
+          </details>
+        </section>
+      </div>
+      <p class="foot">Planning aid only. Verify every item on ECDIS and in your official publications before use. Special area outlines and shore distances are indicative: they come from the IMO descriptions and public coastline data, which is coarse near harbours and narrow channels. TSS, VTS and reporting items are the book's own words, found by matching the positions printed in your publications to the route. Their positions are approximate, the books do not list everything, and editions go out of date, so cross-check against ALRS and the chart. Area and traffic separation outlines: OpenStreetMap sea mark data, mapped by volunteers. Map: OpenStreetMap. Sea marks: OpenSeaMap. Coastline: Natural Earth.</p>
+    </section>
+
+    <!-- Saved plans -->
+    <section id="view-plans" hidden aria-labelledby="plans-title">
+      <div class="tool-head">
+        <div class="tool-bar"><button class="btn" type="button" id="back-plans">‹ Passage planning</button></div>
+        <h1 id="plans-title" tabindex="-1">Saved plans</h1>
+      </div>
+      <div class="ev-list" id="plans-list"></div>
+    </section>
+
+    <!-- Publications library -->
+    <section id="view-publib" hidden aria-labelledby="publib-title">
+      <div class="tool-head">
+        <div class="tool-bar">
+          <button class="btn" type="button" id="back-publib">‹ Passage planning</button>
+          <input class="vh" type="file" id="lib-file" accept="application/pdf,.pdf">
+          <label class="btn btn-primary" for="lib-file" id="lib-file-btn">Add a PDF</label>
+        </div>
+        <h1 id="publib-title" tabindex="-1">Publications library</h1>
+        <p class="lede">Add your own PDF copies. They stay on this device, and references in the app open them at the right page.</p>
+      </div>
+      <div class="panels">
+        <section class="panel is-setup" id="lib-add" hidden aria-labelledby="h-lib-add">
+          <div class="panel-head"><h2 id="h-lib-add">Add this publication</h2><span class="pill" id="lib-add-size"></span></div>
+          <div class="form">
+            <div class="field"><label for="lib-type">Type</label>
+              <select id="lib-type">
+                <option>Sailing Directions</option><option>Radio Signals</option><option>List of Lights</option><option>Port guide</option><option>Regulations</option><option>Company procedures</option><option>Other</option>
+              </select></div>
+            <div class="field"><label for="lib-title">Title and volume</label><input type="text" id="lib-title" autocomplete="off" placeholder="e.g. Pub 131 Western Mediterranean"></div>
+            <div class="field"><label for="lib-ed">Edition or year</label><input type="text" id="lib-ed" autocomplete="off" placeholder="e.g. 2024"></div>
+            <div class="actions"><button class="btn btn-primary" type="button" id="lib-add-ok">Add to library</button><button class="btn" type="button" id="lib-add-cancel">Cancel</button></div>
+          </div>
+        </section>
+        <section class="panel" id="lib-work" hidden aria-label="Progress">
+          <p class="msg" id="lib-msg" role="status"></p>
+          <div class="actions" style="margin-top:10px"><button class="btn" type="button" id="lib-stop">Stop</button></div>
+        </section>
+        <section class="panel" id="lib-search" hidden aria-labelledby="h-lib-q">
+          <div class="panel-head"><h2 id="h-lib-q">Search</h2></div>
+          <div class="pair"><input type="text" id="lib-q" autocomplete="off" enterkeyhint="search" placeholder="e.g. Tarifa Traffic" aria-label="Search your publications"><button class="btn btn-primary" type="button" id="lib-go">Search</button></div>
+          <p class="msg" id="lib-qmsg" role="status"></p>
+          <div class="ev-list" id="lib-hits"></div>
+        </section>
+        <section class="panel" aria-labelledby="h-lib-list">
+          <div class="panel-head"><h2 id="h-lib-list">Your publications</h2><span class="pill" id="lib-count"></span></div>
+          <div class="ev-list" id="lib-list"></div>
+          <p class="note" id="lib-space" style="margin-top:12px"></p>
+        </section>
+      </div>
+      <p class="foot">Ordinary PDF files only. Locked Admiralty digital editions (ADP and e-NP) open only in the Admiralty reader and cannot be added here. The US NGA publishes its Sailing Directions and Pub 117 Radio Navigational Aids as free ordinary PDFs. Add only copies you are entitled to hold. Nothing is uploaded: the files and their text stay in this browser on this device.</p>
+    </section>
+
+    <!-- PDF reader -->
+    <section id="view-pdf" hidden aria-labelledby="pdf-title">
+      <div class="tool-head">
+        <div class="tool-bar"><button class="btn" type="button" id="back-pdf">‹ Back</button></div>
+        <h1 id="pdf-title" tabindex="-1">Reader</h1>
+        <p class="lede" id="pdf-sub"></p>
+      </div>
+      <div class="panel">
+        <div class="pair" style="margin-bottom:10px"><input type="text" id="pdf-q" autocomplete="off" enterkeyhint="search" placeholder="Search this book" aria-label="Search this book"><button class="btn btn-primary" type="button" id="pdf-find">Search</button></div>
+        <p class="msg" id="pdf-qmsg" role="status"></p>
+        <div class="ev-list" id="pdf-hits" style="max-height:38vh;overflow:auto;margin-bottom:12px"></div>
+        <div class="actions" style="flex-wrap:nowrap;gap:6px">
+          <button class="btn" type="button" id="pdf-prev" aria-label="Previous page">‹</button>
+          <div class="inwrap" style="flex:1 1 104px;min-width:104px;max-width:180px"><input type="number" class="has-unit" id="pdf-page" min="1" step="1" inputmode="numeric" aria-label="Page"><span class="u" id="pdf-of"></span></div>
+          <button class="btn" type="button" id="pdf-next" aria-label="Next page">›</button>
+          <button class="btn" type="button" id="pdf-out" aria-label="Zoom out">−</button>
+          <button class="btn" type="button" id="pdf-in" aria-label="Zoom in">+</button>
+        </div>
+        <p class="msg" id="pdf-msg" role="status"></p>
+        <div id="pdf-wrap"><canvas id="pdf-canvas"></canvas></div>
+      </div>
+    </section>
+
     <!-- AI settings -->
     <section id="view-settings" hidden aria-labelledby="settings-title">
       <div class="tool-head">
@@ -811,6 +1060,20 @@ details[open] > summary { margin-bottom: 10px; }
       <div class="actions">
         <button class="btn btn-primary" type="button" id="gb-sheet-save">Save</button>
         <button class="btn" type="button" id="gb-sheet-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <div class="sheet" id="pp-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="pp-sheet-title">
+    <div class="sheet-card">
+      <h2 id="pp-sheet-title">Save plan</h2>
+      <div class="field">
+        <label for="pp-name">Plan name</label>
+        <input type="text" id="pp-name" autocomplete="off">
+      </div>
+      <p class="msg" id="pp-sheet-msg"></p>
+      <div class="actions">
+        <button class="btn btn-primary" type="button" id="pp-sheet-save">Save</button>
+        <button class="btn" type="button" id="pp-sheet-cancel">Cancel</button>
       </div>
     </div>
   </div>
@@ -1479,6 +1742,548 @@ details[open] > summary { margin-bottom: 10px; }
       ? 'Emissions (Annex VI): emission control area, ' + eca + '. Fuel sulphur 0.10% or an approved exhaust cleaning system.'
       : 'Emissions (Annex VI): outside the emission control areas covered here. Fuel sulphur limit 0.50%. North America, US Caribbean, Canadian Arctic and Norwegian Sea control areas are not on this map yet.');
     return lines;
+  }
+
+  // ===== Passage planning: pure functions (route files, rhumb lines on WGS84, events along a route, text search) =====
+  var WGS_A = 6378137, WGS_E2 = 0.00669437999014, WGS_E = Math.sqrt(WGS_E2);
+  function rad(d) { return d * Math.PI / 180; }
+  function isoLat(latDeg) {
+    var s = Math.sin(rad(Math.max(-89.99, Math.min(89.99, latDeg))));
+    return Math.atanh(s) - WGS_E * Math.atanh(WGS_E * s);
+  }
+  // Meridian arc from the equator in metres.
+  function merArc(latDeg) {
+    var p = rad(latDeg), e2 = WGS_E2, e4 = e2 * e2, e6 = e4 * e2;
+    return WGS_A * ((1 - e2 / 4 - 3 * e4 / 64 - 5 * e6 / 256) * p - (3 * e2 / 8 + 3 * e4 / 32 + 45 * e6 / 1024) * Math.sin(2 * p)
+      + (15 * e4 / 256 + 45 * e6 / 1024) * Math.sin(4 * p) - (35 * e6 / 3072) * Math.sin(6 * p));
+  }
+  function merArcInv(m) {
+    var lat = m / 111132.95;
+    for (var i = 0; i < 6; i++) {
+      var s = Math.sin(rad(lat)), d = WGS_A * (1 - WGS_E2) / Math.pow(1 - WGS_E2 * s * s, 1.5);
+      lat -= (merArc(lat) - m) / d * 180 / Math.PI;
+    }
+    return lat;
+  }
+  // Rhumb line between two positions: distance in nm and true course.
+  function rhumbLeg(lat1, lon1, lat2, lon2) {
+    var dl = rad(normLon(lon2 - lon1)), dpsi = isoLat(lat2) - isoLat(lat1), dm = merArc(lat2) - merArc(lat1);
+    var crs = Math.atan2(dl, dpsi), dist;
+    if (Math.abs(lat2 - lat1) < 1e-7) {
+      var s = Math.sin(rad((lat1 + lat2) / 2));
+      dist = WGS_A * Math.cos(rad((lat1 + lat2) / 2)) / Math.sqrt(1 - WGS_E2 * s * s) * Math.abs(dl);
+    } else dist = Math.abs(dm / Math.cos(crs));
+    return { nm: dist / 1852, crs: norm360(crs * 180 / Math.PI) };
+  }
+  // Position a fraction f (0 to 1) along the rhumb line.
+  function rhumbAt(lat1, lon1, lat2, lon2, f) {
+    var dlDeg = normLon(lon2 - lon1);
+    if (Math.abs(lat2 - lat1) < 1e-7) return { lat: lat1 + (lat2 - lat1) * f, lon: normLon(lon1 + dlDeg * f) };
+    var m1 = merArc(lat1), lat = merArcInv(m1 + (merArc(lat2) - m1) * f), p1 = isoLat(lat1);
+    return { lat: lat, lon: normLon(lon1 + dlDeg * (isoLat(lat) - p1) / (isoLat(lat2) - p1)) };
+  }
+
+  // ---- Route files: GPX (rte, trk, wpt) and RTZ
+  function xmlDecode(s) {
+    return String(s).replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1').replace(/<[^>]*>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'")
+      .replace(/&#(\d+);/g, function (m, n) { return String.fromCharCode(Number(n)); }).replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+  }
+  function xmlAttr(tag, name) {
+    var m = new RegExp('(?:^|\\s)' + name + '\\s*=\\s*(?:"([^"]*)"|\'([^\']*)\')', 'i').exec(tag);
+    return m ? (m[1] !== undefined ? m[1] : m[2]) : null;
+  }
+  function xmlName(body) {
+    var m = /<(?:\w+:)?name\b[^>]*>([\s\S]*?)<\/(?:\w+:)?name>/i.exec(body || '');
+    return m ? xmlDecode(m[1]) : '';
+  }
+  function goodPos(la, lo) { return la !== null && lo !== null && la !== '' && lo !== '' && isFinite(Number(la)) && isFinite(Number(lo)) && Math.abs(Number(la)) <= 90 && Math.abs(Number(lo)) <= 180; }
+  function gpxPoints(body, tag) {
+    var re = new RegExp('<(?:\\w+:)?' + tag + '\\b([^>]*?)(?:/>|>([\\s\\S]*?)</(?:\\w+:)?' + tag + '>)', 'gi'), m, out = [];
+    while ((m = re.exec(body))) {
+      var la = xmlAttr(m[1], 'lat'), lo = xmlAttr(m[1], 'lon');
+      if (!goodPos(la, lo)) continue;
+      out.push({ lat: Number(la), lon: Number(lo), name: xmlName(m[2]) });
+    }
+    return out;
+  }
+  function cleanPts(pts) {
+    var out = [];
+    pts.forEach(function (p) {
+      var q = out[out.length - 1];
+      if (q && Math.abs(q.lat - p.lat) < 1e-7 && Math.abs(q.lon - p.lon) < 1e-7) { if (!q.name && p.name) q.name = p.name; return; }
+      out.push({ lat: p.lat, lon: p.lon, name: p.name || '' });
+    });
+    return out;
+  }
+  function parseRoute(text) {
+    var s = String(text || ''), routes = [], m, re;
+    function add(name, kind, pts) { pts = cleanPts(pts); if (pts.length >= 2) routes.push({ name: name, kind: kind, pts: pts }); }
+    if (/<(?:\w+:)?(gpx|rte|trk|wpt)\b/i.test(s)) {
+      re = /<(?:\w+:)?rte\b[^>]*>([\s\S]*?)<\/(?:\w+:)?rte>/gi;
+      while ((m = re.exec(s))) add(xmlName(m[1].split(/<(?:\w+:)?rtept\b/i)[0]) || 'Route ' + (routes.length + 1), 'route', gpxPoints(m[1], 'rtept'));
+      re = /<(?:\w+:)?trk\b[^>]*>([\s\S]*?)<\/(?:\w+:)?trk>/gi;
+      while ((m = re.exec(s))) add(xmlName(m[1].split(/<(?:\w+:)?trkseg\b/i)[0]) || 'Track ' + (routes.length + 1), 'track', gpxPoints(m[1], 'trkpt'));
+      var w = gpxPoints(s, 'wpt');
+      if (!routes.length || w.length >= 2) add('Waypoints in file order', 'waypoints', w);
+    } else if (/<(?:\w+:)?waypoint\b/i.test(s)) {
+      var pts = [];
+      re = /<(?:\w+:)?waypoint\b([^>]*)>([\s\S]*?)<\/(?:\w+:)?waypoint>/gi;
+      while ((m = re.exec(s))) {
+        var pm = /<(?:\w+:)?position\b([^>]*)/i.exec(m[2]);
+        if (!pm) continue;
+        var la = xmlAttr(pm[1], 'lat'), lo = xmlAttr(pm[1], 'lon');
+        if (goodPos(la, lo)) pts.push({ lat: Number(la), lon: Number(lo), name: xmlDecode(xmlAttr(m[1], 'name') || '') });
+      }
+      var rn = /<(?:\w+:)?routeInfo\b([^>]*)/i.exec(s);
+      add((rn && xmlDecode(xmlAttr(rn[1], 'routeName') || '')) || 'Route', 'route', pts);
+    }
+    if (!routes.length) return { routes: [], error: 'No route, track or waypoints were found in this file. Export the route as GPX and try again.' };
+    return { routes: routes, error: null };
+  }
+  // Thin a dense track: keep points that matter to within tolNm.
+  function simplifyPts(pts, tolNm) {
+    if (pts.length < 3) return pts.slice();
+    var keep = new Uint8Array(pts.length), stack = [], last = 0;
+    keep[0] = keep[pts.length - 1] = 1;
+    for (var k = 1; k < pts.length; k++) if (pts[k].name || k === pts.length - 1) { keep[k] = 1; stack.push([last, k]); last = k; }
+    while (stack.length) {
+      var seg = stack.pop(), a = pts[seg[0]], b = pts[seg[1]], worst = -1, wi = -1, c = Math.max(0.05, Math.cos(rad((a.lat + b.lat) / 2)));
+      for (var i = seg[0] + 1; i < seg[1]; i++) {
+        var d = segDistNm(pts[i].lon, pts[i].lat, a.lon, a.lat, b.lon, b.lat, c);
+        if (d > worst) { worst = d; wi = i; }
+      }
+      if (wi > 0 && worst > tolNm) { keep[wi] = 1; stack.push([seg[0], wi], [wi, seg[1]]); }
+    }
+    return pts.filter(function (p, i) { return keep[i]; });
+  }
+  function routeBuild(pts) {
+    var legs = [], cum = [0], tot = 0;
+    for (var i = 0; i < pts.length - 1; i++) {
+      var r = rhumbLeg(pts[i].lat, pts[i].lon, pts[i + 1].lat, pts[i + 1].lon);
+      legs.push({ nm: r.nm, crs: r.crs });
+      tot += r.nm; cum.push(tot);
+    }
+    return { pts: pts, legs: legs, cum: cum, total: tot };
+  }
+  function routeLegAt(R, d) {
+    var lo = 0, hi = R.legs.length - 1;
+    while (lo < hi) { var mid = (lo + hi) >> 1; if (R.cum[mid + 1] < d) lo = mid + 1; else hi = mid; }
+    return lo;
+  }
+  function routeAt(R, d) {
+    d = Math.max(0, Math.min(R.total, d));
+    var i = routeLegAt(R, d), L = R.legs[i], a = R.pts[i], b = R.pts[i + 1];
+    var p = rhumbAt(a.lat, a.lon, b.lat, b.lon, L.nm > 0 ? (d - R.cum[i]) / L.nm : 0);
+    return { lat: p.lat, lon: p.lon, leg: i, crs: L.crs };
+  }
+  // Sections: breaks is a list of waypoint indexes where a new section starts. Returns [{from, to, d0, d1}].
+  function routeSections(R, breaks) {
+    var n = R.pts.length - 1, b = [0];
+    (breaks || []).map(Number).sort(function (x, y) { return x - y; }).forEach(function (i) { if (i > 0 && i < n && b.indexOf(i) < 0) b.push(i); });
+    return b.map(function (from, k) { var to = k + 1 < b.length ? b[k + 1] : n; return { from: from, to: to, d0: R.cum[from], d1: R.cum[to] }; });
+  }
+  // Hours from departure at each waypoint. speeds[k] is the speed of section k, or null for the default.
+  function routeClock(R, secs, speeds, defSpeed) {
+    var h = [0];
+    secs.forEach(function (s, k) {
+      var v = speeds && speeds[k] > 0 ? speeds[k] : defSpeed;
+      for (var i = s.from; i < s.to; i++) h.push(h[h.length - 1] + R.legs[i].nm / v);
+    });
+    return h;
+  }
+  function hoursAt(R, H, d) {
+    d = Math.max(0, Math.min(R.total, d));
+    var i = routeLegAt(R, d), L = R.legs[i];
+    return H[i] + (L.nm > 0 ? (d - R.cum[i]) / L.nm : 0) * (H[i + 1] - H[i]);
+  }
+  // Nautical time zone from longitude: 15 degree bands centred on the multiples of 15.
+  function zoneOf(lon) { var z = Math.round(normLon(lon) / 15); return z === 0 ? 0 : z; }
+  function zoneName(z) { return 'UTC' + (z < 0 ? '−' : '+') + Math.abs(z); }
+  function fmtDT(ms, offH) {
+    var d = new Date(ms + (offH || 0) * 3600000);
+    return String(d.getUTCDate()).padStart(2, '0') + ' ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getUTCMonth()] + ' ' +
+      String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0');
+  }
+  function fmtDur(h) {
+    var m = Math.round(h * 60), d = Math.floor(m / 1440), hh = Math.floor((m % 1440) / 60), mm = m % 60;
+    return (d ? d + ' d ' : '') + (d || hh ? hh + ' h ' : '') + String(mm).padStart(d || hh ? 2 : 1, '0') + ' min';
+  }
+  // Distance to land along a route: returns a function (lat, lon) -> nm (0 on land, NM_CAP beyond capNm).
+  function routeCoast(C, R, capNm) {
+    var seen = {}, ids = [], mLat = capNm / 60 + 0.2;
+    function take(a, b) {
+      var mLon = mLat / Math.max(0.05, Math.cos(rad((a.lat + b.lat) / 2)));
+      coastRegion(C, Math.min(a.lon, b.lon) - mLon, Math.min(a.lat, b.lat) - mLat, Math.max(a.lon, b.lon) + mLon, Math.max(a.lat, b.lat) + mLat)
+        .forEach(function (id) { if (!seen[id]) { seen[id] = 1; ids.push(id); } });
+    }
+    var step = 60, prev = routeAt(R, 0);
+    for (var d = step; d < R.total + step; d += step) { var p = routeAt(R, Math.min(d, R.total)); if (Math.abs(p.lon - prev.lon) < 180) take(prev, p); prev = p; }
+    var G = coastGrid(C, ids, 0.1), rowLat = null, row = null;
+    return function (lat, lon) {
+      if (rowLat !== lat) { row = coastRow(C, lat); rowLat = lat; }
+      if (rowLand(row, lon)) return 0;
+      return coastNearest(C, G, lat, lon, capNm);
+    };
+  }
+  var SRC_V = 'MARPOL Annex V, regulations 4 and 6', SRC_IV = 'MARPOL Annex IV, regulation 11', SRC_VI = 'MARPOL Annex VI, regulation 14', SRC_I = 'MARPOL Annex I, regulation 15';
+  function shoreEvent(limit, outbound, special) {
+    var t;
+    if (limit === 3) {
+      t = outbound
+        ? (special ? 'Garbage special area: no food waste yet, ground food waste only from 12 nm. Comminuted and disinfected sewage may be discharged from here.'
+          : 'Ground food waste (25 mm or less) may be discharged from here, ship en route. Comminuted and disinfected sewage may be discharged from here.')
+        : (special ? 'Stop discharging sewage. No food waste inside 12 nm in a garbage special area.' : 'Stop discharging food waste and sewage.') + ' An approved sewage treatment plant is governed by its certificate.';
+    } else {
+      t = outbound
+        ? (special ? 'Garbage special area: ground food waste (25 mm or less) may be discharged from here, ship en route. Unground food waste stays on board. Other sewage may be discharged at 4 knots or more.'
+          : 'Unground food waste may be discharged from here, ship en route. Other sewage may be discharged at 4 knots or more.')
+        : (special ? 'Stop discharging all food waste and untreated sewage.' : 'Stop discharging unground food waste and untreated sewage.') + ' Inside 12 nm the coastal state\'s own rules may apply as well.';
+    }
+    return { title: limit + ' nm from land, ' + (outbound ? 'outbound' : 'inbound'), text: t, src: SRC_V + '. ' + SRC_IV + '.' };
+  }
+  function areaEvent(a, entering, lowSulphur) {
+    var bits = [], src = [], fuel = false;
+    a.annexes.forEach(function (x) {
+      if (x.a === 'V' && x.st === 'on') { bits.push(entering ? 'Garbage special area: only ground food waste, 12 nm or more from land. Everything else stays on board.' : 'Garbage: general rules apply again (ground food waste from 3 nm, unground from 12 nm).'); src.push(SRC_V); }
+      if (x.a === 'V' && x.st !== 'on' && entering) bits.push('Listed as a garbage special area but not in effect yet, so the general rules apply.');
+      if (x.a === 'I' && x.st === 'on') { bits.push(entering ? 'Oil special area: oily bilge water only through 15 ppm equipment with alarm and automatic stop, ship en route.' : 'Oil: outside the special area.'); src.push(SRC_I); }
+      if (x.a === 'IV' && x.st === 'on' && entering) { bits.push('Sewage special area for passenger ships: check what applies to your yacht.'); src.push(SRC_IV); }
+      if (x.a === 'E' && x.st === 'on') {
+        src.push(SRC_VI);
+        if (lowSulphur) bits.push(entering ? 'Emission control area: fuel sulphur 0.10% maximum. Set as always on low-sulphur fuel, so no changeover.' : 'Emission control area ends here.');
+        else { fuel = true; bits.push(entering ? 'Emission control area: changeover to 0.10% sulphur fuel must be complete before this point. Log the changeover.' : 'Emission control area ends here. Changeover back to 0.50% sulphur fuel may start after this point. Log it.'); }
+      }
+    });
+    return { title: (entering ? 'Entering ' : 'Leaving ') + a.name, text: bits.join(' ') + ' The boundary is indicative, so confirm it on the chart.', src: src.join('. ') + (src.length ? '.' : ''), fuel: fuel };
+  }
+  function zoneEvent(z0, z1, lon) {
+    var jump = z1 - z0, t;
+    if (Math.abs(jump) > 1) t = jump < 0 ? 'Date line, heading east: time zone ' + zoneName(z1) + '. Put the date back one day.' : 'Date line, heading west: time zone ' + zoneName(z1) + '. Put the date forward one day.';
+    else t = 'Crossing into time zone ' + zoneName(z1) + ' (was ' + zoneName(z0) + '). ' + (jump > 0 ? 'Advance clocks 1 hour.' : 'Retard clocks 1 hour.');
+    return { title: 'Time zone changes', text: t, src: 'Nautical time zones by longitude (15° bands). Legal time ashore can differ, so check the port.' };
+  }
+  // Events along a route. opt: { shore: function or null, limits: [3, 12], lowSulphur: true, step: nm }
+  function routeScan(R, opt) {
+    opt = opt || {};
+    var limits = opt.limits || [3, 12], step = opt.step || Math.max(0.25, Math.min(1, R.total / 1500)), ev = [];
+    function state(d) {
+      var p = routeAt(R, d), o = { d: d, p: p, k: { z: zoneOf(p.lon) }, areas: {}, special: false, nm: null };
+      areasAt(p.lat, p.lon).forEach(function (a) {
+        if (!a.inside) return;
+        o.areas[a.id] = a; o.k['a:' + a.id] = 1;
+        a.annexes.forEach(function (x) { if (x.a === 'V' && x.st === 'on') o.special = true; });
+      });
+      if (opt.shore) { o.nm = opt.shore(p.lat, p.lon); limits.forEach(function (L) { o.k['s:' + L] = o.nm < L ? 1 : 0; }); }
+      return o;
+    }
+    function val(s, key) { return s.k[key] === undefined ? 0 : s.k[key]; }
+    function emit(key, a, b) {
+      var e, kind = key.charAt(0);
+      if (kind === 'z') e = zoneEvent(val(a, key), val(b, key), b.p.lon);
+      else if (kind === 'a') { var id = key.slice(2), entering = val(b, key) === 1; e = areaEvent(entering ? b.areas[id] : a.areas[id], entering, opt.lowSulphur !== false); }
+      else e = shoreEvent(Number(key.slice(2)), val(b, key) === 0, b.special);
+      e.kind = kind === 'z' ? 'zone' : kind === 'a' ? 'area' : 'shore'; e.key = key; e.d = b.d; e.lat = b.p.lat; e.lon = b.p.lon;
+      ev.push(e);
+    }
+    var prev = state(0), first = prev;
+    for (var d = step; d < R.total + step; d += step) {
+      var cur = state(Math.min(d, R.total)), keys = {};
+      Object.keys(prev.k).forEach(function (k) { keys[k] = 1; }); Object.keys(cur.k).forEach(function (k) { keys[k] = 1; });
+      Object.keys(keys).forEach(function (key) {
+        if (val(prev, key) === val(cur, key)) return;
+        var lo = prev, hi = cur;
+        while (hi.d - lo.d > 0.02) { var mid = state((lo.d + hi.d) / 2); if (val(mid, key) === val(lo, key)) lo = mid; else hi = mid; }
+        emit(key, lo, hi);
+      });
+      prev = cur;
+    }
+    ev.sort(function (a, b) { return a.d - b.d; });
+    // Drop quick in-and-out crossings of a shore limit (closer together than 2 nm).
+    for (var i = 0; i < ev.length; i++) {
+      if (ev[i].kind !== 'shore') continue;
+      for (var j = i + 1; j < ev.length && ev[j].d - ev[i].d < 2; j++) if (ev[j].key === ev[i].key) { ev.splice(j, 1); ev.splice(i, 1); i--; break; }
+    }
+    function ends(s, title) {
+      var names = Object.keys(s.areas).map(function (id) { return s.areas[id].name; });
+      var t = 'Time zone by longitude ' + zoneName(s.k.z) + '. ' + (names.length ? 'Inside: ' + names.join(', ') + '.' : 'Not inside a special area on this map.');
+      if (s.nm !== null) t += s.nm >= NM_CAP ? ' More than ' + limits[limits.length - 1] + ' nm from land.' : ' About ' + s.nm.toFixed(1) + ' nm from land in the coastline data.';
+      return { kind: 'end', key: title, title: title, text: t, src: '', d: s.d, lat: s.p.lat, lon: s.p.lon };
+    }
+    ev.unshift(ends(first, 'Departure'));
+    ev.push(ends(prev, 'Arrival'));
+    return ev;
+  }
+
+  // ---- Publication text: search and quote checking
+  function normText(s) {
+    return String(s === undefined || s === null ? '' : s).toLowerCase().replace(/\u00ad/g, '').replace(/[‘’′`]/g, "'").replace(/[“”″]/g, '"').replace(/[‐‑‒–—−]/g, '-').replace(/\s+/g, ' ').trim();
+  }
+  // Is the query on this page? A phrase match first, otherwise every word must be there. Returns null or a short excerpt.
+  function pageFind(text, query) {
+    var t = String(text || '').replace(/\s+/g, ' '), n = normText(t), q = normText(query);
+    if (!q || !n) return null;
+    var at = n.indexOf(q), phrase = at >= 0;
+    if (!phrase) {
+      var words = q.split(' ').filter(function (w) { return w.length > 1; });
+      if (!words.length) return null;
+      for (var i = 0; i < words.length; i++) if (n.indexOf(words[i]) < 0) return null;
+      at = n.indexOf(words[0]);
+    }
+    var a = Math.max(0, at - 60), b = Math.min(n.length, at + q.length + 100);
+    return { phrase: phrase, snippet: (a > 0 ? '…' : '') + n.slice(a, b) + (b < n.length ? '…' : '') };
+  }
+  // Does this exact quote appear on the page (ignoring case, line breaks and spacing)?
+  function quoteOnPage(text, quote) {
+    var n = normText(text), q = normText(quote);
+    if (q.length < 8) return false;
+    if (n.indexOf(q) >= 0) return true;
+    if (n.replace(/ /g, '').indexOf(q.replace(/ /g, '')) >= 0) return true;
+    // Words split by a hyphen at a line end in the book
+    return n.replace(/[ -]/g, '').indexOf(q.replace(/[ -]/g, '')) >= 0;
+  }
+
+  // ---- Free publications catalogue: which books cover a route. Boxes are [west, south, east, north] and approximate.
+  var PUBCAT = [
+    { id: 'nga117', pub: 'Pub 117', title: 'Radio Navigational Aids', kind: 'Radio', src: 'NGA', type: 'Radio Signals', all: true },
+    { id: 'nga123', pub: 'Pub 123', title: 'Southwest Coast of Africa', boxes: [[-8, -36, 20.5, 6.5]] },
+    { id: 'nga124', pub: 'Pub 124', title: 'East Coast of South America', boxes: [[-70, -57, -30, 11]] },
+    { id: 'nga125', pub: 'Pub 125', title: 'West Coast of South America', boxes: [[-93, -57, -66, 9]] },
+    { id: 'nga126', pub: 'Pub 126', title: 'Pacific Islands', boxes: [[130, -30, 180, 30], [-180, -30, -105, 30]] },
+    { id: 'nga127', pub: 'Pub 127', title: 'East Coast of Australia and New Zealand', boxes: [[140, -50, 180, -9]] },
+    { id: 'nga131', pub: 'Pub 131', title: 'Western Mediterranean', boxes: [[-5.6, 30, 16.5, 45]] },
+    { id: 'nga132', pub: 'Pub 132', title: 'Eastern Mediterranean', boxes: [[11.5, 30, 42, 47.5]] },
+    { id: 'nga141', pub: 'Pub 141', title: 'Scotland', boxes: [[-9, 54.5, 0, 61.5]] },
+    { id: 'nga142', pub: 'Pub 142', title: 'Ireland and the West Coast of England', boxes: [[-11.5, 49.5, -2.5, 56]] },
+    { id: 'nga143', pub: 'Pub 143', title: 'West Coast of Europe and Northwest Africa', boxes: [[-32, 4, -5.6, 48.5], [-10, 43, 0, 48.5]] },
+    { id: 'nga145', pub: 'Pub 145', title: 'Nova Scotia and the St. Lawrence', boxes: [[-72, 42.5, -55, 52]] },
+    { id: 'nga146', pub: 'Pub 146', title: 'Newfoundland, Labrador and Hudson Bay', boxes: [[-96, 46, -50, 65]] },
+    { id: 'nga147', pub: 'Pub 147', title: 'Caribbean Sea Volume 1: Bermuda, Bahamas and the islands', boxes: [[-86, 9.5, -58, 28], [-66, 31, -63, 33.5]] },
+    { id: 'nga148', pub: 'Pub 148', title: 'Caribbean Sea Volume 2: mainland coasts', boxes: [[-98, 7, -59, 26]] },
+    { id: 'nga153', pub: 'Pub 153', title: 'West Coasts of Mexico and Central America', boxes: [[-118, 5, -77, 33]] },
+    { id: 'nga154', pub: 'Pub 154', title: 'British Columbia', boxes: [[-136, 47.5, -121, 55.5]] },
+    { id: 'nga155', pub: 'Pub 155', title: 'East Coast of Russia', boxes: [[127, 41, 180, 70], [-180, 60, -168, 68]] },
+    { id: 'nga157', pub: 'Pub 157', title: 'Coasts of Korea and China', boxes: [[105, 17, 132, 43]] },
+    { id: 'nga158', pub: 'Pub 158', title: 'Japan Volume 1', boxes: [[122, 23, 150, 46]] },
+    { id: 'nga159', pub: 'Pub 159', title: 'Japan Volume 2', boxes: [[122, 23, 150, 46]] },
+    { id: 'nga161', pub: 'Pub 161', title: 'South China Sea and the Gulf of Thailand', boxes: [[98, 0, 122, 24]] },
+    { id: 'nga162', pub: 'Pub 162', title: 'Philippine Islands', boxes: [[116, 4, 128, 22]] },
+    { id: 'nga163', pub: 'Pub 163', title: 'Borneo, Jawa, Sulawesi and Nusa Tenggara', boxes: [[105, -12, 128, 8]] },
+    { id: 'nga164', pub: 'Pub 164', title: 'New Guinea', boxes: [[128, -13, 157, 3]] },
+    { id: 'nga171', pub: 'Pub 171', title: 'East Africa and the South Indian Ocean', boxes: [[18, -40, 80, 13]] },
+    { id: 'nga172', pub: 'Pub 172', title: 'Red Sea and the Persian Gulf', boxes: [[32, 10, 62, 31]] },
+    { id: 'nga173', pub: 'Pub 173', title: 'India and the Bay of Bengal', boxes: [[60, 3, 99, 26]] },
+    { id: 'nga174', pub: 'Pub 174', title: 'Strait of Malacca and Sumatera', boxes: [[92, -8, 108, 9]] },
+    { id: 'nga175', pub: 'Pub 175', title: 'North, West and South Coasts of Australia', boxes: [[108, -45, 146, -9]] },
+    { id: 'nga181', pub: 'Pub 181', title: 'Greenland and Iceland', boxes: [[-75, 58, -10, 84]] },
+    { id: 'nga182', pub: 'Pub 182', title: 'North and West Coasts of Norway', boxes: [[3, 57.5, 32, 72]] },
+    { id: 'nga183', pub: 'Pub 183', title: 'North Coast of Russia', boxes: [[28, 64, 180, 82], [-180, 64, -168, 75]] },
+    { id: 'nga191', pub: 'Pub 191', title: 'English Channel', boxes: [[-6.5, 48, 2.5, 51.5]] },
+    { id: 'nga192', pub: 'Pub 192', title: 'North Sea', boxes: [[-4, 50.8, 9.5, 62]] },
+    { id: 'nga193', pub: 'Pub 193', title: 'Skagerrak and Kattegat', boxes: [[7, 54.5, 13, 60]] },
+    { id: 'nga194', pub: 'Pub 194', title: 'Baltic Sea, Southern Part', boxes: [[9.5, 53.5, 30, 60]] },
+    { id: 'nga195', pub: 'Pub 195', title: 'Gulf of Finland and Gulf of Bothnia', boxes: [[16, 58.5, 31, 66]] },
+    { id: 'cp1', pub: 'Coast Pilot 1', title: 'Eastport, Maine to Cape Cod', kind: 'Coast Pilot', src: 'NOAA', boxes: [[-71, 41, -66.5, 45.5]] },
+    { id: 'cp2', pub: 'Coast Pilot 2', title: 'Cape Cod to Sandy Hook', kind: 'Coast Pilot', src: 'NOAA', boxes: [[-74.5, 40, -69.5, 42.2]] },
+    { id: 'cp3', pub: 'Coast Pilot 3', title: 'Sandy Hook to Cape Henry', kind: 'Coast Pilot', src: 'NOAA', boxes: [[-76.8, 36.5, -73.5, 41]] },
+    { id: 'cp4', pub: 'Coast Pilot 4', title: 'Cape Henry to Key West', kind: 'Coast Pilot', src: 'NOAA', boxes: [[-82.5, 24, -74.5, 37.5]] },
+    { id: 'cp5', pub: 'Coast Pilot 5', title: 'Gulf Coast, Puerto Rico and Virgin Islands', kind: 'Coast Pilot', src: 'NOAA', boxes: [[-98, 24, -80, 31], [-68, 17, -64, 19]] },
+    { id: 'cp6', pub: 'Coast Pilot 6', title: 'Great Lakes and connecting waterways', kind: 'Coast Pilot', src: 'NOAA', boxes: [[-93, 41, -74, 49.5]] },
+    { id: 'cp7', pub: 'Coast Pilot 7', title: 'California, Oregon, Washington, Hawaii and Pacific Islands', kind: 'Coast Pilot', src: 'NOAA', boxes: [[-126, 32, -117, 49], [-161, 18, -154, 23]] },
+    { id: 'cp8', pub: 'Coast Pilot 8', title: 'Alaska: Dixon Entrance to Cape Spencer', kind: 'Coast Pilot', src: 'NOAA', boxes: [[-137, 54, -130, 60]] },
+    { id: 'cp9', pub: 'Coast Pilot 9', title: 'Alaska: Cape Spencer to Beaufort Sea', kind: 'Coast Pilot', src: 'NOAA', boxes: [[-180, 51, -137, 72]] },
+    { id: 'nga120', pub: 'Pub 120', title: 'Pacific Ocean and Southeast Asia', kind: 'Planning guide', boxes: [[95, -60, 180, 66], [-180, -60, -100, 66], [-100, -60, -70, 8]] },
+    { id: 'nga140', pub: 'Pub 140', title: 'North Atlantic Ocean, Baltic Sea, North Sea and Mediterranean Sea', kind: 'Planning guide', boxes: [[-100, 0, 42, 72]] },
+    { id: 'nga160', pub: 'Pub 160', title: 'South Atlantic Ocean and Indian Ocean', kind: 'Planning guide', boxes: [[-70, -60, 120, 0], [30, 0, 100, 30]] },
+    { id: 'nga180', pub: 'Pub 180', title: 'Arctic Ocean', kind: 'Planning guide', boxes: [[-180, 66, 180, 90]] },
+    { id: 'nga200', pub: 'Pub 200', title: 'Antarctica', kind: 'Planning guide', boxes: [[-180, -90, 180, -60]] }
+  ];
+  PUBCAT.forEach(function (c) { if (!c.kind) c.kind = 'Sailing Directions'; if (!c.src) c.src = 'NGA'; if (!c.type) c.type = 'Sailing Directions'; });
+  // Official page where each free book can be downloaded.
+  function pubSite(c) {
+    if (c.src === 'NOAA') return 'https://nauticalcharts.noaa.gov/publications/coast-pilot/index.html';
+    return 'https://msi.nga.mil/Publications/' + (c.kind === 'Radio' ? 'RNA' : c.kind === 'Planning guide' ? 'SDPGuides' : 'SDEnroute');
+  }
+  function pubsAt(lat, lon) {
+    return PUBCAT.filter(function (c) { return c.all || c.boxes.some(function (b) { return lon >= b[0] && lon <= b[2] && lat >= b[1] && lat <= b[3]; }); }).map(function (c) { return c.id; });
+  }
+  // Catalogue entries that cover any part of the route, in catalogue order.
+  function pubsForRoute(R) {
+    var hit = {}, step = Math.max(1, Math.min(10, R.total / 60));
+    function at(d) { var p = routeAt(R, d); pubsAt(p.lat, p.lon).forEach(function (id) { hit[id] = 1; }); }
+    for (var d = 0; d < R.total; d += step) at(d);
+    at(R.total);
+    return PUBCAT.filter(function (c) { return hit[c.id]; });
+  }
+
+  // ---- Publication items: passages about traffic services, reporting, TSS and pilotage, with the positions printed near them
+  var PX_COORD = /(\d{1,2})°\s?(\d{1,2}(?:\.\d+)?)['′’]\s?([NS])\.?,?\s+(?:and\s+)?(\d{1,3})°\s?(\d{1,2}(?:\.\d+)?)['′’]\s?([EW])/g;
+  var PX_KIND = { 'vessel traffic service': 'vts', 'vessel traffic services': 'vts', 'traffic control': 'vts', 'regulations': 'reg', 'pilotage': 'pilot', 'caution': 'caution', 'signals': 'reg', 'directions': 'reg' };
+  function pxClean(s) { return String(s || '').replace(/­/g, '').replace(/([a-z])-\s*\n\s*([a-z])/g, '$1$2').replace(/\s+/g, ' '); }
+  function pxPlace(before) {
+    var w = before.replace(/\s+$/, '').split(' '), out = [], small = /^(de|del|della|di|du|des|da|dos|la|le|el|les|e|y|of|the|d'|sur|al|el-)$/i;
+    for (var i = w.length - 1; i >= 0 && out.length < 6; i--) {
+      var t = w[i];
+      if (/^[A-ZÀ-Ý]/.test(t) && !/[.:;)]$/.test(t)) out.unshift(t);
+      else if (small.test(t) && out.length) out.unshift(t);
+      else break;
+    }
+    while (out.length && small.test(out[0])) out.shift();
+    return out.join(' ').replace(/^(The|A|An|From|Between|Off|Near|At|In|On) /, '');
+  }
+  function pxSentences(t) {
+    var out = [], re = /[.!?]["”)]?\s+(?=[A-Z(“"])/g, from = 0, m;
+    while ((m = re.exec(t))) {
+      var head = t.slice(Math.max(0, m.index - 6), m.index);
+      if (/(?:^|\s)(?:[A-Z]|St|Ste|No|Nos|Pt|Mt|Capt|approx|Fig|Pub|U\.S|i\.e|e\.g|etc)$/.test(head)) continue;
+      out.push(t.slice(from, m.index + m[0].length).trim()); from = m.index + m[0].length;
+    }
+    if (from < t.length) out.push(t.slice(from).trim());
+    return out.filter(function (x) { return x.length > 0; });
+  }
+  function pxLead(text) {
+    var m = /^\s*\d{1,2}\.\d{1,3}\s+((?:(?:[A-ZÀ-Ý][A-Za-zÀ-ÿ'’.-]*|de|del|della|di|du|des|da|la|le|el|les|of|the|d'|sur|al|e|y)\s+){0,7}[A-ZÀ-Ý][A-Za-zÀ-ÿ'’-]*)/.exec(text);
+    var r = m ? m[1].replace(/\s+/g, ' ').replace(/^(The|A|An) /, '') : '';
+    return /^(The|A|An|It|This|From|Between)$/.test(r) || r.length < 3 ? '' : r;
+  }
+  // pages: array of page texts. Returns items: { page, kind, head, place, pts: [[lat, lon]], quote, calls: [{ to, ch, line: {axis, val} or null, quote }] }
+  function pubExtract(pages) {
+    var starts = [], book = '', i;
+    for (i = 0; i < pages.length; i++) { starts.push(book.length); book += pxClean(pages[i]) + ' '; }
+    function pageOf(ix) { var lo = 0, hi = starts.length - 1; while (lo < hi) { var mid = (lo + hi + 1) >> 1; if (starts[mid] <= ix) lo = mid; else hi = mid - 1; } return lo + 1; }
+    // numbered paragraphs
+    var paras = [], m, reP = /(?:^|\s)(\d{1,2}\.\d{1,3})\s+(?=[A-ZÀ-Ý])/g, last = 0;
+    while ((m = reP.exec(book))) { if (m.index > last) paras.push([last, m.index]); last = m.index; }
+    paras.push([last, book.length]);
+    var items = [], reH = /([A-Z][A-Za-z]+(?: [A-Za-z]+){0,3})\.\s?[—–]/g;
+    paras.forEach(function (pr) {
+      var text = book.slice(pr[0], pr[1]);
+      if (text.length < 40 || text.length > 60000) return;
+      var pts = [], place = pxLead(text), c;
+      PX_COORD.lastIndex = 0;
+      while ((c = PX_COORD.exec(text))) {
+        var la = (Number(c[1]) + Number(c[2]) / 60) * (c[3] === 'S' ? -1 : 1), lo = (Number(c[4]) + Number(c[5]) / 60) * (c[6] === 'W' ? -1 : 1);
+        if (Math.abs(la) <= 90 && Math.abs(lo) <= 180) { pts.push([la, lo]); if (!place && pts.length === 1) place = pxPlace(text.slice(Math.max(0, c.index - 70), c.index).replace(/\($/, '')); }
+      }
+      if (!pts.length) return;
+      var heads = [], h;
+      reH.lastIndex = 0;
+      while ((h = reH.exec(text))) if (h[1] !== 'Note') heads.push({ at: h.index, end: reH.lastIndex, name: h[1] });
+      heads.forEach(function (hd, k) {
+        var kind = PX_KIND[hd.name.toLowerCase()];
+        if (!kind) return;
+        var body = text.slice(hd.end, k + 1 < heads.length ? heads[k + 1].at : text.length).trim();
+        if (body.length < 25) return;
+        var low = body.toLowerCase();
+        var tss = /traffic separation scheme|\btss\b/.test(low), rep = /\breport|vhf channel|permission|clearance/.test(low), area = /prohibited|restricted area|entry is forbidden|must not enter|firing|exercise area/.test(low);
+        if (kind === 'reg' && !(tss || rep || area || /mandatory|compulsory|speed limit|must /.test(low))) return;
+        if (kind === 'caution') { if (!(tss || area)) return; kind = tss ? 'tss' : 'area'; }
+        if (kind === 'reg' && tss) kind = 'tss';
+        var sents = pxSentences(body), n = 0, key = kind === 'vts' || kind === 'pilot' ? null : kind === 'tss' ? /traffic separation scheme|\btss\b/i : kind === 'area' ? /prohibited|restricted area|forbidden|must not enter|firing|exercise area/i : /\breport|vhf channel|permission|clearance|mandatory|compulsory|speed limit|must |traffic separation|prohibited|restricted/i;
+        if (key) while (n < sents.length - 1 && !key.test(sents[n])) n++;
+        var pg = pageOf(pr[0] + hd.end + Math.max(0, body.indexOf(sents[n]))), take = [], len = 0;
+        while (n < sents.length && len < 300 && take.length < 4) { take.push(sents[n]); len += sents[n].length; n++; }
+        while (take.length > 1 && !quoteOnPage(pages[pg - 1], take.join(' '))) take.pop();
+        var quote = take.join(' ');
+        if (quote.length > 600 || quote.length < 20 || /E-mail|Telephone|Facsimile|Contact Information/.test(quote) || !quoteOnPage(pages[pg - 1], quote)) return;
+        var calls = [];
+        sents.forEach(function (s) {
+          var r = /\b(?:report|contact|call)(?:ed)?\b[^.]{0,90}?\bto ((?:the )?[A-Z][A-Za-z]+(?: [A-Z][A-Za-z]+){0,3})[^.]{0,80}?\bVHF channels? (\d{1,2})/.exec(s)
+            || /\b(?:contact|call) ((?:the )?[A-Z][A-Za-z]+(?: [A-Z][A-Za-z]+){0,3})[^.]{0,60}?\bVHF channels? (\d{1,2})/.exec(s);
+          if (!r || s.length > 420) return;
+          var x = /when crossing (?:latitude |longitude |the meridian of |the parallel of )?(\d{1,3})°\s?(\d{1,2}(?:\.\d+)?)['′’]\s?([NSEW])\b(?!\.?,?\s+\d{1,3}°)/.exec(s), line = null;
+          if (x) { var v = (Number(x[1]) + Number(x[2]) / 60) * (/[SW]/.test(x[3]) ? -1 : 1); line = { axis: /[NS]/.test(x[3]) ? 'lat' : 'lon', val: v }; }
+          var to = r[1].replace(/^the /, ''), cp = pageOf(pr[0] + hd.end + Math.max(0, body.indexOf(s)));
+          if (!quoteOnPage(pages[cp - 1], s) || calls.some(function (q) { return q.to === to && q.ch === Number(r[2]) && !line; })) return;
+          var bd = /\b(west|east|north|south)bound\b/i.exec(s);
+          calls.push({ to: to, ch: Number(r[2]), line: line, bound: bd ? bd[1].charAt(0).toUpperCase() : '', quote: s, page: cp });
+        });
+        items.push({ page: pg, kind: kind, head: hd.name, place: place, pts: pts, quote: quote, calls: calls });
+      });
+    });
+    return items;
+  }
+  // Closest point of a route to a position: { nm, d }.
+  function routeNearest(R, lat, lon) {
+    var best = { nm: 1e9, d: 0 }, c = Math.max(0.05, Math.cos(rad(lat)));
+    for (var i = 0; i < R.legs.length; i++) {
+      var a = R.pts[i], b = R.pts[i + 1], ax = normLon(a.lon - lon) * c * 60, ay = (a.lat - lat) * 60, bx = ax + normLon(b.lon - a.lon) * c * 60, by = (b.lat - lat) * 60;
+      var dx = bx - ax, dy = by - ay, L = dx * dx + dy * dy, t = L > 0 ? -(ax * dx + ay * dy) / L : 0;
+      t = t < 0 ? 0 : t > 1 ? 1 : t;
+      var nm = Math.sqrt((ax + t * dx) * (ax + t * dx) + (ay + t * dy) * (ay + t * dy));
+      if (nm < best.nm) best = { nm: nm, d: R.cum[i] + t * R.legs[i].nm };
+    }
+    return best;
+  }
+  // Where the route crosses a meridian or parallel: list of distances along the route.
+  function routeCrossings(R, axis, val) {
+    var out = [];
+    for (var i = 0; i < R.legs.length; i++) {
+      var a = R.pts[i], b = R.pts[i + 1], va, vb;
+      if (axis === 'lat') { va = a.lat - val; vb = b.lat - val; } else { va = normLon(a.lon - val); vb = va + normLon(b.lon - a.lon); if (Math.abs(va) > 90) continue; }
+      if (va === 0 || (va < 0) !== (vb < 0)) {
+        var lo = 0, hi = 1;
+        for (var k = 0; k < 30; k++) { var mid = (lo + hi) / 2, p = rhumbAt(a.lat, a.lon, b.lat, b.lon, mid), vm = axis === 'lat' ? p.lat - val : normLon(p.lon - val); if ((vm < 0) === (va < 0)) lo = mid; else hi = mid; }
+        out.push(R.cum[i] + hi * R.legs[i].nm);
+      }
+    }
+    return out;
+  }
+  // Items that matter for a route. opt: { near: 10, ends: 20, endsAt: [d, ...] }
+  function pubMatch(R, items, opt) {
+    opt = opt || {};
+    var near = opt.near || 10, ends = opt.ends || 8, endsAt = opt.endsAt || [0, R.total], out = [];
+    items.forEach(function (it) {
+      var best = null, bp = null;
+      it.pts.forEach(function (p) { var r = routeNearest(R, p[0], p[1]); if (!best || r.nm < best.nm) { best = r; bp = p; } });
+      if (!best) return;
+      var atEnd = endsAt.some(function (d) { var e = routeAt(R, d), c = Math.max(0.05, Math.cos(rad(e.lat))); return Math.hypot((e.lat - bp[0]) * 60, normLon(e.lon - bp[1]) * 60 * c) <= ends; });
+      if (it.kind === 'pilot' ? !atEnd : best.nm > near) return;
+      var calls = [];
+      it.calls.forEach(function (c) {
+        var d = null;
+        if (c.line) routeCrossings(R, c.line.axis, c.line.val).forEach(function (x) { if (d === null && Math.abs(x - best.d) < 60) d = x; });
+        var at = d === null ? best.d : d;
+        // Calls for ships using the port only count at the ends of the route.
+        if (!atEnd && d === null && /\bbound for\b|\barriv|\bberth|\banchor|\bdepart|\bleav(?:es|ing)\b|\binbound\b|\boutbound\b|\bETA\b/i.test(c.quote)) return;
+        if (c.bound) { var crs = routeAt(R, at).crs, okDir = c.bound === 'W' ? crs > 180 : c.bound === 'E' ? crs < 180 : c.bound === 'N' ? (crs < 90 || crs > 270) : (crs > 90 && crs < 270); if (!okDir) return; }
+        calls.push({ to: c.to, ch: c.ch, quote: c.quote, page: c.page, d: at, exact: d !== null, line: d !== null ? c.line : null });
+      });
+      out.push({ item: it, d: best.d, nm: best.nm, lat: bp[0], lon: bp[1], calls: calls });
+    });
+    out.sort(function (a, b) { return a.d - b.d; });
+    return out;
+  }
+
+  // ---- Area outlines from OpenStreetMap sea mark data (volunteer mapped, not official)
+  var OSM_TSS = 'separation_zone|separation_lane|separation_boundary|separation_line|separation_crossing|separation_roundabout|inshore_traffic_zone|precautionary_area';
+  function osmQuery(R, nm) {
+    var pts = [], step = Math.max(5, R.total / 150);
+    for (var d = 0; d < R.total; d += step) { var p = routeAt(R, d); pts.push(p.lat.toFixed(3) + ',' + p.lon.toFixed(3)); }
+    var e = routeAt(R, R.total); pts.push(e.lat.toFixed(3) + ',' + e.lon.toFixed(3));
+    var a = '(around:' + Math.round(nm * 1852) + ',' + pts.join(',') + ')', f = '["seamark:type"~"^(restricted_area|' + OSM_TSS + ')$"]';
+    return '[out:json][timeout:60];(way' + f + a + ';relation' + f + a + ';);out tags geom 600;';
+  }
+  function osmWords(s) { return String(s || '').replace(/_/g, ' ').split(/\s*;\s*/).filter(function (x) { return x; }).join(', '); }
+  // Overpass JSON to shapes: { id, kind: 'restricted' | 'tss', title, lines: [text], rings: [[[lat, lon], ...]], closed }
+  function osmAreas(json) {
+    var out = [];
+    ((json && json.elements) || []).forEach(function (el) {
+      var t = el.tags || {}, type = t['seamark:type'];
+      if (!type) return;
+      var rings = [];
+      function ring(g) { var r = (g || []).filter(function (p) { return p && isFinite(p.lat) && isFinite(p.lon); }).map(function (p) { return [p.lat, p.lon]; }); if (r.length >= 2) rings.push(r); }
+      if (el.type === 'way') ring(el.geometry);
+      else if (el.type === 'relation') (el.members || []).forEach(function (m) { if (m.type === 'way' && m.role !== 'inner') ring(m.geometry); });
+      if (!rings.length) return;
+      var kind = type === 'restricted_area' ? 'restricted' : 'tss', name = t['seamark:name'] || t.name || '', lines = [];
+      var cat = osmWords(t['seamark:restricted_area:category'] || t['seamark:' + type + ':category']), res = osmWords(t['seamark:restricted_area:restriction']);
+      if (kind === 'restricted') { if (res) lines.push('Restriction: ' + res + '.'); if (cat) lines.push('Type: ' + cat + '.'); if (!res && !cat) lines.push('Marked as a restricted area with no details given.'); }
+      else lines.push('Traffic separation: ' + osmWords(type.replace('separation_', '')) + '.');
+      var info = t['seamark:information'] || t.description || t.note; if (info) lines.push(String(info).slice(0, 300));
+      var f = rings[0][0], l = rings[0][rings[0].length - 1], closed = rings.length === 1 && rings[0].length > 3 && Math.abs(f[0] - l[0]) < 1e-7 && Math.abs(f[1] - l[1]) < 1e-7;
+      out.push({ id: el.type + '/' + el.id, kind: kind, title: name || (kind === 'restricted' ? (res ? osmWords(res.split(',')[0]) : 'Restricted area') : 'Traffic separation scheme'), lines: lines, rings: rings, closed: closed });
+    });
+    return out;
   }
   /*LOGIC-END*/
 
@@ -2541,11 +3346,8 @@ details[open] > summary { margin-bottom: 10px; }
   function mpEnsure() {
     if (mp.ready) return mp.ready;
     mpStatus('Loading the map…');
-    mp.ready = Promise.all([
-      loadTag('link', { rel: 'stylesheet', href: MP_LEAFLET_CSS }).catch(function () { /* css optional */ }),
-      loadTag('script', { src: MP_LEAFLET })
-    ]).then(function () {
-      var Lf = window.L; mp.L = Lf;
+    mp.ready = leafletLoad().then(function () {
+      var Lf = mp.L;
       var start = [43.0, 7.0], z = 6;
       try { var lp = JSON.parse(localStorage.getItem('bridge-desk-lastpos') || 'null'); if (lp && isFinite(lp[0]) && isFinite(lp[1])) { start = lp; z = 9; } } catch (e) { /* default */ }
       mp.map = Lf.map('mp-map', { worldCopyJump: true }).setView(start, z);
@@ -2562,23 +3364,18 @@ details[open] > summary { margin-bottom: 10px; }
     return mp.ready;
   }
   function mpLoadCoast() {
-    if (mp.coast || mp.coastTried) return;
+    if (mp.coast) { mpRefresh(); return; }
+    if (mp.coastTried) return;
     mp.coastTried = true;
     mpStatus('Loading coastline data…');
-    var i = 0;
-    function attempt() {
-      return fetch(MP_COAST[i]).then(function (r) { if (!r.ok) throw new Error('http'); return r.json(); }).then(function (topo) {
-        mp.coast = coastBuild(decodeTopoLand(topo));
-        mpStatus('');
-        mpRefresh();
-        if (mp.spot) mpShowSpot(mp.spot.lat, mp.spot.lon, mp.spot.label);
-      }).catch(function () {
-        if (i < MP_COAST.length - 1) { i++; return attempt(); }
-        mp.coastTried = false;
-        mpStatus('The coastline data could not load, so distance lines and distance from land are missing. Special area rules still work once you pick a spot.', 'warn');
-      });
-    }
-    return attempt();
+    return coastLoad().then(function () {
+      mpStatus('');
+      mpRefresh();
+      if (mp.spot) mpShowSpot(mp.spot.lat, mp.spot.lon, mp.spot.label);
+    }).catch(function () {
+      mp.coastTried = false;
+      mpStatus('The coastline data could not load, so distance lines and distance from land are missing. Special area rules still work once you pick a spot.', 'warn');
+    });
   }
   function mpSea() {
     if (!mp.map) return;
@@ -2587,11 +3384,11 @@ details[open] > summary { margin-bottom: 10px; }
     if (mp.sea) { if (on) mp.sea.addTo(mp.map); else mp.map.removeLayer(mp.sea); }
   }
   function mpSchedule() { clearTimeout(mp.timer); mp.timer = setTimeout(mpRefresh, 250); }
-  function mpRefresh() {
-    var map = mp.map, Lf = mp.L;
+  function overlayDraw(o, map, cfg) {
+    var Lf = mp.L, mpStatus = cfg.status;
     if (!map || !mp.coast) return;
-    if (mp.lines) { map.removeLayer(mp.lines); mp.lines = null; }
-    if (mp.mask) { map.removeLayer(mp.mask); mp.mask = null; }
+    if (o.lines) { map.removeLayer(o.lines); o.lines = null; }
+    if (o.mask) { map.removeLayer(o.mask); o.mask = null; }
     var bb = map.getBounds().pad(0.15);
     var b = { w: bb.getWest(), e: bb.getEast(), s: Math.max(-84, bb.getSouth()), n: Math.min(84, bb.getNorth()) };
     var notes = [];
@@ -2600,7 +3397,7 @@ details[open] > summary { margin-bottom: 10px; }
       return;
     }
     var spanLat = b.n - b.s, mc = Math.max(0.1, Math.cos((b.n + b.s) / 2 * Math.PI / 180));
-    var want = MP_LINES.filter(function (x) { return $('#' + x[2]).checked; });
+    var want = cfg.lines;
     if (want.length) {
       if (spanLat > 20) notes.push('Zoom in to see the shore lines.');
       else {
@@ -2612,11 +3409,11 @@ details[open] > summary { margin-bottom: 10px; }
           var segs = fieldContour(F, x[0]).map(function (q) { return [[q[0], q[1]], [q[2], q[3]]]; });
           if (segs.length) Lf.polyline(segs, { color: x[1], weight: 2.5, opacity: 0.95, interactive: false, lineCap: 'butt' }).addTo(grp);
         });
-        grp.addTo(map); mp.lines = grp;
+        grp.addTo(map); o.lines = grp;
         if (skipped.length) notes.push('Zoom in to see the ' + skipped.join(' and ') + ' nm line' + (skipped.length > 1 ? 's' : '') + '.');
       }
     }
-    var wantV = $('#mp-aV').checked, wantI = $('#mp-aI').checked, wantE = $('#mp-aE').checked;
+    var wantV = cfg.V, wantI = cfg.I, wantE = cfg.E;
     if (wantV || wantI || wantE) {
       if (map.getZoom() < 4) notes.push('Zoom in to see the special areas.');
       else {
@@ -2631,10 +3428,13 @@ details[open] > summary { margin-bottom: 10px; }
           cx.fillStyle = pt[2];
           for (var j = 0; j < ny2; j++) for (var i = 0; i < nx2; i++) if (cells[i + j * nx2] & pt[0]) cx.fillRect(i, ny2 - 1 - j, 1, 1);
         });
-        mp.mask = Lf.imageOverlay(cv.toDataURL(), [[b.s, b.w], [b.n, b.e]], { interactive: false, opacity: 1 }).addTo(map);
+        o.mask = Lf.imageOverlay(cv.toDataURL(), [[b.s, b.w], [b.n, b.e]], { interactive: false, opacity: 1 }).addTo(map);
       }
     }
     mpStatus(notes.join(' '), notes.length ? 'warn' : '');
+  }
+  function mpRefresh() {
+    overlayDraw(mp, mp.map, { lines: MP_LINES.filter(function (x) { return $('#' + x[2]).checked; }), V: $('#mp-aV').checked, I: $('#mp-aI').checked, E: $('#mp-aE').checked, status: mpStatus });
   }
   function mpPick(lat, lon, label) {
     var map = mp.map, Lf = mp.L;
@@ -2645,7 +3445,11 @@ details[open] > summary { margin-bottom: 10px; }
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
   function mpShowSpot(lat, lon, label) {
     mp.spot = { lat: lat, lon: lon, label: label };
-    var box = $('#mp-info'); box.hidden = false; box.textContent = '';
+    var box = $('#mp-info'); box.hidden = false;
+    spotFill(box, lat, lon, label);
+  }
+  function spotFill(box, lat, lon, label) {
+    box.textContent = '';
     var cd = mp.coast ? coastDescribe(mp.coast, lat, lon, 200) : null;
     var areas = areasAt(lat, lon);
     box.appendChild(el('div', 'spot-head', fmtPos(lat, lon)));
@@ -2730,20 +3534,868 @@ details[open] > summary { margin-bottom: 10px; }
     if (id === 'mp-sea') mpSea(); else mpRefresh();
   });
 
+  /* ---------- Shared loaders ---------- */
+  var leafletP = null, coastP = null;
+  function leafletLoad() {
+    if (mp.L) return Promise.resolve(mp.L);
+    if (leafletP) return leafletP;
+    leafletP = Promise.all([
+      loadTag('link', { rel: 'stylesheet', href: MP_LEAFLET_CSS }).catch(function () { /* css optional */ }),
+      loadTag('script', { src: MP_LEAFLET })
+    ]).then(function () { if (!window.L) throw new Error('leaflet'); mp.L = window.L; return mp.L; }).catch(function (e) { leafletP = null; throw e; });
+    return leafletP;
+  }
+  function coastLoad() {
+    if (mp.coast) return Promise.resolve(mp.coast);
+    if (coastP) return coastP;
+    function attempt(i) {
+      return fetch(MP_COAST[i]).then(function (r) { if (!r.ok) throw new Error('http'); return r.json(); }).then(function (topo) {
+        mp.coast = coastBuild(decodeTopoLand(topo));
+        return mp.coast;
+      }).catch(function (e) { if (i < MP_COAST.length - 1) return attempt(i + 1); throw e; });
+    }
+    coastP = attempt(0).catch(function (e) { coastP = null; throw e; });
+    return coastP;
+  }
+
+  /* ---------- Passage plan ---------- */
+  var PP_PLANS = 'bridge-desk-plans', PP_SET = 'bridge-desk-pp';
+  var PP_SAMPLE = { name: 'Sample: Antibes to Cape St Vincent', kind: 'route', pts: [
+    { lat: 43.53, lon: 7.15, name: 'Antibes' }, { lat: 41.5, lon: 5.0, name: 'Gulf of Lion' }, { lat: 39.5, lon: 4.7, name: 'East of Menorca' }, { lat: 37.0, lon: 0.5, name: 'Off Cartagena' },
+    { lat: 36.3, lon: -2.5, name: 'Cabo de Gata' }, { lat: 35.95, lon: -5.5, name: 'Gibraltar Strait' }, { lat: 35.9, lon: -6.2, name: 'Strait west' }, { lat: 36.8, lon: -9.2, name: 'Cape St Vincent' }] };
+  var EV_COL = { area: '#e8590c', shore: '#d6336c', zone: '#1971c2', end: '#2f9e44', pub: '#7048e8' };
+  var PX_LABEL = { vts: 'VTS', tss: 'TSS', reg: 'Regulations', pilot: 'Pilotage', area: 'Restricted area' };
+  var pp = { corridor: 10, map: null, R: null, name: '', breaks: [], secNames: {}, secSpeeds: {}, speed: 12, dep: 0, ls: true, ev: [], d: 0, H: null, secs: [], view: -1, id: null,
+    osm: [], osmKey: '', osmBusy: false, off: null, calc: [], pubEv: [], more: [], ver: {}, scanSeq: 0, g: null, ship: null, o: { lines: null, mask: null }, sea: null, timer: 0, near: -1, U: null, routes: null, coastMsg: '' };
+  (function () {
+    try {
+      var st = JSON.parse(localStorage.getItem(PP_SET) || 'null');
+      if (st && typeof st === 'object') {
+        if (st.speed > 0 && st.speed <= 60) pp.speed = st.speed;
+        if (st.ls === false) pp.ls = false;
+        if (st.corridor >= 2 && st.corridor <= 30) pp.corridor = Math.round(st.corridor);
+        ['pp-tl', 'pp-ta', 'pp-ts', 'pp-tv', 'pp-tr'].forEach(function (k) { if (typeof st[k] === 'boolean') $('#' + k).checked = st[k]; });
+      }
+    } catch (e) { /* defaults */ }
+    var d = new Date(Math.ceil(Date.now() / 3600000) * 3600000);
+    pp.dep = d.getTime();
+  })();
+  function ppSaveSet() {
+    try { localStorage.setItem(PP_SET, JSON.stringify({ speed: pp.speed, ls: pp.ls, corridor: pp.corridor, 'pp-tl': $('#pp-tl').checked, 'pp-ta': $('#pp-ta').checked, 'pp-ts': $('#pp-ts').checked, 'pp-tv': $('#pp-tv').checked, 'pp-tr': $('#pp-tr').checked })); } catch (e) { /* optional */ }
+  }
+  function ppWp(i) { return pp.R.pts[i].name || 'WP ' + (i + 1); }
+  function ppSecName(k) { var s = pp.secs[k]; return pp.secNames[s.from] || ppWp(s.from) + ' to ' + ppWp(s.to); }
+  function ppRange() { var s = pp.view >= 0 && pp.secs[pp.view] ? pp.secs[pp.view] : null; return s ? [s.d0, s.d1] : [0, pp.R.total]; }
+  function ppTime(d) { return pp.dep + hoursAt(pp.R, pp.H, d) * 3600000; }
+  // Ship's clock: the offset set for departure, moved one hour at each zone boundary crossed.
+  function ppOff(d, lon) {
+    var z0 = Math.round(pp.U[0] / 15), base = pp.off === null ? zoneOf(pp.R.pts[0].lon) : pp.off, x = base + Math.round(ppLon(d, lon) / 15) - z0;
+    return ((x + 11) % 24 + 24) % 24 - 11;
+  }
+  function ppLon(d, lon) { var i = routeLegAt(pp.R, d); return pp.U[i] + normLon(lon - pp.R.pts[i].lon); }
+  function ppUse(route, saved) {
+    var pts = route.pts;
+    if (pts.length > 600) { var tol = 0.02; while (pts.length > 600 && tol < 2) { pts = simplifyPts(route.pts, tol); tol *= 2; } }
+    pp.R = routeBuild(pts);
+    if (!(pp.R.total > 0)) { pp.R = null; setMsg('#pp-msg', 'This route has no length. Check the file.', 'bad'); return; }
+    pp.U = [pts[0].lon];
+    for (var i = 1; i < pts.length; i++) pp.U.push(pp.U[i - 1] + normLon(pts[i].lon - pts[i - 1].lon));
+    pp.name = route.name || 'Passage';
+    pp.breaks = saved ? saved.breaks || [] : []; pp.secNames = saved ? saved.secNames || {} : {}; pp.secSpeeds = saved ? saved.secSpeeds || {} : {};
+    if (saved) { if (saved.speed > 0) pp.speed = saved.speed; if (saved.dep) pp.dep = saved.dep; pp.ls = saved.ls !== false; }
+    pp.off = saved && typeof saved.off === 'number' ? saved.off : null;
+    pp.ver = saved && saved.ver && typeof saved.ver === 'object' ? saved.ver : {}; pp.pubEv = []; pp.more = []; pp.osm = []; pp.osmKey = '';
+    pp.id = saved ? saved.id : null; pp.view = -1; pp.d = 0; pp.near = -1;
+    $('#pp-speed').value = pp.speed; $('#pp-ls').checked = pp.ls;
+    $('#pp-off').value = String(pp.off === null ? zoneOf(pts[0].lon) : pp.off);
+    $('#pp-dep').value = new Date(pp.dep).toISOString().slice(0, 16);
+    $('#pp-main').hidden = false; $('#pp-events').hidden = false; $('#pp-save').hidden = false;
+    $('#pp-hint').hidden = true; $('#pp-file-btn').textContent = 'Choose another file';
+    setMsg('#pp-msg', pp.name + (pts.length < route.pts.length ? '. Track thinned from ' + route.pts.length + ' to ' + pts.length + ' points.' : '.'), '');
+    if (lib.loaded) { ppPubs(); ppPubScan(); } else libRefresh();
+    ppScan();
+    ppMapInit();
+  }
+  function ppScan() {
+    var shore = null;
+    if (mp.coast) { try { shore = routeCoast(mp.coast, pp.R, 14); } catch (e) { shore = null; } }
+    pp.calc = routeScan(pp.R, { shore: shore, lowSulphur: pp.ls });
+    ppMerge();
+    ppClock();
+  }
+  function ppMerge() { pp.ev = pp.calc.concat(pp.pubEv).sort(function (a, b) { return a.d - b.d; }); }
+  function ppKey(pubId, page, quote) { var x = 0, s = normText(quote).slice(0, 80); for (var i = 0; i < s.length; i++) x = (x * 31 + s.charCodeAt(i)) >>> 0; return pubId + '|' + page + '|' + x.toString(36); }
+  // Read the library books for passages near this route.
+  function ppPubScan() {
+    if (!pp.R) return;
+    var my = ++pp.scanSeq, R = pp.R, books = lib.pubs.filter(function (p) { return p.indexed > 0 && !p.scanned; });
+    var ends = [0, R.total]; routeSections(R, pp.breaks).forEach(function (s) { if (s.d0 > 0) ends.push(s.d0); });
+    var evs = [], more = [], chain = Promise.resolve();
+    books.forEach(function (pub) {
+      chain = chain.then(function () { return lib.items[pub.id] || libPages(pub.id).then(function (pages) { lib.items[pub.id] = pubExtract(pages); return lib.items[pub.id]; }); }).then(function (items) {
+        if (my !== pp.scanSeq) return;
+        pubMatch(R, items, { endsAt: ends, near: pp.corridor }).forEach(function (m) {
+          var it = m.item, place = it.place || 'see page ' + it.page, base = { kind: 'pub', pubId: pub.id, pubTitle: pub.title, lat: m.lat, lon: m.lon };
+          var popup = it.kind === 'vts' || it.kind === 'tss';
+          var row = Object.assign({}, base, { d: m.d, px: it.kind, tip: PX_LABEL[it.kind] + ' ' + place, title: PX_LABEL[it.kind] + ': ' + place, text: it.quote, page: it.page, key: ppKey(pub.id, it.page, it.quote), where: 'Position approximate: placed at the nearest position printed in this part of the book, ' + m.nm.toFixed(1) + ' nm from the track.' });
+          (popup ? evs : more).push(row);
+          m.calls.forEach(function (c) {
+            var dup = evs.filter(function (e) { return e.call === c.to + '|' + c.ch && Math.abs(e.d - c.d) < 15; })[0];
+            if (dup && (dup.exact || !c.exact)) return;
+            if (dup) evs.splice(evs.indexOf(dup), 1);
+            var p = routeAt(R, c.d);
+            evs.push(Object.assign({}, base, { d: c.d, lat: c.exact ? p.lat : m.lat, lon: c.exact ? p.lon : m.lon, call: c.to + '|' + c.ch, exact: c.exact, line: c.line, tip: 'Ch ' + c.ch + ' ' + c.to, title: 'Report to ' + c.to + ' on VHF Ch ' + c.ch, text: c.quote, page: c.page, key: ppKey(pub.id, c.page, c.quote),
+              where: c.exact ? 'Placed where the route crosses the line named in the text.' : 'Position approximate: the book gives no exact reporting point here, so check the chart for where to call.' }));
+          });
+        });
+      }).catch(function () { /* a book that cannot be read is skipped */ });
+    });
+    chain.then(function () {
+      if (my !== pp.scanSeq || pp.R !== R) return;
+      pp.pubEv = evs; pp.more = more.sort(function (a, b) { return a.d - b.d; });
+      ppMerge(); ppRender();
+    });
+  }
+  function ppPubRow(e, idx) {
+    var done = !!pp.ver[e.key], b = el('div', 'ev' + (done ? ' is-done' : ''));
+    var when = el('span', 'when'); when.appendChild(el('b', '', fmtDT(ppTime(e.d), 0) + ' UTC')); when.appendChild(document.createTextNode(e.d.toFixed(1) + ' nm'));
+    var what = el('span', 'what'); what.appendChild(el('span', 'ttl', e.title)); what.appendChild(el('span', 'quote', '“' + e.text + '”'));
+    what.appendChild(el('span', 'src', 'Exact words from the book. ' + e.where));
+    var tools = el('span', 'ev-tools'), lab = el('label', 'chip-toggle'), cb = document.createElement('input');
+    tools.appendChild(citeEl(e.pubId, e.pubTitle, e.page, 'plan'));
+    cb.type = 'checkbox'; cb.checked = done; cb.setAttribute('data-ver', e.key);
+    lab.appendChild(cb); lab.appendChild(el('span', '', 'Verified')); tools.appendChild(lab);
+    what.appendChild(tools); b.appendChild(when); b.appendChild(what);
+    if (idx !== null) { b.setAttribute('data-ev', String(idx)); b.tabIndex = 0; b.setAttribute('role', 'button'); } else b.setAttribute('data-d', String(e.d));
+    return b;
+  }
+  function ppClock() {
+    pp.secs = routeSections(pp.R, pp.breaks);
+    if (pp.view >= pp.secs.length) pp.view = -1;
+    pp.H = routeClock(pp.R, pp.secs, pp.secs.map(function (s) { return pp.secSpeeds[s.from] > 0 ? pp.secSpeeds[s.from] : null; }), pp.speed);
+    ppRender();
+  }
+  function ppRender() {
+    var R = pp.R, rg = ppRange(), sl = $('#pp-slide');
+    sl.min = rg[0].toFixed(2); sl.max = rg[1].toFixed(2); sl.step = Math.max(0.01, Math.min(0.5, (rg[1] - rg[0]) / 1000)).toFixed(2);
+    $('#pp-sum').textContent = pp.name + ': ' + R.total.toFixed(1) + ' nm, ' + fmtDur(pp.H[pp.H.length - 1]) + ', arriving ' + fmtDT(ppTime(R.total), 0) + ' UTC.';
+    // view picker
+    var vs = $('#pp-view'); vs.textContent = '';
+    $('#pp-view-wrap').hidden = pp.secs.length < 2;
+    var o0 = el('option', '', 'Whole passage'); o0.value = '-1'; vs.appendChild(o0);
+    pp.secs.forEach(function (s, k) { var o = el('option', '', ppSecName(k)); o.value = String(k); vs.appendChild(o); });
+    vs.value = String(pp.view);
+    // legs
+    var box = $('#pp-legs'); box.textContent = '';
+    R.pts.forEach(function (p, i) {
+      var row = el('div', 'leg');
+      row.appendChild(el('span', 'n', String(i + 1)));
+      row.appendChild(el('span', 'nm', ppWp(i)));
+      var isBreak = pp.breaks.indexOf(i) >= 0;
+      if (i > 0 && i < R.pts.length - 1) {
+        var lab = el('label', 'chip-toggle'), cb = document.createElement('input');
+        cb.type = 'checkbox'; cb.checked = isBreak; cb.setAttribute('data-break', String(i));
+        lab.appendChild(cb); lab.appendChild(el('span', '', 'New section')); row.appendChild(lab);
+      } else row.appendChild(el('span', ''));
+      var meta = fmtPos(p.lat, p.lon);
+      if (i > 0) meta += '\n' + fmtCourse(R.legs[i - 1].crs) + 'T  ' + R.legs[i - 1].nm.toFixed(2) + ' nm  ·  total ' + R.cum[i].toFixed(1) + ' nm';
+      meta += '\n' + (i === 0 ? 'Departure ' : 'ETA ') + fmtDT(ppTime(R.cum[i]), 0) + ' UTC';
+      var m = el('span', 'm', meta); m.style.whiteSpace = 'pre-line'; row.appendChild(m);
+      if (i === 0 ? pp.secs.length > 1 : isBreak) {
+        var k = 0; pp.secs.forEach(function (s, j) { if (s.from === i) k = j; });
+        var sec = el('div', 'sec'), nmIn = document.createElement('input'), wrap = el('div', 'inwrap'), spIn = document.createElement('input');
+        nmIn.type = 'text'; nmIn.value = ppSecName(k); nmIn.setAttribute('data-secname', String(i)); nmIn.setAttribute('aria-label', 'Section name'); nmIn.autocomplete = 'off';
+        spIn.type = 'number'; spIn.className = 'has-unit'; spIn.min = '1'; spIn.max = '60'; spIn.step = '0.5'; spIn.placeholder = String(pp.speed); spIn.setAttribute('data-secspeed', String(i)); spIn.setAttribute('aria-label', 'Section speed');
+        if (pp.secSpeeds[i] > 0) spIn.value = pp.secSpeeds[i];
+        wrap.appendChild(spIn); wrap.appendChild(el('span', 'u', 'kn')); sec.appendChild(nmIn); sec.appendChild(wrap); row.appendChild(sec);
+      }
+      box.appendChild(row);
+    });
+    // events
+    var list = $('#pp-ev-list'); list.textContent = '';
+    var shown = 0;
+    pp.ev.forEach(function (e, idx) {
+      if (e.d < rg[0] - 0.01 || e.d > rg[1] + 0.01) return;
+      shown++;
+      if (e.kind === 'pub') { list.appendChild(ppPubRow(e, idx)); return; }
+      var t = ppTime(e.d), b = el('button', 'ev'); b.type = 'button'; b.setAttribute('data-ev', String(idx));
+      var when = el('span', 'when'); when.appendChild(el('b', '', fmtDT(t, 0) + ' UTC')); when.appendChild(document.createTextNode(e.d.toFixed(1) + ' nm'));
+      var what = el('span', 'what'); what.appendChild(el('span', 'ttl', e.title)); what.appendChild(el('span', 'txt', e.text));
+      if (e.src) what.appendChild(el('span', 'src', 'Check: ' + e.src));
+      b.appendChild(when); b.appendChild(what); list.appendChild(b);
+    });
+    $('#pp-ev-count').textContent = shown + (shown === 1 ? ' item' : ' items');
+    if (!mp.coast) list.appendChild(el('p', 'note warn', pp.coastMsg || 'Shore distance items (3 and 12 nm) appear once the coastline data has loaded.'));
+    var mb = $('#pp-more'), mshown = 0; mb.textContent = '';
+    pp.more.forEach(function (e) { if (e.d < rg[0] - 0.01 || e.d > rg[1] + 0.01) return; mshown++; mb.appendChild(ppPubRow(e, null)); });
+    $('#pp-more-wrap').hidden = !mshown; $('#pp-more-sum').textContent = 'More from your publications (' + mshown + ')';
+    ppDrawRoute();
+    ppMove(Math.max(rg[0], Math.min(rg[1], pp.d)));
+  }
+  function ppNearest(d) {
+    var rg = ppRange(), W = Math.max(0.5, (rg[1] - rg[0]) / 150), best = -1, bd = 1e9;
+    pp.ev.forEach(function (e, i) { var x = Math.abs(e.d - d); if (x <= W && x < bd) { bd = x; best = i; } });
+    return best;
+  }
+  function ppMove(d) {
+    var R = pp.R, rg = ppRange();
+    d = Math.max(rg[0], Math.min(rg[1], d)); pp.d = d;
+    var p = routeAt(R, d), t = ppTime(d), z = ppOff(d, p.lon), sl = $('#pp-slide');
+    if (Math.abs(Number(sl.value) - d) > 0.005) sl.value = d.toFixed(2);
+    $('#pp-pos').textContent = fmtPos(p.lat, p.lon).replace(' ', '\n');
+    $('#pp-leg').textContent = 'Leg ' + (p.leg + 1) + ' of ' + R.legs.length + ', ' + fmtCourse(p.crs) + 'T';
+    $('#pp-utc').textContent = fmtDT(t, 0);
+    $('#pp-run').textContent = d.toFixed(1) + ' nm run';
+    $('#pp-ship').textContent = fmtDT(t, z);
+    $('#pp-zone').textContent = zoneName(z);
+    $('#pp-togo').textContent = (rg[1] - d).toFixed(1) + ' nm';
+    $('#pp-eta').textContent = fmtDur(hoursAt(R, pp.H, rg[1]) - hoursAt(R, pp.H, d)) + ', ETA ' + fmtDT(ppTime(rg[1]), 0) + ' UTC';
+    var ni = ppNearest(d), now = $('#pp-now'); now.textContent = '';
+    if (ni >= 0) {
+      var e = pp.ev[ni];
+      now.className = 'now-box';
+      now.appendChild(el('div', 'k', 'Here, ' + fmtDT(ppTime(e.d), 0) + ' UTC'));
+      now.appendChild(el('div', 'ttl', e.title)); now.appendChild(el('div', 'txt', e.text));
+    } else {
+      var nx = null; pp.ev.forEach(function (e2) { if (!nx && e2.d > d && e2.d <= rg[1] + 0.01) nx = e2; });
+      now.className = 'now-box is-quiet';
+      now.appendChild(el('div', 'k', 'Next'));
+      now.appendChild(el('div', 'ttl', nx ? nx.title : 'End of route'));
+      if (nx) now.appendChild(el('div', 'txt', 'In ' + (nx.d - d).toFixed(1) + ' nm, ' + fmtDur(hoursAt(R, pp.H, nx.d) - hoursAt(R, pp.H, d)) + ' from here.'));
+    }
+    document.querySelectorAll('#pp-ev-list .ev').forEach(function (b) { b.classList.toggle('is-now', Number(b.getAttribute('data-ev')) === ni); });
+    if (pp.map && pp.ship) {
+      pp.ship.setLatLng([p.lat, ppLon(d, p.lon)]);
+      if (ni !== pp.near) {
+        if (ni >= 0 && pp.L().popup) {
+          var ev = pp.ev[ni], c = el('div'); c.appendChild(el('b', '', ev.title)); c.appendChild(el('div', '', ev.text)); c.style.maxWidth = '240px';
+          pp.L().popup({ autoPan: false, closeButton: true, maxWidth: 260 }).setLatLng([ev.lat, ppLon(ev.d, ev.lon)]).setContent(c).openOn(pp.map);
+        } else if (pp.map.closePopup) pp.map.closePopup();
+      }
+    }
+    pp.near = ni;
+    if ($('#pp-spot-wrap').open) spotFill($('#pp-spot'), p.lat, p.lon, 'Ship on the route');
+  }
+  pp.L = function () { return mp.L; };
+  function ppStep(dir) {
+    var rg = ppRange(), d = pp.d, pick = null;
+    pp.ev.forEach(function (e) {
+      if (e.d < rg[0] - 0.01 || e.d > rg[1] + 0.01) return;
+      if (dir > 0 && e.d > d + 0.011 && pick === null) pick = e.d;
+      if (dir < 0 && e.d < d - 0.011) pick = e.d;
+    });
+    if (pick !== null) ppMove(pick);
+  }
+  function ppMapInit() {
+    leafletLoad().then(function (Lf) {
+      if (!pp.map) {
+        pp.map = Lf.map('pp-map', { worldCopyJump: false }).setView([pp.R.pts[0].lat, pp.R.pts[0].lon], 6);
+        Lf.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '© OpenStreetMap contributors' }).addTo(pp.map);
+        pp.map.on('moveend', function () { clearTimeout(pp.timer); pp.timer = setTimeout(ppOverlay, 250); });
+        pp.map.on('click', function (ev) { ppAsk(ev.latlng.lat, normLon(ev.latlng.lng), ev.latlng); });
+        ppSea();
+      }
+      setTimeout(function () { pp.map.invalidateSize(); ppDrawRoute(true); ppMove(pp.d); ppOsm(); }, 60);
+      if (!mp.coast) {
+        setMsg('#pp-mapmsg', 'Loading coastline data…', '');
+        coastLoad().then(function () { setMsg('#pp-mapmsg', '', ''); if (pp.R) { ppScan(); ppOverlay(); } }).catch(function () {
+          pp.coastMsg = 'The coastline data could not load, so the 3 and 12 nm items are missing. Special areas and time zones are still listed.';
+          setMsg('#pp-mapmsg', pp.coastMsg, 'warn'); if (pp.R) ppRender();
+        });
+      }
+    }).catch(function () { setMsg('#pp-mapmsg', 'The map could not load. Check the internet connection. The list below still works.', 'bad'); });
+  }
+  function ppDrawRoute(fit) {
+    var map = pp.map, Lf = mp.L;
+    if (!map || !pp.R) return;
+    if (pp.g) map.removeLayer(pp.g);
+    var R = pp.R, g = Lf.layerGroup(), rg = ppRange(), line = R.pts.map(function (p, i) { return [p.lat, pp.U[i]]; });
+    Lf.polyline(line, { color: '#0b3d91', weight: 3, opacity: 0.9, interactive: false }).addTo(g);
+    R.pts.forEach(function (p, i) {
+      var m = Lf.circleMarker([p.lat, pp.U[i]], { radius: 4, color: '#0b3d91', weight: 2, fillColor: '#ffffff', fillOpacity: 1 }).addTo(g);
+      if (m.bindTooltip) m.bindTooltip((i + 1) + '. ' + ppWp(i));
+    });
+    pp.ev.forEach(function (e) {
+      if (e.d < rg[0] - 0.01 || e.d > rg[1] + 0.01) return;
+      var isPub = e.kind === 'pub', ll = [e.lat, ppLon(e.d, e.lon)];
+      if (isPub && !$('#pp-tv').checked) return;
+      if (isPub && e.line) {
+        var seg = e.line.axis === 'lon' ? [[e.lat - 0.1, ll[1]], [e.lat + 0.1, ll[1]]] : [[e.lat, ll[1] - 0.13], [e.lat, ll[1] + 0.13]];
+        Lf.polyline(seg, { color: '#7048e8', weight: 4, opacity: 0.95, dashArray: '8 6', interactive: false }).addTo(g);
+      }
+      var m = Lf.circleMarker(ll, { radius: isPub ? 9 : 7, color: '#ffffff', weight: isPub ? 3 : 2, fillColor: EV_COL[e.kind] || '#555555', fillOpacity: 1, bubblingMouseEvents: false }).addTo(g);
+      if (isPub && m.bindTooltip) m.bindTooltip(e.tip || e.title, { permanent: true, direction: 'top', offset: [0, -8], className: 'pp-tip' });
+      if (m.on) m.on('click', function () { ppMove(e.d); });
+    });
+    if (pp.osm.length) ppOsmDraw(g, Lf, map);
+    if ($('#pp-tr').checked) pp.more.forEach(function (e) {
+      if (e.px !== 'area' || e.d < rg[0] - 0.01 || e.d > rg[1] + 0.01) return;
+      var ll = [e.lat, ppLon(e.d, e.lon)];
+      var m = Lf.circleMarker(ll, { radius: 8, color: '#c92a2a', weight: 3, fillColor: '#ffffff', fillOpacity: 0.9, bubblingMouseEvents: false, dashArray: '3 3' }).addTo(g);
+      if (m.bindTooltip) m.bindTooltip(e.title.replace(/^Restricted area: /, ''), { direction: 'top', offset: [0, -8] });
+      if (m.on) m.on('click', function () {
+        var c = el('div', 'pp-pop'); c.style.maxWidth = '250px';
+        c.appendChild(el('b', '', e.title)); c.appendChild(el('div', '', '“' + e.text + '”'));
+        c.appendChild(el('div', '', 'The book gives no outline, so this marks the nearest position it prints. See the chart for the limits.'));
+        var t = el('div', 'ev-tools'); t.appendChild(citeEl(e.pubId, e.pubTitle, e.page, 'plan')); c.appendChild(t);
+        if (Lf.popup) Lf.popup({ maxWidth: 270 }).setLatLng(ll).setContent(c).openOn(map);
+        pp.near = -2;
+      });
+    });
+    var p0 = routeAt(R, pp.d);
+    pp.ship = Lf.circleMarker([p0.lat, ppLon(pp.d, p0.lon)], { radius: 10, color: '#ffffff', weight: 3, fillColor: '#c92a2a', fillOpacity: 1, interactive: false }).addTo(g);
+    g.addTo(map); pp.g = g;
+    if (fit && map.fitBounds) {
+      var pts = [], a = routeAt(R, rg[0]), b = routeAt(R, rg[1]);
+      pts.push([a.lat, ppLon(rg[0], a.lon)], [b.lat, ppLon(rg[1], b.lon)]);
+      R.pts.forEach(function (p, i) { if (R.cum[i] >= rg[0] && R.cum[i] <= rg[1]) pts.push([p.lat, pp.U[i]]); });
+      map.fitBounds(pts, { padding: [24, 24], maxZoom: 11 });
+    }
+  }
+  // Tap the map: what applies at this spot.
+  function ppAsk(lat, lon, at) {
+    var c = el('div', 'pp-pop'), areas = areasAt(lat, lon).filter(function (a) { return a.inside; });
+    c.style.maxWidth = '250px';
+    c.appendChild(el('b', '', fmtPos(lat, lon)));
+    if (mp.coast) {
+      var cd = coastDescribe(mp.coast, lat, lon, 200);
+      c.appendChild(el('div', '', cd.land ? 'On land in the coastline data.' : cd.nm === null ? 'More than 200 nm from land.' : 'Nearest land about ' + cd.nm.toFixed(1) + ' nm.'));
+    }
+    if (!areas.length) c.appendChild(el('div', '', 'Not inside a special area on this map. General MARPOL rules apply.'));
+    areas.forEach(function (a) {
+      c.appendChild(el('b', '', a.name));
+      var ev = areaEvent(a, true, pp.ls);
+      c.appendChild(el('div', '', ev.text));
+      c.appendChild(el('div', '', 'In effect: ' + a.annexes.map(function (x) { return ({ I: 'oil', V: 'garbage', IV: 'sewage', E: 'emissions' })[x.a] + ' ' + (x.st === 'on' ? x.since : '(not yet)'); }).join('; ') + '. Check: ' + ev.src));
+    });
+    if (mp.L.popup) mp.L.popup({ maxWidth: 270, autoPan: true }).setLatLng(at || [lat, lon]).setContent(c).openOn(pp.map);
+    pp.near = -2;
+  }
+  function ppOverlay() {
+    if (!pp.map) return;
+    var a = $('#pp-ta').checked;
+    overlayDraw(pp.o, pp.map, { lines: $('#pp-tl').checked ? [[3, '#d6336c'], [12, '#f08c00']] : [], V: a, I: a, E: a, status: function (t, cls) { setMsg('#pp-mapmsg', t, cls || ''); } });
+  }
+  function ppSea() {
+    if (!pp.map) return;
+    var on = $('#pp-ts').checked;
+    if (on && !pp.sea) pp.sea = mp.L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', { maxZoom: 18 });
+    if (pp.sea) { if (on) pp.sea.addTo(pp.map); else pp.map.removeLayer(pp.sea); }
+  }
+  function ppLoadText(text) {
+    var r = parseRoute(text), wrap = $('#pp-pick-wrap'), sel = $('#pp-pick');
+    wrap.hidden = true;
+    if (r.error) { setMsg('#pp-msg', r.error, 'bad'); return; }
+    pp.routes = r.routes;
+    if (r.routes.length > 1) {
+      sel.textContent = '';
+      r.routes.forEach(function (x, i) { var o = el('option', '', x.name + ' (' + x.kind + ', ' + x.pts.length + ' points)'); o.value = String(i); sel.appendChild(o); });
+      wrap.hidden = false;
+    }
+    ppUse(r.routes[0]);
+  }
+  $('#pp-file').addEventListener('change', function () {
+    var f = this.files && this.files[0]; this.value = '';
+    if (!f) return;
+    if (f.size > 30e6) { setMsg('#pp-msg', 'That file is too large to be a route file.', 'bad'); return; }
+    var rd = new FileReader();
+    rd.onload = function () { ppLoadText(String(rd.result || '')); };
+    rd.onerror = function () { setMsg('#pp-msg', 'The file could not be read.', 'bad'); };
+    rd.readAsText(f);
+  });
+  $('#pp-pick').addEventListener('change', function () { var x = pp.routes && pp.routes[Number(this.value)]; if (x) ppUse(x); });
+  $('#pp-sample').addEventListener('click', function () { $('#pp-pick-wrap').hidden = true; ppUse(JSON.parse(JSON.stringify(PP_SAMPLE))); });
+  $('#pp-slide').addEventListener('input', function () { if (pp.R) ppMove(Number(this.value)); });
+  $('#pp-prev').addEventListener('click', function () { if (pp.R) ppStep(-1); });
+  $('#pp-next').addEventListener('click', function () { if (pp.R) ppStep(1); });
+  $('#pp-speed').addEventListener('change', function () {
+    var v = Number(this.value);
+    if (!(v >= 1 && v <= 60)) { this.value = pp.speed; return; }
+    pp.speed = v; ppSaveSet(); if (pp.R) ppClock();
+  });
+  $('#pp-dep').addEventListener('change', function () {
+    var t = Date.parse(this.value + (this.value.length === 16 ? ':00Z' : 'Z'));
+    if (!isFinite(t)) { this.value = new Date(pp.dep).toISOString().slice(0, 16); return; }
+    pp.dep = t; if (pp.R) ppRender();
+  });
+  (function () { var s = $('#pp-off'); for (var z = -11; z <= 12; z++) { var o = el('option', '', zoneName(z)); o.value = String(z); s.appendChild(o); } })();
+  $('#pp-off').addEventListener('change', function () { pp.off = Number(this.value); if (pp.R) ppMove(pp.d); });
+  function ppNearLabel() { $('#pp-near-lab').textContent = 'Search corridor: ' + pp.corridor + ' nm each side of the track'; $('#pp-more-note').textContent = 'Pilotage at the ends of the route, regulations, and restricted or prohibited areas within ' + pp.corridor + ' nm of the track.'; }
+  $('#pp-near').value = String(pp.corridor); ppNearLabel();
+  $('#pp-near').addEventListener('input', function () { pp.corridor = Number(this.value); ppNearLabel(); });
+  $('#pp-near').addEventListener('change', function () { pp.corridor = Number(this.value); ppNearLabel(); ppSaveSet(); ppPubScan(); ppOsm(); });
+  $('#pp-ls').addEventListener('change', function () { pp.ls = this.checked; ppSaveSet(); if (pp.R) ppScan(); });
+  $('#pp-view').addEventListener('change', function () { pp.view = Number(this.value); pp.d = ppRange()[0]; pp.near = -1; ppRender(); ppDrawRoute(true); });
+  ['pp-tl', 'pp-ta'].forEach(function (id) { $('#' + id).addEventListener('change', function () { ppSaveSet(); ppOverlay(); }); });
+  $('#pp-ts').addEventListener('change', function () { ppSaveSet(); ppSea(); });
+  $('#pp-tv').addEventListener('change', function () { ppSaveSet(); ppDrawRoute(); if (this.checked) ppOsm(); });
+  $('#pp-tr').addEventListener('change', function () { ppSaveSet(); ppDrawRoute(); if (this.checked) ppOsm(pp.osmKey === ''); });
+  $('#pp-spot-wrap').addEventListener('toggle', function () { if (this.open && pp.R) ppMove(pp.d); });
+  $('#pp-ev-list').addEventListener('click', function (ev) {
+    if (ev.target.closest && ev.target.closest('.ev-tools')) return;
+    var b = ev.target.closest ? ev.target.closest('[data-ev]') : null;
+    if (!b || !pp.R) return;
+    ppMove(pp.ev[Number(b.getAttribute('data-ev'))].d);
+    $('#pp-map').scrollIntoView({ block: 'start' });
+  });
+  $('#pp-ev-list').addEventListener('keydown', function (ev) { if (ev.key === 'Enter' && ev.target.hasAttribute && ev.target.hasAttribute('data-ev')) ev.target.click(); });
+  $('#pp-more').addEventListener('click', function (ev) {
+    if (!ev.target.closest || ev.target.closest('.ev-tools')) return;
+    var b = ev.target.closest('[data-d]');
+    if (b && pp.R) { ppMove(Number(b.getAttribute('data-d'))); $('#pp-map').scrollIntoView({ block: 'start' }); }
+  });
+  $('#pp-events').addEventListener('change', function (ev) {
+    var k = ev.target.getAttribute && ev.target.getAttribute('data-ver');
+    if (!k) return;
+    if (ev.target.checked) pp.ver[k] = 1; else delete pp.ver[k];
+    var row = ev.target.closest('.ev'); if (row) row.classList.toggle('is-done', ev.target.checked);
+  });
+  $('#pp-legs').addEventListener('change', function (ev) {
+    var t = ev.target, i;
+    if (t.hasAttribute('data-break')) {
+      i = Number(t.getAttribute('data-break'));
+      pp.breaks = pp.breaks.filter(function (x) { return x !== i; });
+      if (t.checked) pp.breaks.push(i); else { delete pp.secNames[i]; delete pp.secSpeeds[i]; }
+      pp.view = -1;
+    } else if (t.hasAttribute('data-secname')) {
+      i = Number(t.getAttribute('data-secname'));
+      if (t.value.trim()) pp.secNames[i] = t.value.trim().slice(0, 60); else delete pp.secNames[i];
+    } else if (t.hasAttribute('data-secspeed')) {
+      i = Number(t.getAttribute('data-secspeed'));
+      var v = Number(t.value);
+      if (v >= 1 && v <= 60) pp.secSpeeds[i] = v; else delete pp.secSpeeds[i];
+    } else return;
+    ppClock();
+    if (t.hasAttribute('data-break')) ppPubScan();
+  });
+
+  /* ---------- Saved plans ---------- */
+  function plansLoad() { try { var a = JSON.parse(localStorage.getItem(PP_PLANS) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+  function plansStore(a) { try { localStorage.setItem(PP_PLANS, JSON.stringify(a)); return true; } catch (e) { return false; } }
+  $('#pp-save').addEventListener('click', function () { $('#pp-name').value = pp.name; setMsg('#pp-sheet-msg', ''); $('#pp-sheet').hidden = false; $('#pp-name').focus(); });
+  $('#pp-sheet-cancel').addEventListener('click', function () { $('#pp-sheet').hidden = true; });
+  $('#pp-sheet').addEventListener('click', function (ev) { if (ev.target === $('#pp-sheet')) $('#pp-sheet').hidden = true; });
+  $('#pp-sheet-save').addEventListener('click', function () {
+    var name = $('#pp-name').value.trim();
+    if (!name) { setMsg('#pp-sheet-msg', 'Give the plan a name.', 'bad'); return; }
+    var all = plansLoad(), id = pp.id || String(Date.now()) + Math.random().toString(36).slice(2, 6);
+    var rec = { id: id, name: name, ts: Date.now(), pts: pp.R.pts, total: pp.R.total, breaks: pp.breaks, secNames: pp.secNames, secSpeeds: pp.secSpeeds, speed: pp.speed, dep: pp.dep, ls: pp.ls, off: pp.off, ver: pp.ver };
+    all = all.filter(function (x) { return x.id !== id; }); all.push(rec);
+    if (!plansStore(all)) { setMsg('#pp-sheet-msg', 'Could not save on this device.', 'bad'); return; }
+    pp.id = id; pp.name = name; $('#pp-sheet').hidden = true;
+    setMsg('#pp-msg', 'Saved to Saved plans.', ''); ppRender();
+  });
+  function plansRender() {
+    var box = $('#plans-list'), all = plansLoad().sort(function (a, b) { return b.ts - a.ts; });
+    box.textContent = '';
+    if (!all.length) { box.appendChild(el('p', 'note', 'No saved plans yet. Open Passage plan, load a route and tap Save plan.')); return; }
+    all.forEach(function (p) {
+      var card = el('div', 'ev is-wide'), what = el('div');
+      what.appendChild(el('span', 'ttl', p.name));
+      what.appendChild(el('span', 'txt', (p.total || 0).toFixed(1) + ' nm, ' + p.pts.length + ' waypoints, ' + p.speed + ' kn. Departure ' + fmtDT(p.dep, 0) + ' UTC.'));
+      what.appendChild(el('span', 'src', 'Saved ' + fmtDT(p.ts, 0) + ' UTC'));
+      var act = el('div', 'actions'), open = el('button', 'btn btn-primary', 'Open'), del = el('button', 'btn', 'Delete');
+      open.type = 'button'; del.type = 'button';
+      open.addEventListener('click', function () { go('plan'); $('#pp-pick-wrap').hidden = true; ppUse({ name: p.name, kind: 'route', pts: p.pts }, p); });
+      del.addEventListener('click', function () {
+        if (del.getAttribute('data-sure') !== '1') { del.setAttribute('data-sure', '1'); del.textContent = 'Tap again to delete'; return; }
+        plansStore(plansLoad().filter(function (x) { return x.id !== p.id; })); if (pp.id === p.id) pp.id = null; plansRender();
+      });
+      act.appendChild(open); act.appendChild(del); what.appendChild(act); card.appendChild(what); box.appendChild(card);
+    });
+  }
+
+  /* ---------- Publications library ---------- */
+  var PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js', PDFJS_W = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  var lib = { db: null, pubs: [], items: {}, text: {}, cancel: false, busy: false, pending: null, loaded: false }, pdfP = null;
+  function libDb() {
+    if (lib.db) return Promise.resolve(lib.db);
+    return new Promise(function (res, rej) {
+      var rq;
+      try { rq = indexedDB.open('bridge-desk-lib', 1); } catch (e) { rej(e); return; }
+      rq.onupgradeneeded = function () { var d = rq.result; d.createObjectStore('pubs', { keyPath: 'id' }); d.createObjectStore('files'); d.createObjectStore('text'); };
+      rq.onsuccess = function () { lib.db = rq.result; res(lib.db); };
+      rq.onerror = function () { rej(rq.error || new Error('db')); };
+    });
+  }
+  function libReq(store, mode, fn) {
+    return libDb().then(function (db) {
+      return new Promise(function (res, rej) {
+        var tx = db.transaction(store, mode), out, r = fn(tx.objectStore(store));
+        if (r) r.onsuccess = function () { out = r.result; };
+        tx.oncomplete = function () { res(out); };
+        tx.onerror = tx.onabort = function () { rej(tx.error || new Error('tx')); };
+      });
+    });
+  }
+  function libRange(id) { return IDBKeyRange.bound(id + '|', id + '|￿'); }
+  function pdfLoad() {
+    if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+    if (pdfP) return pdfP;
+    pdfP = loadTag('script', { src: PDFJS }).then(function () {
+      if (!window.pdfjsLib) throw new Error('pdfjs');
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_W;
+      return window.pdfjsLib;
+    }).catch(function (e) { pdfP = null; e.code = 'pdfjs'; throw e; });
+    return pdfP;
+  }
+  function fmtSize(b) { return b >= 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB'; }
+  function libWork(text, cls) { $('#lib-work').hidden = !text; setMsg('#lib-msg', text, cls || ''); setMsg('#pp-pubmsg', text, cls || ''); $('#lib-stop').hidden = !lib.busy; }
+  function libErr(e) {
+    var n = e && (e.name || '');
+    if (e && e.code === 'pdfjs') return 'The PDF reader could not load. Check the internet connection and try again.';
+    if (n === 'QuotaExceededError') return 'This file does not fit in the storage this browser allows. Remove a publication you do not need, or use the PC.';
+    if (n === 'PasswordException') return 'This PDF is locked with a password, so it cannot be read.';
+    if (n === 'InvalidPDFException') return 'This file is not a readable PDF.';
+    return 'That did not work on this device. ' + (e && e.message ? '(' + e.message + ')' : '');
+  }
+  function libRefresh() {
+    return libReq('pubs', 'readonly', function (st) { return st.getAll(); }).then(function (a) {
+      lib.pubs = (a || []).sort(function (x, y) { return String(x.title).localeCompare(String(y.title)); });
+      lib.loaded = true; libRender(); if (pp.R) { ppPubs(); ppPubScan(); }
+    }).catch(function () { lib.pubs = []; libRender(); libWork('This browser will not store files here (private mode can cause this).', 'bad'); });
+  }
+  function libRender() {
+    var box = $('#lib-list'); box.textContent = '';
+    $('#lib-count').textContent = lib.pubs.length ? String(lib.pubs.length) : 'None yet';
+    $('#lib-search').hidden = !lib.pubs.some(function (p) { return p.indexed > 0 && !p.scanned; });
+    if (!lib.pubs.length) box.appendChild(el('p', 'note', 'Tap Add a PDF to start your library.'));
+    lib.pubs.forEach(function (p) {
+      var card = el('div', 'ev is-wide'), what = el('div');
+      what.appendChild(el('span', 'ttl', p.title));
+      var state = !p.pages ? 'Not read yet.' : p.indexed < p.pages ? 'Read ' + p.indexed + ' of ' + p.pages + ' pages.' : p.scanned ? p.pages + ' pages. No text found (scanned pages), so search will not find anything in it. Page links still work.' : p.pages + ' pages, searchable.';
+      what.appendChild(el('span', 'txt', p.type + (p.edition ? ', ' + p.edition : '') + '. ' + fmtSize(p.size) + '. ' + state));
+      var act = el('div', 'actions'), open = el('button', 'btn btn-primary', 'Open'), del = el('button', 'btn', 'Remove');
+      open.type = 'button'; del.type = 'button';
+      open.addEventListener('click', function () { viewerOpen(p.id, 1, 'publib'); });
+      act.appendChild(open);
+      if (!p.pages || p.indexed < p.pages) {
+        var again = el('button', 'btn', 'Read the text'); again.type = 'button';
+        again.addEventListener('click', function () { if (!lib.busy) libIndex(p); });
+        act.appendChild(again);
+      }
+      del.addEventListener('click', function () {
+        if (lib.busy) return;
+        if (del.getAttribute('data-sure') !== '1') { del.setAttribute('data-sure', '1'); del.textContent = 'Tap again to remove'; return; }
+        libRemove(p.id);
+      });
+      act.appendChild(del); what.appendChild(act); card.appendChild(what); box.appendChild(card);
+    });
+    if (navigator.storage && navigator.storage.estimate) {
+      navigator.storage.estimate().then(function (s) {
+        if (s && s.quota) $('#lib-space').textContent = 'Storage used by this app: ' + fmtSize(s.usage || 0) + ' of about ' + fmtSize(s.quota) + ' this browser allows.';
+      }).catch(function () { /* optional */ });
+    }
+  }
+  function libRemove(id) {
+    if (vw.id === id) { if (vw.doc) { try { vw.doc.destroy(); } catch (e) { /* gone */ } } vw.doc = null; vw.id = null; }
+    delete lib.text[id]; delete lib.items[id];
+    return libReq('files', 'readwrite', function (st) { st['delete'](id); })
+      .then(function () { return libReq('text', 'readwrite', function (st) { st['delete'](libRange(id)); }); })
+      .then(function () { return libReq('pubs', 'readwrite', function (st) { st['delete'](id); }); })
+      .then(libRefresh, libRefresh);
+  }
+  async function libIndex(pub) {
+    var doc = null;
+    lib.busy = true; lib.cancel = false; libWork('Opening ' + pub.title + '…');
+    try {
+      var pdfjs = await pdfLoad();
+      var blob = await libReq('files', 'readonly', function (st) { return st.get(pub.id); });
+      if (!blob) throw new Error('The stored file is missing. Remove it and add it again.');
+      doc = await pdfjs.getDocument({ data: await blob.arrayBuffer() }).promise;
+      var n = doc.numPages, block = [], chars = 0, done = 0, bi = 0;
+      pub.pages = n; pub.indexed = 0;
+      for (var p = 1; p <= n && !lib.cancel; p++) {
+        var page = await doc.getPage(p), tc = await page.getTextContent(), s = '';
+        for (var i = 0; i < tc.items.length; i++) { var it = tc.items[i]; if (it.str) s += it.str + (it.hasEOL ? '\n' : ' '); }
+        if (page.cleanup) page.cleanup();
+        chars += s.length; block.push(s);
+        if (block.length === 25 || p === n) {
+          var key = pub.id + '|' + String(bi++).padStart(5, '0'), data = block;
+          await libReq('text', 'readwrite', function (st) { st.put(data, key); });
+          block = []; done = p;
+          libWork('Reading ' + pub.title + ': page ' + p + ' of ' + n + '…');
+        }
+      }
+      pub.indexed = done; pub.scanned = done >= Math.min(n, 10) && chars < done * 20;
+      await libReq('pubs', 'readwrite', function (st) { st.put(pub); });
+      lib.busy = false;
+      libWork(lib.cancel ? 'Stopped at page ' + done + ' of ' + n + '. Tap Read the text to start again.' : pub.scanned ? 'Added. No text was found in it, so it looks like scanned pages.' : 'Added. ' + n + ' pages are now searchable.', lib.cancel || pub.scanned ? 'warn' : '');
+    } catch (e) {
+      lib.busy = false; libWork(libErr(e), 'bad');
+      if (!pub.pages && e && (e.name === 'InvalidPDFException' || e.name === 'PasswordException')) { try { await libRemove(pub.id); } catch (e4) { /* listed as not read */ } }
+    } finally {
+      lib.busy = false; delete lib.text[pub.id]; delete lib.items[pub.id];
+      if (doc) { try { doc.destroy(); } catch (e2) { /* gone */ } }
+      $('#lib-stop').hidden = true;
+      libRefresh();
+    }
+  }
+  async function libAdd(file, meta) {
+    var pub = { id: 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), cat: meta.cat || '', type: meta.type, title: meta.title, edition: meta.edition, size: file.size, pages: 0, indexed: 0, scanned: false, added: Date.now() };
+    lib.busy = true; libWork('Storing ' + pub.title + '…');
+    try {
+      if (navigator.storage && navigator.storage.persist) { try { await navigator.storage.persist(); } catch (e0) { /* optional */ } }
+      await libReq('files', 'readwrite', function (st) { st.put(file, pub.id); });
+      await libReq('pubs', 'readwrite', function (st) { st.put(pub); });
+    } catch (e) {
+      lib.busy = false; libWork(libErr(e), 'bad');
+      try { await libReq('files', 'readwrite', function (st) { st['delete'](pub.id); }); } catch (e3) { /* nothing stored */ }
+      return;
+    }
+    await libIndex(pub);
+  }
+  async function libPages(id) {
+    if (lib.text[id]) return lib.text[id];
+    var blocks = await libReq('text', 'readonly', function (st) { return st.getAll(libRange(id)); });
+    var pages = []; (blocks || []).forEach(function (b) { for (var i = 0; i < b.length; i++) pages.push(b[i]); });
+    lib.text[id] = pages;
+    return pages;
+  }
+  async function libSearch(q) {
+    var hits = [];
+    for (var k = 0; k < lib.pubs.length; k++) {
+      var pub = lib.pubs[k], pages = await libPages(pub.id);
+      for (var i = 0; i < pages.length; i++) {
+        var f = pageFind(pages[i], q);
+        if (f) hits.push({ pub: pub, page: i + 1, snippet: f.snippet, phrase: f.phrase });
+      }
+    }
+    hits.sort(function (a, b) { return (b.phrase ? 1 : 0) - (a.phrase ? 1 : 0); });
+    return hits;
+  }
+  // A reference to a publication page: a link when the publication is in the library, plain text when it is not.
+  function citeEl(pubId, title, page, back) {
+    var pub = lib.pubs.filter(function (p) { return p.id === pubId; })[0], label = (pub ? pub.title + (pub.edition ? ', ' + pub.edition : '') : title) + ', page ' + page;
+    if (!pub) return el('span', 'src', label);
+    var b = el('button', 'btn', label); b.type = 'button';
+    b.addEventListener('click', function () { viewerOpen(pub.id, page, back); });
+    return b;
+  }
+  function libDoSearch() {
+    var q = $('#lib-q').value.trim(), box = $('#lib-hits');
+    box.textContent = '';
+    if (q.length < 2) { setMsg('#lib-qmsg', 'Type at least two letters.', 'warn'); return; }
+    setMsg('#lib-qmsg', 'Searching…');
+    libSearch(q).then(function (hits) {
+      setMsg('#lib-qmsg', hits.length ? hits.length + (hits.length === 1 ? ' page' : ' pages') + ' found' + (hits.length > 60 ? ', showing the first 60. Add a word to narrow it.' : '.') : 'Not found in your publications.', hits.length ? '' : 'warn');
+      hits.slice(0, 60).forEach(function (h) {
+        var b = el('button', 'ev is-wide'), what = el('span', 'what'); b.type = 'button';
+        what.appendChild(el('span', 'ttl', h.pub.title + ', page ' + h.page));
+        what.appendChild(el('span', 'txt', h.snippet));
+        what.appendChild(el('span', 'src', h.pub.type + (h.pub.edition ? ', ' + h.pub.edition : '') + (h.phrase ? '' : '. Words found on the page, not as one phrase.')));
+        b.appendChild(what);
+        b.addEventListener('click', function () { viewerOpen(h.pub.id, h.page, 'publib'); });
+        box.appendChild(b);
+      });
+    }).catch(function (e) { setMsg('#lib-qmsg', libErr(e), 'bad'); });
+  }
+  $('#lib-go').addEventListener('click', libDoSearch);
+  $('#lib-q').addEventListener('keydown', function (ev) { if (ev.key === 'Enter') libDoSearch(); });
+  $('#lib-stop').addEventListener('click', function () { lib.cancel = true; });
+  $('#lib-file').addEventListener('change', function () {
+    var f = this.files && this.files[0]; this.value = '';
+    if (!f) return;
+    if (lib.busy) { libWork('Wait until the current publication has been read.', 'warn'); return; }
+    if (!/\.pdf$/i.test(f.name) && f.type !== 'application/pdf') { libWork('That is not a PDF file.', 'bad'); return; }
+    lib.pending = f;
+    $('#lib-title').value = f.name.replace(/\.pdf$/i, '').replace(/[_]+/g, ' ').slice(0, 80);
+    $('#lib-ed').value = ''; $('#lib-add-size').textContent = fmtSize(f.size);
+    $('#lib-add').hidden = false; libWork('');
+    $('#lib-title').focus();
+  });
+  $('#lib-add-cancel').addEventListener('click', function () { lib.pending = null; $('#lib-add').hidden = true; });
+  $('#lib-add-ok').addEventListener('click', function () {
+    var f = lib.pending, title = $('#lib-title').value.trim();
+    if (!f) { $('#lib-add').hidden = true; return; }
+    if (!title) { $('#lib-title').focus(); return; }
+    lib.pending = null; $('#lib-add').hidden = true;
+    libAdd(f, { type: $('#lib-type').value, title: title.slice(0, 80), edition: $('#lib-ed').value.trim().slice(0, 30) });
+  });
+
+
+
+  /* ---------- Area outlines from OpenStreetMap ---------- */
+  var OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter'];
+  function ppOsmWanted() { return $('#pp-tr').checked || $('#pp-tv').checked; }
+  function ppOsm(force) {
+    if (!pp.R || !pp.map || !ppOsmWanted() || pp.osmBusy) return;
+    var nm = Math.min(20, pp.corridor), R = pp.R, key = R.total.toFixed(2) + '|' + R.pts.length + '|' + R.pts[0].lat + '|' + nm;
+    if (key === pp.osmKey && !force) return;
+    pp.osmBusy = true;
+    setMsg('#pp-osmmsg', 'Loading area outlines from OpenStreetMap…', '');
+    var q = osmQuery(R, nm);
+    function attempt(i) {
+      return fetch(OVERPASS[i], { method: 'POST', body: 'data=' + encodeURIComponent(q), headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
+        .then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+        .catch(function (e) { if (i < OVERPASS.length - 1) return attempt(i + 1); throw e; });
+    }
+    attempt(0).then(function (j) {
+      pp.osmBusy = false;
+      if (pp.R !== R) return;
+      pp.osm = osmAreas(j); pp.osmKey = key;
+      var r = pp.osm.filter(function (a) { return a.kind === 'restricted'; }).length, t = pp.osm.length - r;
+      setMsg('#pp-osmmsg', pp.osm.length ? 'Outlines loaded from OpenStreetMap within ' + nm + ' nm of the track: ' + r + ' restricted, ' + t + ' traffic separation. Volunteer data, so not complete and not official.' : 'OpenStreetMap has no restricted area or traffic separation outlines within ' + nm + ' nm of this track. That does not mean there are none: check the chart.', pp.osm.length ? '' : 'warn');
+      ppDrawRoute();
+    }).catch(function () {
+      pp.osmBusy = false;
+      setMsg('#pp-osmmsg', 'Area outlines could not be loaded from OpenStreetMap just now. The markers from your publications still show. Turn the chip off and on to try again.', 'warn');
+    });
+  }
+  function ppOsmDraw(g, Lf, map) {
+    var wantR = $('#pp-tr').checked, wantT = $('#pp-tv').checked, off = pp.U[0] - pp.R.pts[0].lon, ref = pp.U[0];
+    pp.osm.forEach(function (a) {
+      if (a.kind === 'restricted' ? !wantR : !wantT) return;
+      var col = a.kind === 'restricted' ? '#c92a2a' : '#c2255c';
+      var rings = a.rings.map(function (r) { return r.map(function (p) { var x = p[1] + off; while (x - ref > 180) x -= 360; while (x - ref < -180) x += 360; return [p[0], x]; }); });
+      var style = { color: col, weight: 2, opacity: 0.95, dashArray: a.kind === 'restricted' ? '6 4' : null, fillColor: col, fillOpacity: a.closed ? 0.14 : 0, bubblingMouseEvents: false };
+      var sh = a.closed && Lf.polygon ? Lf.polygon(rings, style) : Lf.polyline(rings, style);
+      sh.addTo(g);
+      if (sh.on) sh.on('click', function (ev) {
+        var c = el('div', 'pp-pop'); c.style.maxWidth = '250px';
+        c.appendChild(el('b', '', a.title));
+        a.lines.forEach(function (t) { c.appendChild(el('div', '', t)); });
+        c.appendChild(el('div', '', 'Source: OpenStreetMap sea mark data (' + a.id + '), mapped by volunteers. Not official, so confirm on the chart.'));
+        if (Lf.popup) Lf.popup({ maxWidth: 270 }).setLatLng(ev && ev.latlng ? ev.latlng : rings[0][0]).setContent(c).openOn(map);
+        pp.near = -2;
+      });
+    });
+  }
+
+  /* ---------- Publications for a passage ---------- */
+  var ppPubsHidden = false, ppPubWant = null;
+  function ppPubs() {
+    var box = $('#pp-pubs-list'), list = pubsForRoute(pp.R), have = 0;
+    box.textContent = '';
+    list.forEach(function (c) {
+      var mine = lib.pubs.filter(function (p) { return p.cat === c.id; })[0];
+      if (mine) have++;
+      var card = el('div', 'ev is-wide'), what = el('div');
+      what.appendChild(el('span', 'ttl', c.pub + ': ' + c.title));
+      what.appendChild(el('span', 'src', c.kind + ', ' + c.src + ', free' + (mine ? '. In your library' + (mine.edition ? ' (' + mine.edition + ')' : '') + '.' : '.')));
+      var act = el('div', 'actions'), b;
+      if (mine) {
+        b = el('button', 'btn', 'Open'); b.type = 'button';
+        b.addEventListener('click', function () { viewerOpen(mine.id, 1, 'plan'); });
+      } else {
+        // A real label opens the phone's file picker reliably; a scripted click does not on every browser.
+        b = el('label', 'btn', 'Add my copy'); b.setAttribute('for', 'pp-pubfile'); b.setAttribute('role', 'button'); b.tabIndex = 0;
+        b.addEventListener('click', function (ev) {
+          if (lib.busy) { ev.preventDefault(); setMsg('#pp-pubmsg', 'Wait until the current publication has been read.', 'warn'); return; }
+          ppPubWant = c; setMsg('#pp-pubmsg', 'Pick the PDF for ' + c.pub + '.', '');
+        });
+        b.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); b.click(); } });
+      }
+      if (!mine) {
+        var a = el('a', 'btn btn-primary', 'Get from ' + c.src); a.href = pubSite(c); a.target = '_blank'; a.rel = 'noopener';
+        act.appendChild(a);
+      }
+      act.appendChild(b); what.appendChild(act); card.appendChild(what); box.appendChild(card);
+    });
+    $('#pp-pubs-count').textContent = have + ' of ' + list.length + ' in library';
+    $('#pp-pubs-note').textContent = 'These free books cover this route. Tap Get to open the official download page, find the book by its number and save the PDF. Then come back, tap Add my copy and pick the file. Coverage is matched roughly, so near a boundary both neighbours are listed.';
+    $('#pp-pubs').hidden = !list.length;
+    ppPubsFold();
+  }
+  function ppPubsFold() {
+    var b = $('#pp-pubs-hide');
+    $('#pp-pubs-body').hidden = ppPubsHidden;
+    $('#pp-pubs').classList.toggle('is-setup', !ppPubsHidden);
+    b.textContent = ppPubsHidden ? 'Show list' : 'Hide list'; b.setAttribute('aria-expanded', ppPubsHidden ? 'false' : 'true');
+  }
+  $('#pp-pubs-hide').addEventListener('click', function () { ppPubsHidden = !ppPubsHidden; ppPubsFold(); });
+  $('#pp-pubfile').addEventListener('change', function () {
+    var f = this.files && this.files[0], c = ppPubWant; this.value = ''; ppPubWant = null;
+    if (!f || !c) { setMsg('#pp-pubmsg', f ? 'Tap Add my copy on the book first.' : '', 'warn'); return; }
+    if (!/\.pdf$/i.test(f.name) && f.type !== 'application/pdf') { setMsg('#pp-pubmsg', 'That is not a PDF file.', 'bad'); return; }
+    var ed = /(20\d\d)/.exec(f.name);
+    libAdd(f, { cat: c.id, type: c.type, title: c.pub + ' ' + c.title, edition: ed ? ed[1] : '' });
+  });
+
+  /* ---------- PDF reader ---------- */
+  var vw = { id: null, doc: null, page: 1, n: 0, zoom: 1, back: 'publib', task: null, seq: 0, want: null };
+  async function viewerOpen(id, page, back) {
+    vw.back = back || 'publib'; vw.want = id;
+    go('pdf');
+    var pub = lib.pubs.filter(function (p) { return p.id === id; })[0];
+    $('#pdf-sub').textContent = pub ? pub.title + (pub.edition ? ', ' + pub.edition : '') : '';
+    setMsg('#pdf-msg', 'Opening…');
+    try {
+      if (vw.id !== id || !vw.doc) {
+        if (vw.doc) { try { vw.doc.destroy(); } catch (e0) { /* gone */ } }
+        vw.doc = null; vw.id = null;
+        var pdfjs = await pdfLoad();
+        var blob = await libReq('files', 'readonly', function (st) { return st.get(id); });
+        if (!blob) throw new Error('The stored file is missing.');
+        vw.doc = await pdfjs.getDocument({ data: await blob.arrayBuffer() }).promise;
+        vw.id = id; vw.n = vw.doc.numPages; vw.zoom = 1;
+        $('#pdf-q').value = ''; $('#pdf-hits').textContent = ''; setMsg('#pdf-qmsg', '');
+      }
+      vw.page = Math.max(1, Math.min(vw.n, Math.round(page) || 1));
+      await viewerRender();
+    } catch (e) { setMsg('#pdf-msg', libErr(e), 'bad'); }
+    vw.want = null;
+  }
+  async function viewerRender() {
+    if (!vw.doc) return;
+    var my = ++vw.seq;
+    if (vw.task) { try { vw.task.cancel(); } catch (e0) { /* done */ } vw.task = null; }
+    $('#pdf-page').value = vw.page; $('#pdf-page').max = vw.n; $('#pdf-of').textContent = 'of ' + vw.n;
+    var page = await vw.doc.getPage(vw.page);
+    if (my !== vw.seq) return;
+    var wrap = $('#pdf-wrap'), cv = $('#pdf-canvas'), base = page.getViewport({ scale: 1 });
+    var css = Math.max(240, wrap.clientWidth - 2) * vw.zoom, dpr = Math.min(window.devicePixelRatio || 1, 2), vp = page.getViewport({ scale: css / base.width * dpr });
+    cv.width = Math.round(vp.width); cv.height = Math.round(vp.height);
+    cv.style.width = Math.round(css) + 'px'; cv.style.height = Math.round(css * base.height / base.width) + 'px';
+    vw.task = page.render({ canvasContext: cv.getContext('2d'), viewport: vp });
+    try { await vw.task.promise; } catch (e) { if (my !== vw.seq || (e && e.name === 'RenderingCancelledException')) return; setMsg('#pdf-msg', libErr(e), 'bad'); return; }
+    if (my === vw.seq) setMsg('#pdf-msg', '');
+  }
+  function viewerFind() {
+    var q = $('#pdf-q').value.trim(), box = $('#pdf-hits'), id = vw.id;
+    box.textContent = '';
+    if (!id) return;
+    if (q.length < 2) { setMsg('#pdf-qmsg', q ? 'Type at least two letters.' : '', 'warn'); return; }
+    setMsg('#pdf-qmsg', 'Searching…');
+    libPages(id).then(function (pages) {
+      if (!pages.length) { setMsg('#pdf-qmsg', 'The text of this book has not been read yet. Open Publications library and tap Read the text.', 'warn'); return; }
+      var hits = [];
+      for (var i = 0; i < pages.length; i++) { var f = pageFind(pages[i], q); if (f) hits.push({ page: i + 1, snippet: f.snippet, phrase: f.phrase }); }
+      var exact = hits.filter(function (x) { return x.phrase; });
+      if (exact.length) hits = exact;
+      setMsg('#pdf-qmsg', hits.length ? hits.length + (hits.length === 1 ? ' page' : ' pages') + (exact.length ? '' : ' with all the words') + (hits.length > 80 ? ', showing the first 80. Add a word to narrow it.' : '.') : 'Not found in this book.', hits.length ? '' : 'warn');
+      hits.slice(0, 80).forEach(function (x) {
+        var b = el('button', 'ev'), w = el('span', 'when'); b.type = 'button'; b.style.gridTemplateColumns = '64px minmax(0, 1fr)';
+        w.appendChild(el('b', '', 'p. ' + x.page)); b.appendChild(w); b.appendChild(el('span', 'txt', x.snippet));
+        b.addEventListener('click', function () { viewerGo(x.page); $('#pdf-wrap').scrollIntoView({ block: 'start' }); });
+        box.appendChild(b);
+      });
+    }).catch(function (e) { setMsg('#pdf-qmsg', libErr(e), 'bad'); });
+  }
+  $('#pdf-find').addEventListener('click', viewerFind);
+  $('#pdf-q').addEventListener('keydown', function (ev) { if (ev.key === 'Enter') { this.blur(); viewerFind(); } });
+  function viewerGo(p) { if (!vw.doc) return; p = Math.max(1, Math.min(vw.n, Math.round(p) || 1)); if (p !== vw.page) { vw.page = p; $('#pdf-wrap').scrollTop = 0; } viewerRender(); }
+  $('#pdf-prev').addEventListener('click', function () { viewerGo(vw.page - 1); });
+  $('#pdf-next').addEventListener('click', function () { viewerGo(vw.page + 1); });
+  $('#pdf-page').addEventListener('change', function () { viewerGo(Number(this.value)); });
+  $('#pdf-in').addEventListener('click', function () { vw.zoom = Math.min(3, vw.zoom * 1.25); viewerRender(); });
+  $('#pdf-out').addEventListener('click', function () { vw.zoom = Math.max(1, vw.zoom / 1.25); viewerRender(); });
+  $('#back-pdf').addEventListener('click', function () { go(vw.back); });
+  $('#back-passage').addEventListener('click', function () { go('hub'); });
+  $('#back-plan').addEventListener('click', function () { go('passage'); });
+  $('#back-plans').addEventListener('click', function () { go('passage'); });
+  $('#back-publib').addEventListener('click', function () { go('passage'); });
+
   /* ---------- Views ---------- */
+  var VIEWS = ['hub', 'compass', 'logbook', 'bearing', 'garbage', 'garlog', 'marpol', 'marpolmap', 'passage', 'plan', 'plans', 'publib', 'pdf', 'settings'];
   function show(name) {
-    $('#view-hub').hidden = name !== 'hub';
-    $('#view-compass').hidden = name !== 'compass';
-    $('#view-logbook').hidden = name !== 'logbook';
-    $('#view-bearing').hidden = name !== 'bearing';
-    $('#view-garbage').hidden = name !== 'garbage';
-    $('#view-garlog').hidden = name !== 'garlog';
-    $('#view-marpol').hidden = name !== 'marpol';
-    $('#view-marpolmap').hidden = name !== 'marpolmap';
+    VIEWS.forEach(function (v) { $('#view-' + v).hidden = v !== name; });
     if (name === 'marpolmap') mpOpen();
-    $('#view-settings').hidden = name !== 'settings';
+    if (name === 'plan' && pp.R) ppMapInit();
+    if (name === 'plans') plansRender();
+    if (name === 'publib') libRefresh();
     window.scrollTo(0, 0);
-    var h = $('#' + (name === 'hub' ? 'hub' : name) + '-title');
+    var h = $('#' + name + '-title');
     h.focus({ preventScroll: true });
   }
   function go(name) {
@@ -2754,7 +4406,8 @@ details[open] > summary { margin-bottom: 10px; }
     var h = '';
     try { h = (location.hash || '').replace('#', ''); } catch (e) { h = ''; }
     if (h === 'garlog') renderLog();
-    show(['compass', 'logbook', 'bearing', 'garbage', 'garlog', 'marpol', 'marpolmap', 'settings'].indexOf(h) >= 0 ? h : 'hub');
+    if (h === 'pdf' && !vw.doc && !vw.want) h = 'publib';
+    show(VIEWS.indexOf(h) > 0 ? h : 'hub');
   }
   document.querySelectorAll('[data-open]').forEach(function (b) {
     b.addEventListener('click', function () { go(b.getAttribute('data-open')); });
