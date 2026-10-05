@@ -289,16 +289,10 @@ details[open] > summary { margin-bottom: 10px; }
           <span class="tile-desc">Legs, distances, ETAs, cross-track limits and under-keel checks.</span>
           <span class="chip">Planned</span>
         </div>
-        <button class="tile" type="button" data-open="garbage">
-          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><path d="M13 15h22l-2 25H15z"/><path d="M10 15h28M19 15v-4h10v4"/><path d="M21 21v13M27 21v13"/></svg>
-          <span class="tile-name">Garbage</span>
-          <span class="tile-desc">Bags in, volumes by MARPOL category out, for port receipts and the Garbage Record Book.</span>
-          <span class="chip chip-ready">Ready</span>
-        </button>
         <button class="tile" type="button" data-open="marpol">
-          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="17"/><path d="M7 24h34M24 7c-7 8-7 26 0 34M24 7c7 8 7 26 0 34"/></svg>
-          <span class="tile-name">MARPOL map</span>
-          <span class="tile-desc">Your position on a map with shore distance lines, special areas and what MARPOL allows at any spot you tap.</span>
+          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><path d="M13 15h22l-2 25H15z"/><path d="M10 15h28M19 15v-4h10v4"/><path d="M21 21v13M27 21v13"/></svg>
+          <span class="tile-name">MARPOL</span>
+          <span class="tile-desc">Map with shore distances and special areas, and the garbage calculator.</span>
           <span class="chip chip-ready">Ready</span>
         </button>
         <div class="tile is-planned">
@@ -611,10 +605,10 @@ details[open] > summary { margin-bottom: 10px; }
     <section id="view-garbage" hidden aria-labelledby="garbage-title">
       <div class="tool-head">
         <div class="tool-bar">
-          <button class="btn" type="button" id="back-garbage">‹ Duties</button>
+          <button class="btn" type="button" id="back-garbage">‹ MARPOL</button>
           <button class="btn" type="button" id="top-garlog">Garbage log</button>
         </div>
-        <h1 id="garbage-title" tabindex="-1">Garbage</h1>
+        <h1 id="garbage-title" tabindex="-1">Garbage calculator</h1>
         <p class="lede">Bags discharged in. Volume by category out.</p>
       </div>
       <div class="panels">
@@ -691,21 +685,42 @@ details[open] > summary { margin-bottom: 10px; }
     <!-- Garbage log -->
     <section id="view-garlog" hidden aria-labelledby="garlog-title">
       <div class="tool-head">
-        <div class="tool-bar"><button class="btn" type="button" id="back-garlog">‹ Garbage</button></div>
+        <div class="tool-bar"><button class="btn" type="button" id="back-garlog">‹ Garbage calculator</button></div>
         <h1 id="garlog-title" tabindex="-1">Garbage log</h1>
         <p class="lede">Every discharge you saved, newest first. Saved on this device only.</p>
       </div>
       <div class="panels" id="garlog-list"></div>
     </section>
 
-    <!-- MARPOL map -->
+    <!-- MARPOL menu -->
     <section id="view-marpol" hidden aria-labelledby="marpol-title">
       <div class="tool-head">
+        <div class="tool-bar"><button class="btn" type="button" id="back-marpol-menu">‹ Duties</button></div>
+        <h1 id="marpol-title" tabindex="-1">MARPOL</h1>
+        <p class="lede">What do you need?</p>
+      </div>
+      <div class="tiles">
+        <button class="tile" type="button" data-open="marpolmap">
+          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="17"/><path d="M7 24h34M24 7c-7 8-7 26 0 34M24 7c7 8 7 26 0 34"/></svg>
+          <span class="tile-name">MARPOL map</span>
+          <span class="tile-desc">Your position with shore distance lines and special areas. Tap a spot to see what MARPOL allows there.</span>
+        </button>
+        <button class="tile" type="button" data-open="garbage">
+          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><path d="M12 8h24v32H12z"/><path d="M18 16h12M18 23h12M18 30h8"/></svg>
+          <span class="tile-name">Garbage calculator</span>
+          <span class="tile-desc">Bags in, volumes by category out for port receipts and the book. Save each discharge to your log.</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- MARPOL map -->
+    <section id="view-marpolmap" hidden aria-labelledby="marpolmap-title">
+      <div class="tool-head">
         <div class="tool-bar">
-          <button class="btn" type="button" id="back-marpol">‹ Duties</button>
+          <button class="btn" type="button" id="back-marpol">‹ MARPOL</button>
           <button class="btn btn-primary" type="button" id="mp-gps">My position</button>
         </div>
-        <h1 id="marpol-title" tabindex="-1">MARPOL map</h1>
+        <h1 id="marpolmap-title" tabindex="-1">MARPOL map</h1>
       </div>
       <div class="panel" id="panel-marpol">
         <div class="chips" role="group" aria-label="Distance from shore">
@@ -2492,7 +2507,8 @@ details[open] > summary { margin-bottom: 10px; }
     setMsg('#gb-msg', 'Saved to the Garbage log.', '');
   });
   $('#top-garlog').addEventListener('click', function () { renderLog(); go('garlog'); });
-  $('#back-marpol').addEventListener('click', function () { go('hub'); });
+  $('#back-marpol').addEventListener('click', function () { go('marpol'); });
+  $('#back-marpol-menu').addEventListener('click', function () { go('hub'); });
   $('#back-garlog').addEventListener('click', function () { go('garbage'); });
   renderLogCount();
 
@@ -2723,7 +2739,8 @@ details[open] > summary { margin-bottom: 10px; }
     $('#view-garbage').hidden = name !== 'garbage';
     $('#view-garlog').hidden = name !== 'garlog';
     $('#view-marpol').hidden = name !== 'marpol';
-    if (name === 'marpol') mpOpen();
+    $('#view-marpolmap').hidden = name !== 'marpolmap';
+    if (name === 'marpolmap') mpOpen();
     $('#view-settings').hidden = name !== 'settings';
     window.scrollTo(0, 0);
     var h = $('#' + (name === 'hub' ? 'hub' : name) + '-title');
@@ -2737,14 +2754,14 @@ details[open] > summary { margin-bottom: 10px; }
     var h = '';
     try { h = (location.hash || '').replace('#', ''); } catch (e) { h = ''; }
     if (h === 'garlog') renderLog();
-    show(['compass', 'logbook', 'bearing', 'garbage', 'garlog', 'marpol', 'settings'].indexOf(h) >= 0 ? h : 'hub');
+    show(['compass', 'logbook', 'bearing', 'garbage', 'garlog', 'marpol', 'marpolmap', 'settings'].indexOf(h) >= 0 ? h : 'hub');
   }
   document.querySelectorAll('[data-open]').forEach(function (b) {
     b.addEventListener('click', function () { go(b.getAttribute('data-open')); });
   });
   $('#back').addEventListener('click', function () { go('hub'); });
   $('#back-log').addEventListener('click', function () { go('compass'); });
-  $('#back-garbage').addEventListener('click', function () { go('hub'); });
+  $('#back-garbage').addEventListener('click', function () { go('marpol'); });
   $('#back-bearing').addEventListener('click', function () { go('compass'); });
   $('#back-settings').addEventListener('click', function () { go('hub'); });
   $('#top-ai').addEventListener('click', function () { go('settings'); });
