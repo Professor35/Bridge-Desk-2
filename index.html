@@ -131,6 +131,20 @@ button.tile .glyph { color: var(--accent-text); }
 .tool-bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; }
 .tool-head { display: grid; gap: 10px; justify-items: start; padding-block: 18px 20px; }
 .lede { max-width: 62ch; color: var(--muted); }
+input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px; }
+.gl-list { display: grid; margin-top: 16px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.gl-row { display: grid; grid-template-columns: 34px 1fr auto; align-items: baseline; gap: 10px; padding: 12px 14px; border-top: 1px solid var(--line); background: var(--surface-2); }
+.gl-row:first-child { border-top: 0; }
+.gl-row .code { font: 600 22px/1 var(--font-display); color: var(--accent-text); }
+.gl-row .name { font-size: 15px; }
+.gl-row .val { font: 600 26px/1 var(--font-display); letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+.gl-row .val small { font: 500 13px var(--font-mono); color: var(--muted); margin-left: 4px; }
+.gl-row.is-total { background: var(--surface); }
+.gl-sub { padding: 8px 14px; border-top: 1px solid var(--line); background: var(--surface); font: 500 12px var(--font-mono); letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+.gl-row .val small { white-space: nowrap; }
+.gl-row.is-total .name { font: 500 12px var(--font-mono); letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+.gl-split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.gl-split .field > label { text-transform: none; letter-spacing: 0; font: 500 13px var(--font-body); color: var(--fg); }
 .panels { display: grid; gap: 16px; }
 .subhead { margin-top: 18px; font: 500 12px/1.2 var(--font-mono); letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
 #panel-var details, #panel-course details { margin-top: 12px; }
@@ -168,7 +182,7 @@ textarea { width: 100%; background: var(--surface-2); border: 1px solid var(--li
 .msg { min-height: 1.4em; margin-top: 10px; font-size: 14px; color: var(--muted); }
 .msg:empty { display: none; }
 .msg.bad { color: var(--alert); }
-.msg.warn { color: var(--accent-text); }
+.msg.warn, .note.warn { color: var(--accent-text); }
 .rule { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
 .foot { margin-top: 24px; max-width: 70ch; font-size: 13px; color: var(--muted); }
 
@@ -247,12 +261,12 @@ details[open] > summary { margin-bottom: 10px; }
           <span class="tile-desc">Legs, distances, ETAs, cross-track limits and under-keel checks.</span>
           <span class="chip">Planned</span>
         </div>
-        <div class="tile is-planned">
+        <button class="tile" type="button" data-open="garbage">
           <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><path d="M13 15h22l-2 25H15z"/><path d="M10 15h28M19 15v-4h10v4"/><path d="M21 21v13M27 21v13"/></svg>
-          <span class="tile-name">Garbage and MARPOL</span>
-          <span class="tile-desc">Annex V discharge rules by area and category. Garbage Record Book entries.</span>
-          <span class="chip">Planned</span>
-        </div>
+          <span class="tile-name">Garbage</span>
+          <span class="tile-desc">Bags in, volumes by MARPOL category out, for port receipts and the Garbage Record Book.</span>
+          <span class="chip chip-ready">Ready</span>
+        </button>
         <div class="tile is-planned">
           <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="17"/><path d="M24 13v11l7 5"/></svg>
           <span class="tile-name">Watchkeeping</span>
@@ -559,6 +573,83 @@ details[open] > summary { margin-bottom: 10px; }
       <p class="foot">Calculation aid only. Photos are read by AI and can be misread, so check every value against the chart and the card. Results do not replace ECDIS or your Master's orders. Check results before they go in the log.</p>
     </section>
 
+    <!-- Garbage -->
+    <section id="view-garbage" hidden aria-labelledby="garbage-title">
+      <div class="tool-head">
+        <div class="tool-bar"><button class="btn" type="button" id="back-garbage">‹ Duties</button></div>
+        <h1 id="garbage-title" tabindex="-1">Garbage</h1>
+        <p class="lede">Bags discharged in. Volume by category out.</p>
+      </div>
+      <div class="panels">
+        <section class="panel" id="panel-garbage" aria-label="Garbage volumes">
+          <div class="grid2">
+            <div class="field">
+              <label for="gb-bags">Bags discharged</label>
+              <input type="number" id="gb-bags" inputmode="numeric" step="1" min="0" autocomplete="off" placeholder="0">
+            </div>
+            <div class="field">
+              <label for="gb-size">Bag size</label>
+              <select id="gb-size" aria-label="Bag size">
+                <option value="60">60 L</option>
+                <option value="120" selected>120 L (standard)</option>
+                <option value="240">240 L</option>
+                <option value="custom">Other size…</option>
+              </select>
+            </div>
+          </div>
+          <div class="field" id="gb-custom-field" hidden>
+            <label for="gb-custom">Bag size in litres</label>
+            <input type="number" id="gb-custom" inputmode="decimal" step="any" min="0" autocomplete="off">
+          </div>
+
+          <div class="gl-list" id="gb-results" aria-live="polite"></div>
+          <p class="msg" id="gb-msg"></p>
+          <div class="actions">
+            <button class="btn btn-primary" type="button" id="gb-copy">Copy figures</button>
+          </div>
+
+          <details id="gb-tune">
+            <summary>Fine tune</summary>
+            <div class="form">
+              <div class="field">
+                <label for="gb-fill">Bag fill: <span id="gb-fill-val">85%</span></label>
+                <input type="range" id="gb-fill" min="40" max="100" step="1" value="85">
+              </div>
+              <div class="field">
+                <label for="gb-preset">Trip type</label>
+                <select id="gb-preset" aria-label="Trip type">
+                  <option value="custom">My own shares</option>
+                  <option value="crew">Crew only</option>
+                  <option value="charter">Charter or guests</option>
+                  <option value="port">In port or refit</option>
+                </select>
+              </div>
+              <div class="field">
+                <span class="legend">Share of each category (%)</span>
+                <div class="gl-split" id="gb-split"></div>
+                <p class="note" id="gb-split-note"></p>
+              </div>
+              <details id="gb-liq">
+                <summary>Liquids (litres)</summary>
+                <p class="note">Cooking oil is Category D and counts in the garbage total. The others are not garbage and are listed separately.</p>
+                <div class="gl-split" id="gb-liqs"></div>
+              </details>
+              <details id="gb-more">
+                <summary>Other categories (cubic metres)</summary>
+                <p class="note">Added on top of the bags. Not saved, so they clear when you reload.</p>
+                <div class="gl-split" id="gb-extra"></div>
+              </details>
+              <div class="actions">
+                <button class="btn" type="button" id="gb-reset-split">Reset shares to default</button>
+                <button class="btn" type="button" id="gb-clear">Clear bags and others</button>
+              </div>
+            </div>
+          </details>
+        </section>
+      </div>
+      <p class="foot">Estimates only. Volume = bags × bag size × fill × share. Oil, sludge, bilge water and sewage are not Annex V garbage: they belong in the Oil Record Book or under Annex IV, as your company procedures say. Check the figures against what the port receipt and your Garbage Record Book require.</p>
+    </section>
+
     <!-- AI settings -->
     <section id="view-settings" hidden aria-labelledby="settings-title">
       <div class="tool-head">
@@ -859,6 +950,28 @@ details[open] > summary { margin-bottom: 10px; }
     var byM = /by\s+magnetic|magnetic\s+head|magnetic\s+course/i.test(all);
     var basis = byC && !byM ? 'compass' : byM && !byC ? 'magnetic' : 'unknown';
     return { rows: rows, noDir: noDir, skipped: skipped, mode: mode, basis: basis };
+  }
+  // Garbage volumes. bags x litres x fill = cubic metres of bags, shared out by percentage.
+  // Shares are rounded to 0.01 m3 so the rows add up exactly to the rounded total (largest remainder).
+  function garbageVolumes(bags, litres, fillPct, split, extras) {
+    var bagM3 = bags * litres * (fillPct / 100) / 1000;
+    var tot = 0;
+    split.forEach(function (x) { tot += x.pct; });
+    var raw = split.map(function (x) { return bagM3 * x.pct / 100 * 100; });
+    var rawSum = raw.reduce(function (a, b) { return a + b; }, 0);
+    var target = Math.round(rawSum + 1e-9);
+    var cents = raw.map(function (v) { return Math.floor(v + 1e-9); });
+    var left = target - cents.reduce(function (a, b) { return a + b; }, 0);
+    raw.map(function (v, i) { return { i: i, f: v - Math.floor(v + 1e-9) }; })
+      .sort(function (a, b) { return b.f - a.f; })
+      .forEach(function (o) { if (left > 0) { cents[o.i]++; left--; } });
+    var rows = split.map(function (x, i) { return { key: x.key, m3: cents[i] / 100 }; });
+    var extraMills = 0;
+    (extras || []).forEach(function (x) {
+      var c = Math.round(x.m3 * 1000);
+      if (c > 0) { rows.push({ key: x.key, m3: c / 1000 }); extraMills += c; }
+    });
+    return { bagM3: bagM3, shareTotal: tot, rows: rows, total: (target * 10 + extraMills) / 1000 };
   }
   /*LOGIC-END*/
 
@@ -1628,12 +1741,161 @@ details[open] > summary { margin-bottom: 10px; }
   }
   $('#panel-obs').addEventListener('input', renderObs);
 
+  /* ---------- Garbage ---------- */
+  var GB_CATS = {
+    A: 'Plastics', B: 'Food waste', C: 'Domestic waste', D: 'Cooking oil', E: 'Incinerator ash',
+    F: 'Operational waste', G: 'Animal carcasses', H: 'Fishing gear', I: 'E-waste'
+  };
+  var GB_MAIN = ['A', 'B', 'C', 'F'], GB_EXTRA = ['E', 'G', 'H', 'I'];
+  var GB_LIQ = [['D', 'Cooking oil (D)'], ['oil', 'Waste and lube oil'], ['slu', 'Sludge'], ['bil', 'Oily bilge water'], ['sew', 'Sewage and grey water'], ['fue', 'Fuel']];
+  var GB_DEFAULT = { A: 30, B: 25, C: 35, F: 10 };
+  var GB_PRESETS = { crew: { A: 25, B: 20, C: 45, F: 10 }, charter: { A: 25, B: 35, C: 30, F: 10 }, port: { A: 30, B: 15, C: 45, F: 10 } };
+  var gb = { size: '120', custom: '', fill: 85, bags: '', preset: 'custom', split: {} };
+  GB_MAIN.forEach(function (k) { gb.split[k] = GB_DEFAULT[k]; });
+  try {
+    var gbRaw = JSON.parse(localStorage.getItem('bridge-desk-garbage') || 'null');
+    if (gbRaw && typeof gbRaw === 'object') {
+      if (gbRaw.size) gb.size = String(gbRaw.size);
+      if (gbRaw.custom !== undefined) gb.custom = String(gbRaw.custom);
+      if (isFinite(gbRaw.fill) && gbRaw.fill >= 40 && gbRaw.fill <= 100) gb.fill = Number(gbRaw.fill);
+      if (gbRaw.bags !== undefined) gb.bags = String(gbRaw.bags);
+      if (GB_PRESETS[gbRaw.preset]) gb.preset = gbRaw.preset;
+      if (gbRaw.split) GB_MAIN.forEach(function (k) { if (isFinite(gbRaw.split[k]) && gbRaw.split[k] >= 0) gb.split[k] = Number(gbRaw.split[k]); });
+    }
+  } catch (e) { /* defaults */ }
+  function gbSave() {
+    try { localStorage.setItem('bridge-desk-garbage', JSON.stringify(gb)); } catch (e) { /* optional */ }
+  }
+  function gbField(host, id, label, val, step) {
+    var f = rowEl('div', 'field');
+    var l = document.createElement('label'); l.setAttribute('for', id); l.textContent = label;
+    var i = document.createElement('input');
+    i.type = 'number'; i.id = id; i.inputMode = 'decimal'; i.step = step; i.min = '0'; i.setAttribute('autocomplete', 'off');
+    if (val !== '' && val !== undefined) i.value = val;
+    f.appendChild(l); f.appendChild(i); host.appendChild(f);
+  }
+  function gbBuild() {
+    var sp = $('#gb-split'); sp.textContent = '';
+    GB_MAIN.forEach(function (k) { gbField(sp, 'gb-s-' + k, k + ' ' + GB_CATS[k], gb.split[k], 'any'); });
+    var ex = $('#gb-extra'); ex.textContent = '';
+    GB_EXTRA.forEach(function (k) { gbField(ex, 'gb-x-' + k, k + ' ' + GB_CATS[k], '', 'any'); });
+    var lq = $('#gb-liqs'); lq.textContent = '';
+    GB_LIQ.forEach(function (x) { gbField(lq, 'gb-l-' + x[0], x[1], '', 'any'); });
+    $('#gb-bags').value = gb.bags;
+    $('#gb-size').value = gb.size === '60' || gb.size === '120' || gb.size === '240' ? gb.size : 'custom';
+    $('#gb-custom').value = gb.custom;
+    $('#gb-fill').value = gb.fill;
+    $('#gb-preset').value = gb.preset;
+  }
+  var gbText = '';
+  function renderGarbage() {
+    var sizeSel = $('#gb-size').value;
+    $('#gb-custom-field').hidden = sizeSel !== 'custom';
+    $('#gb-fill-val').textContent = gb.fill + '%';
+    var bags = readField($('#gb-bags'), 'Bags', 100000, false);
+    var litres = sizeSel === 'custom' ? readField($('#gb-custom'), 'Bag size', 2000, false) : { state: 'ok', value: Number(sizeSel) };
+    var bad = firstBad([bags, litres]);
+    var split = [], tot = 0, splitBad = null;
+    GB_MAIN.forEach(function (k) {
+      var f = readField($('#gb-s-' + k), k + ' share', 100, false);
+      if (f.state === 'bad') splitBad = splitBad || f;
+      var v = f.state === 'ok' ? f.value : 0;
+      split.push({ key: k, pct: v }); tot += v; gb.split[k] = v;
+    });
+    var extras = [], exBad = null;
+    GB_EXTRA.forEach(function (k) {
+      var f = readField($('#gb-x-' + k), k + ' volume', 1000, false);
+      if (f.state === 'bad') exBad = exBad || f;
+      if (f.state === 'ok' && f.value > 0) extras.push({ key: k, m3: f.value });
+    });
+    var liqOther = [], liqBad = null;
+    GB_LIQ.forEach(function (x) {
+      var f = readField($('#gb-l-' + x[0]), x[1], 1000000, false);
+      if (f.state === 'bad') liqBad = liqBad || f;
+      if (f.state === 'ok' && f.value > 0) {
+        if (x[0] === 'D') extras.push({ key: 'D', m3: f.value / 1000 });
+        else liqOther.push({ name: x[1], l: f.value });
+      }
+    });
+    gb.bags = $('#gb-bags').value; gb.size = sizeSel === 'custom' ? ($('#gb-custom').value || 'custom') : sizeSel; gb.custom = $('#gb-custom').value;
+    gbSave();
+    var host = $('#gb-results'); host.textContent = '';
+    var note = $('#gb-split-note');
+    var rt = Math.round(tot * 100) / 100;
+    note.textContent = rt === 100 ? 'Adds up to 100%.' : 'Adds up to ' + rt + '%, not 100%.';
+    note.className = 'note' + (rt === 100 ? '' : ' warn');
+    var bb = bad || splitBad || exBad || liqBad;
+    var nb = bags.state === 'ok' ? bags.value : 0;
+    if (bb) { setMsg('#gb-msg', bb.msg, 'bad'); gbText = ''; return; }
+    if (litres.state !== 'ok') { setMsg('#gb-msg', 'Enter the bag size.', ''); gbText = ''; return; }
+    var res = garbageVolumes(nb, litres.value, gb.fill, split, extras);
+    var lines = [];
+    function row(code, name, val, total, dp) {
+      var d = rowEl('div', 'gl-row' + (total ? ' is-total' : ''));
+      var c = rowEl('span', 'code'); c.textContent = code;
+      var n = rowEl('span', 'name'); n.textContent = name;
+      var v = rowEl('span', 'val'); v.textContent = val.toFixed(dp || 2);
+      var u = document.createElement('small'); u.textContent = 'm³'; v.appendChild(u);
+      d.appendChild(c); d.appendChild(n); d.appendChild(v); host.appendChild(d);
+      lines.push((code ? code + ' ' : '') + name + ': ' + val.toFixed(dp || 2) + ' m³');
+    }
+    var dec = res.rows.some(function (x) { return x.key === 'D'; }) ? 3 : 2;
+    res.rows.forEach(function (x) { row(x.key, GB_CATS[x.key], x.m3, false, x.key === 'D' ? 3 : 2); });
+    row('', 'Total', res.total, true, dec);
+    if (liqOther.length) {
+      var lh = rowEl('div', 'gl-sub'); lh.textContent = 'Not garbage'; host.appendChild(lh);
+      liqOther.forEach(function (x) {
+        var d = rowEl('div', 'gl-row');
+        var c = rowEl('span', 'code'); c.textContent = '';
+        var n = rowEl('span', 'name'); n.textContent = x.name;
+        var v = rowEl('span', 'val'); v.textContent = String(Math.round(x.l * 100) / 100);
+        var u = document.createElement('small'); u.textContent = 'L = ' + (x.l / 1000).toFixed(3) + ' m³'; v.appendChild(u);
+        d.appendChild(c); d.appendChild(n); d.appendChild(v); host.appendChild(d);
+        lines.push(x.name + ': ' + Math.round(x.l * 100) / 100 + ' L (' + (x.l / 1000).toFixed(3) + ' m³)');
+      });
+    }
+    gbText = lines.join('\n');
+    var msg = '', cls = '';
+    if (nb === 0) msg = 'Enter the number of bags.';
+    else if (rt !== 100) { msg = 'The shares add up to ' + rt + '%. Fix them under Fine tune.'; cls = 'warn'; }
+    else msg = nb + ' bags × ' + litres.value + ' L × ' + gb.fill + '% = ' + res.bagM3.toFixed(2) + ' m³ of bags.';
+    setMsg('#gb-msg', msg, cls);
+  }
+  $('#panel-garbage').addEventListener('input', function (ev) {
+    var id = ev.target && ev.target.id;
+    if (id === 'gb-fill') gb.fill = Number(ev.target.value);
+    if (id === 'gb-preset') {
+      gb.preset = ev.target.value;
+      if (GB_PRESETS[gb.preset]) GB_MAIN.forEach(function (k) { $('#gb-s-' + k).value = GB_PRESETS[gb.preset][k]; });
+    } else if (id && id.indexOf('gb-s-') === 0) { gb.preset = 'custom'; $('#gb-preset').value = 'custom'; }
+    renderGarbage();
+  });
+  $('#gb-copy').addEventListener('click', function () {
+    if (!gbText) { setMsg('#gb-msg', 'Nothing to copy yet.', 'warn'); return; }
+    var done = function () { setMsg('#gb-msg', 'Copied.', ''); };
+    var fail = function () { setMsg('#gb-msg', 'Could not copy. Select the figures and copy them by hand.', 'warn'); };
+    try { navigator.clipboard.writeText(gbText).then(done, fail); } catch (e) { fail(); }
+  });
+  $('#gb-reset-split').addEventListener('click', function () {
+    GB_MAIN.forEach(function (k) { $('#gb-s-' + k).value = GB_DEFAULT[k]; });
+    gb.preset = 'custom'; $('#gb-preset').value = 'custom';
+    renderGarbage();
+  });
+  $('#gb-clear').addEventListener('click', function () {
+    $('#gb-bags').value = '';
+    GB_EXTRA.forEach(function (k) { $('#gb-x-' + k).value = ''; });
+    GB_LIQ.forEach(function (x) { $('#gb-l-' + x[0]).value = ''; });
+    renderGarbage();
+  });
+  gbBuild(); renderGarbage();
+
   /* ---------- Views ---------- */
   function show(name) {
     $('#view-hub').hidden = name !== 'hub';
     $('#view-compass').hidden = name !== 'compass';
     $('#view-logbook').hidden = name !== 'logbook';
     $('#view-bearing').hidden = name !== 'bearing';
+    $('#view-garbage').hidden = name !== 'garbage';
     $('#view-settings').hidden = name !== 'settings';
     window.scrollTo(0, 0);
     var h = $('#' + (name === 'hub' ? 'hub' : name) + '-title');
@@ -1646,13 +1908,14 @@ details[open] > summary { margin-bottom: 10px; }
   function route() {
     var h = '';
     try { h = (location.hash || '').replace('#', ''); } catch (e) { h = ''; }
-    show(['compass', 'logbook', 'bearing', 'settings'].indexOf(h) >= 0 ? h : 'hub');
+    show(['compass', 'logbook', 'bearing', 'garbage', 'settings'].indexOf(h) >= 0 ? h : 'hub');
   }
   document.querySelectorAll('[data-open]').forEach(function (b) {
     b.addEventListener('click', function () { go(b.getAttribute('data-open')); });
   });
   $('#back').addEventListener('click', function () { go('hub'); });
   $('#back-log').addEventListener('click', function () { go('compass'); });
+  $('#back-garbage').addEventListener('click', function () { go('hub'); });
   $('#back-bearing').addEventListener('click', function () { go('compass'); });
   $('#back-settings').addEventListener('click', function () { go('hub'); });
   $('#top-ai').addEventListener('click', function () { go('settings'); });
