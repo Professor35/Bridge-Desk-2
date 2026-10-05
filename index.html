@@ -1859,12 +1859,12 @@ details[open] > summary { margin-bottom: 10px; }
       if (f.state === 'bad') exBad = exBad || f;
       if (f.state === 'ok' && f.value > 0) extras.push({ key: k, m3: f.value });
     });
-    var liqOther = [], liqBad = null;
+    var liqOther = [], liqBad = null, dLitres = 0;
     GB_LIQ.forEach(function (x) {
       var f = readField($('#gb-l-' + x[0]), x[1], 1000000, false);
       if (f.state === 'bad') liqBad = liqBad || f;
       if (f.state === 'ok' && f.value > 0) {
-        if (x[0] === 'D') extras.push({ key: 'D', m3: f.value / 1000 });
+        if (x[0] === 'D') { extras.push({ key: 'D', m3: f.value / 1000 }); dLitres = f.value; }
         else liqOther.push({ name: x[1], l: f.value });
       }
     });
@@ -1907,7 +1907,7 @@ details[open] > summary { margin-bottom: 10px; }
       });
     }
     gbText = lines.join('\n');
-    if (nb > 0) gbLast = { bags: nb, litres: litres.value, fill: gb.fill, preset: gb.preset, split: JSON.parse(JSON.stringify(gb.split)), rows: res.rows, total: res.total, dec: dec, liquids: liqOther, text: gbText };
+    if (nb > 0) gbLast = { bags: nb, litres: litres.value, fill: gb.fill, preset: gb.preset, split: JSON.parse(JSON.stringify(gb.split)), rows: res.rows, total: res.total, dec: dec, liquids: liqOther, dLitres: dLitres, bagM3: res.bagM3, text: gbText };
     var msg = '', cls = '';
     if (nb === 0) msg = 'Enter the number of bags.';
     else if (rt !== 100) { msg = 'The shares add up to ' + rt + '%. Fix them under Fine tune.'; cls = 'warn'; }
@@ -1974,15 +1974,17 @@ details[open] > summary { margin-bottom: 10px; }
       var card = rowEl('div', 'log-entry');
       var h = rowEl('h3'); h.textContent = (e.location || 'No location') + ' · ' + fmtDate(e.date);
       var meta = rowEl('p', 'log-meta');
-      meta.textContent = 'Total ' + Number(e.total).toFixed(e.dec || 2) + ' m³ · ' + e.bags + ' bags × ' + e.litres + ' L at ' + e.fill + '%' + (e.notes ? ' · ' + e.notes : '');
+      var shares = e.split ? ' · Split ' + GB_MAIN.map(function (k) { return k + ' ' + e.split[k]; }).join(', ') + ' %' : '';
+      var liqs = (e.dLitres ? [e.dLitres + ' L cooking oil'] : []).concat((e.liquids || []).map(function (x) { return x.l + ' L ' + x.name.toLowerCase(); }));
+      meta.textContent = 'Total ' + Number(e.total).toFixed(e.dec || 2) + ' m³ · ' + e.bags + ' bags × ' + e.litres + ' L at ' + e.fill + '%' + shares + (liqs.length ? ' · ' + liqs.join(', ') : '') + (e.notes ? ' · ' + e.notes : '');
       var det = document.createElement('details');
-      var sm = document.createElement('summary'); sm.textContent = 'Show figures';
-      var pre = rowEl('pre'); pre.textContent = e.text;
+      var sm = document.createElement('summary'); sm.textContent = 'Show details';
+      var pre = rowEl('pre'); pre.textContent = logDetail(e);
       det.appendChild(sm); det.appendChild(pre);
       var act = rowEl('div', 'actions');
       function btn(t, fn) { var b = rowEl('button', 'btn'); b.type = 'button'; b.textContent = t; b.addEventListener('click', fn); act.appendChild(b); return b; }
       btn('Copy', function () {
-        var txt = (e.location || '') + ' ' + fmtDate(e.date) + '\n' + e.text;
+        var txt = (e.location || '') + ' ' + fmtDate(e.date) + '\n' + logDetail(e);
         try { navigator.clipboard.writeText(txt); } catch (x) { /* ignore */ }
       });
       btn('Use these settings', function () {
@@ -1999,6 +2001,26 @@ details[open] > summary { margin-bottom: 10px; }
       card.appendChild(h); card.appendChild(meta); card.appendChild(det); card.appendChild(act);
       host.appendChild(card);
     });
+  }
+  function logDetail(e) {
+    if (!e.rows) return e.text || '';
+    var out = [];
+    out.push('Bags: ' + e.bags + ' × ' + e.litres + ' L at ' + e.fill + '% = ' + Number(e.bagM3 !== undefined ? e.bagM3 : e.bags * e.litres * e.fill / 100000).toFixed(2) + ' m³');
+    out.push('');
+    e.rows.forEach(function (x) {
+      var extra = '';
+      if (e.split && e.split[x.key] !== undefined) extra = ' (' + e.split[x.key] + '%)';
+      else if (x.key === 'D') extra = e.dLitres ? ' (' + e.dLitres + ' L)' : '';
+      else extra = ' (entered)';
+      out.push(x.key + ' ' + GB_CATS[x.key] + ': ' + Number(x.m3).toFixed(x.key === 'D' ? 3 : 2) + ' m³' + extra);
+    });
+    out.push('Total: ' + Number(e.total).toFixed(e.dec || 2) + ' m³');
+    if (e.liquids && e.liquids.length) {
+      out.push('');
+      out.push('Not garbage:');
+      e.liquids.forEach(function (x) { out.push(x.name + ': ' + x.l + ' L (' + (x.l / 1000).toFixed(3) + ' m³)'); });
+    }
+    return out.join('\n');
   }
   function openSheet() {
     if (!gbLast) { setMsg('#gb-msg', 'Enter the bags first, then save.', 'warn'); return; }
