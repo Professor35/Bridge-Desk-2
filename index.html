@@ -139,6 +139,18 @@ input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px
 .gl-row .name { font-size: 15px; }
 .gl-row .val { font: 600 26px/1 var(--font-display); letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
 .gl-row .val small { font: 500 13px var(--font-mono); color: var(--muted); margin-left: 4px; }
+input[type=number].has-unit { -moz-appearance: textfield; appearance: textfield; padding-right: 58px; }
+input[type=number].has-unit::-webkit-outer-spin-button, input[type=number].has-unit::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.inwrap { position: relative; }
+.inwrap .u { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font: 500 14px var(--font-mono); color: var(--muted); pointer-events: none; }
+.sheet { position: fixed; inset: 0; z-index: 50; background: rgba(0, 0, 0, 0.55); display: grid; place-items: center; padding: 16px; overflow: auto; }
+.sheet[hidden] { display: none; }
+.sheet-card { width: 100%; max-width: 480px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 14px; }
+.sheet-card h2 { font: 600 22px/1.1 var(--font-display); letter-spacing: 0.08em; text-transform: uppercase; }
+.log-entry { border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); padding: 14px; display: grid; gap: 8px; }
+.log-entry h3 { font: 600 20px/1.15 var(--font-display); letter-spacing: 0.04em; text-transform: uppercase; }
+.log-entry pre { margin: 0; white-space: pre-wrap; font: 500 14px/1.5 var(--font-mono); }
+.log-meta { color: var(--muted); font-size: 14px; }
 .gl-row.is-total { background: var(--surface); }
 .gl-sub { padding: 8px 14px; border-top: 1px solid var(--line); background: var(--surface); font: 500 12px var(--font-mono); letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
 .gl-row .val small { white-space: nowrap; }
@@ -576,7 +588,10 @@ details[open] > summary { margin-bottom: 10px; }
     <!-- Garbage -->
     <section id="view-garbage" hidden aria-labelledby="garbage-title">
       <div class="tool-head">
-        <div class="tool-bar"><button class="btn" type="button" id="back-garbage">‹ Duties</button></div>
+        <div class="tool-bar">
+          <button class="btn" type="button" id="back-garbage">‹ Duties</button>
+          <button class="btn" type="button" id="top-garlog">Garbage log</button>
+        </div>
         <h1 id="garbage-title" tabindex="-1">Garbage</h1>
         <p class="lede">Bags discharged in. Volume by category out.</p>
       </div>
@@ -585,7 +600,7 @@ details[open] > summary { margin-bottom: 10px; }
           <div class="grid2">
             <div class="field">
               <label for="gb-bags">Bags discharged</label>
-              <input type="number" id="gb-bags" inputmode="numeric" step="1" min="0" autocomplete="off" placeholder="0">
+              <div class="inwrap"><input type="number" class="has-unit" id="gb-bags" inputmode="numeric" step="1" min="0" autocomplete="off" placeholder="0"><span class="u">bags</span></div>
             </div>
             <div class="field">
               <label for="gb-size">Bag size</label>
@@ -599,13 +614,14 @@ details[open] > summary { margin-bottom: 10px; }
           </div>
           <div class="field" id="gb-custom-field" hidden>
             <label for="gb-custom">Bag size in litres</label>
-            <input type="number" id="gb-custom" inputmode="decimal" step="any" min="0" autocomplete="off">
+            <div class="inwrap"><input type="number" class="has-unit" id="gb-custom" inputmode="decimal" step="any" min="0" autocomplete="off"><span class="u">L</span></div>
           </div>
 
           <div class="gl-list" id="gb-results" aria-live="polite"></div>
           <p class="msg" id="gb-msg"></p>
           <div class="actions">
-            <button class="btn btn-primary" type="button" id="gb-copy">Copy figures</button>
+            <button class="btn btn-primary" type="button" id="gb-save">Save to log</button>
+            <button class="btn" type="button" id="gb-copy">Copy figures</button>
           </div>
 
           <details id="gb-tune">
@@ -650,6 +666,16 @@ details[open] > summary { margin-bottom: 10px; }
       <p class="foot">Estimates only. Volume = bags × bag size × fill × share. Oil, sludge, bilge water and sewage are not Annex V garbage: they belong in the Oil Record Book or under Annex IV, as your company procedures say. Check the figures against what the port receipt and your Garbage Record Book require.</p>
     </section>
 
+    <!-- Garbage log -->
+    <section id="view-garlog" hidden aria-labelledby="garlog-title">
+      <div class="tool-head">
+        <div class="tool-bar"><button class="btn" type="button" id="back-garlog">‹ Garbage</button></div>
+        <h1 id="garlog-title" tabindex="-1">Garbage log</h1>
+        <p class="lede">Every discharge you saved, newest first. Saved on this device only.</p>
+      </div>
+      <div class="panels" id="garlog-list"></div>
+    </section>
+
     <!-- AI settings -->
     <section id="view-settings" hidden aria-labelledby="settings-title">
       <div class="tool-head">
@@ -689,6 +715,28 @@ details[open] > summary { margin-bottom: 10px; }
       </div>
     </section>
   </main>
+  <div class="sheet" id="gb-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="gb-sheet-title">
+    <div class="sheet-card">
+      <h2 id="gb-sheet-title">Save to log</h2>
+      <div class="field">
+        <label for="gb-loc">Location (port or position)</label>
+        <input type="text" id="gb-loc" autocomplete="off" placeholder="e.g. Antibes">
+      </div>
+      <div class="field">
+        <label for="gb-date">Date</label>
+        <input type="date" id="gb-date">
+      </div>
+      <div class="field">
+        <label for="gb-notes">Notes (optional)</label>
+        <input type="text" id="gb-notes" autocomplete="off" placeholder="e.g. receipt no. or facility">
+      </div>
+      <p class="msg" id="gb-sheet-msg"></p>
+      <div class="actions">
+        <button class="btn btn-primary" type="button" id="gb-sheet-save">Save</button>
+        <button class="btn" type="button" id="gb-sheet-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
   <div id="photo-viewer" hidden>
     <div class="pv-bar"><button class="btn" type="button" id="pv-close">Close</button></div>
     <div class="pv-scroll"><img id="pv-img" alt="Deviation card photo"></div>
@@ -1766,28 +1814,31 @@ details[open] > summary { margin-bottom: 10px; }
   function gbSave() {
     try { localStorage.setItem('bridge-desk-garbage', JSON.stringify(gb)); } catch (e) { /* optional */ }
   }
-  function gbField(host, id, label, val, step) {
+  function gbField(host, id, label, val, step, unit) {
     var f = rowEl('div', 'field');
     var l = document.createElement('label'); l.setAttribute('for', id); l.textContent = label;
+    var w = rowEl('div', 'inwrap');
     var i = document.createElement('input');
-    i.type = 'number'; i.id = id; i.inputMode = 'decimal'; i.step = step; i.min = '0'; i.setAttribute('autocomplete', 'off');
+    i.type = 'number'; i.id = id; i.inputMode = 'decimal'; i.step = step; i.min = '0'; i.className = 'has-unit'; i.setAttribute('autocomplete', 'off');
     if (val !== '' && val !== undefined) i.value = val;
-    f.appendChild(l); f.appendChild(i); host.appendChild(f);
+    var u = rowEl('span', 'u'); u.textContent = unit;
+    w.appendChild(i); w.appendChild(u);
+    f.appendChild(l); f.appendChild(w); host.appendChild(f);
   }
   function gbBuild() {
     var sp = $('#gb-split'); sp.textContent = '';
-    GB_MAIN.forEach(function (k) { gbField(sp, 'gb-s-' + k, k + ' ' + GB_CATS[k], gb.split[k], 'any'); });
+    GB_MAIN.forEach(function (k) { gbField(sp, 'gb-s-' + k, k + ' ' + GB_CATS[k], gb.split[k], 'any', '%'); });
     var ex = $('#gb-extra'); ex.textContent = '';
-    GB_EXTRA.forEach(function (k) { gbField(ex, 'gb-x-' + k, k + ' ' + GB_CATS[k], '', 'any'); });
+    GB_EXTRA.forEach(function (k) { gbField(ex, 'gb-x-' + k, k + ' ' + GB_CATS[k], '', 'any', 'm³'); });
     var lq = $('#gb-liqs'); lq.textContent = '';
-    GB_LIQ.forEach(function (x) { gbField(lq, 'gb-l-' + x[0], x[1], '', 'any'); });
+    GB_LIQ.forEach(function (x) { gbField(lq, 'gb-l-' + x[0], x[1], '', 'any', 'L'); });
     $('#gb-bags').value = gb.bags;
     $('#gb-size').value = gb.size === '60' || gb.size === '120' || gb.size === '240' ? gb.size : 'custom';
     $('#gb-custom').value = gb.custom;
     $('#gb-fill').value = gb.fill;
     $('#gb-preset').value = gb.preset;
   }
-  var gbText = '';
+  var gbText = '', gbLast = null;
   function renderGarbage() {
     var sizeSel = $('#gb-size').value;
     $('#gb-custom-field').hidden = sizeSel !== 'custom';
@@ -1826,6 +1877,7 @@ details[open] > summary { margin-bottom: 10px; }
     note.className = 'note' + (rt === 100 ? '' : ' warn');
     var bb = bad || splitBad || exBad || liqBad;
     var nb = bags.state === 'ok' ? bags.value : 0;
+    gbLast = null;
     if (bb) { setMsg('#gb-msg', bb.msg, 'bad'); gbText = ''; return; }
     if (litres.state !== 'ok') { setMsg('#gb-msg', 'Enter the bag size.', ''); gbText = ''; return; }
     var res = garbageVolumes(nb, litres.value, gb.fill, split, extras);
@@ -1855,6 +1907,7 @@ details[open] > summary { margin-bottom: 10px; }
       });
     }
     gbText = lines.join('\n');
+    if (nb > 0) gbLast = { bags: nb, litres: litres.value, fill: gb.fill, preset: gb.preset, split: JSON.parse(JSON.stringify(gb.split)), rows: res.rows, total: res.total, dec: dec, liquids: liqOther, text: gbText };
     var msg = '', cls = '';
     if (nb === 0) msg = 'Enter the number of bags.';
     else if (rt !== 100) { msg = 'The shares add up to ' + rt + '%. Fix them under Fine tune.'; cls = 'warn'; }
@@ -1889,6 +1942,93 @@ details[open] > summary { margin-bottom: 10px; }
   });
   gbBuild(); renderGarbage();
 
+  /* ---------- Garbage log ---------- */
+  var GB_LOGKEY = 'bridge-desk-garbage-log';
+  function logLoad() {
+    try { var a = JSON.parse(localStorage.getItem(GB_LOGKEY) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; }
+  }
+  function logStore(a) {
+    try { localStorage.setItem(GB_LOGKEY, JSON.stringify(a)); return true; } catch (e) { return false; }
+  }
+  var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function fmtDate(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || '');
+    return m ? m[3] + ' ' + MONTHS[Number(m[2]) - 1] + ' ' + m[1] : (iso || '');
+  }
+  function todayISO() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function renderLogCount() {
+    var n = logLoad().length;
+    $('#top-garlog').textContent = n ? 'Garbage log (' + n + ')' : 'Garbage log';
+  }
+  function renderLog() {
+    var list = logLoad().slice().sort(function (a, b) { return (b.date || '').localeCompare(a.date || '') || (b.ts || 0) - (a.ts || 0); });
+    var host = $('#garlog-list'); host.textContent = '';
+    if (!list.length) {
+      var p = rowEl('p', 'note'); p.textContent = 'Nothing saved yet. Work out a discharge on the Garbage page and press Save to log.';
+      host.appendChild(p); return;
+    }
+    list.forEach(function (e) {
+      var card = rowEl('div', 'log-entry');
+      var h = rowEl('h3'); h.textContent = (e.location || 'No location') + ' · ' + fmtDate(e.date);
+      var meta = rowEl('p', 'log-meta');
+      meta.textContent = 'Total ' + Number(e.total).toFixed(e.dec || 2) + ' m³ · ' + e.bags + ' bags × ' + e.litres + ' L at ' + e.fill + '%' + (e.notes ? ' · ' + e.notes : '');
+      var det = document.createElement('details');
+      var sm = document.createElement('summary'); sm.textContent = 'Show figures';
+      var pre = rowEl('pre'); pre.textContent = e.text;
+      det.appendChild(sm); det.appendChild(pre);
+      var act = rowEl('div', 'actions');
+      function btn(t, fn) { var b = rowEl('button', 'btn'); b.type = 'button'; b.textContent = t; b.addEventListener('click', fn); act.appendChild(b); return b; }
+      btn('Copy', function () {
+        var txt = (e.location || '') + ' ' + fmtDate(e.date) + '\n' + e.text;
+        try { navigator.clipboard.writeText(txt); } catch (x) { /* ignore */ }
+      });
+      btn('Use these settings', function () {
+        gb.bags = String(e.bags); gb.fill = e.fill; gb.preset = e.preset || 'custom';
+        gb.size = String(e.litres); gb.custom = String(e.litres);
+        GB_MAIN.forEach(function (k) { if (e.split && isFinite(e.split[k])) gb.split[k] = e.split[k]; });
+        gbBuild(); renderGarbage(); go('garbage');
+      });
+      var del = btn('Delete', function () {
+        if (del.getAttribute('data-sure') !== '1') { del.setAttribute('data-sure', '1'); del.textContent = 'Tap again to delete'; return; }
+        logStore(logLoad().filter(function (x) { return x.id !== e.id; }));
+        renderLog(); renderLogCount();
+      });
+      card.appendChild(h); card.appendChild(meta); card.appendChild(det); card.appendChild(act);
+      host.appendChild(card);
+    });
+  }
+  function openSheet() {
+    if (!gbLast) { setMsg('#gb-msg', 'Enter the bags first, then save.', 'warn'); return; }
+    $('#gb-date').value = todayISO();
+    setMsg('#gb-sheet-msg', '');
+    $('#gb-sheet').hidden = false;
+    $('#gb-loc').focus();
+  }
+  function closeSheet() { $('#gb-sheet').hidden = true; }
+  $('#gb-save').addEventListener('click', openSheet);
+  $('#gb-sheet-cancel').addEventListener('click', closeSheet);
+  $('#gb-sheet').addEventListener('click', function (ev) { if (ev.target === $('#gb-sheet')) closeSheet(); });
+  $('#gb-sheet-save').addEventListener('click', function () {
+    var loc = $('#gb-loc').value.trim(), date = $('#gb-date').value;
+    if (!loc) { setMsg('#gb-sheet-msg', 'Add the location.', 'bad'); return; }
+    if (!date) { setMsg('#gb-sheet-msg', 'Choose the date.', 'bad'); return; }
+    if (!gbLast) { closeSheet(); return; }
+    var entry = JSON.parse(JSON.stringify(gbLast));
+    entry.id = String(Date.now()) + Math.random().toString(36).slice(2, 6);
+    entry.ts = Date.now(); entry.location = loc; entry.date = date; entry.notes = $('#gb-notes').value.trim();
+    var all = logLoad(); all.push(entry);
+    if (!logStore(all)) { setMsg('#gb-sheet-msg', 'Could not save on this device.', 'bad'); return; }
+    $('#gb-loc').value = ''; $('#gb-notes').value = '';
+    closeSheet(); renderLogCount();
+    setMsg('#gb-msg', 'Saved to the Garbage log.', '');
+  });
+  $('#top-garlog').addEventListener('click', function () { renderLog(); go('garlog'); });
+  $('#back-garlog').addEventListener('click', function () { go('garbage'); });
+  renderLogCount();
+
   /* ---------- Views ---------- */
   function show(name) {
     $('#view-hub').hidden = name !== 'hub';
@@ -1896,6 +2036,7 @@ details[open] > summary { margin-bottom: 10px; }
     $('#view-logbook').hidden = name !== 'logbook';
     $('#view-bearing').hidden = name !== 'bearing';
     $('#view-garbage').hidden = name !== 'garbage';
+    $('#view-garlog').hidden = name !== 'garlog';
     $('#view-settings').hidden = name !== 'settings';
     window.scrollTo(0, 0);
     var h = $('#' + (name === 'hub' ? 'hub' : name) + '-title');
@@ -1908,7 +2049,8 @@ details[open] > summary { margin-bottom: 10px; }
   function route() {
     var h = '';
     try { h = (location.hash || '').replace('#', ''); } catch (e) { h = ''; }
-    show(['compass', 'logbook', 'bearing', 'garbage', 'settings'].indexOf(h) >= 0 ? h : 'hub');
+    if (h === 'garlog') renderLog();
+    show(['compass', 'logbook', 'bearing', 'garbage', 'garlog', 'settings'].indexOf(h) >= 0 ? h : 'hub');
   }
   document.querySelectorAll('[data-open]').forEach(function (b) {
     b.addEventListener('click', function () { go(b.getAttribute('data-open')); });
