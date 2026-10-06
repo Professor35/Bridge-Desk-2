@@ -866,7 +866,21 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
           </div>
         </section>
         <section class="panel" id="pp-main" hidden aria-label="Route">
-          <div id="pp-map" role="application" aria-label="Route map" style="margin-top:0"></div>
+          <div class="grid2" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));align-items:end">
+            <div class="field"><label for="pp-speed">Speed</label><div class="inwrap"><input type="number" class="has-unit" id="pp-speed" min="1" max="60" step="0.5" inputmode="decimal"><span class="u">kn</span></div></div>
+            <div class="field"><label for="pp-off">Ship's clock at departure</label><select id="pp-off"></select></div>
+            <div class="field"><label for="pp-dep">Departure (UTC)</label><input type="datetime-local" id="pp-dep"></div>
+          </div>
+          <div class="chips" role="group" aria-label="Map layers" style="margin-top:14px">
+            <label class="chip-toggle"><input type="checkbox" id="pp-tl" checked><span><i class="sw" style="background:#d6336c"></i>3 and 12 nm</span></label>
+            <label class="chip-toggle"><input type="checkbox" id="pp-ta" checked><span><i class="sw" style="background:#e8590c"></i>Special areas</span></label>
+            <label class="chip-toggle"><input type="checkbox" id="pp-tv" checked><span><i class="sw" style="background:#7048e8"></i>VTS and reporting</span></label>
+            <label class="chip-toggle"><input type="checkbox" id="pp-tr"><span><i class="sw" style="background:#c92a2a"></i>Restricted areas</span></label>
+            <label class="chip-toggle"><input type="checkbox" id="pp-tw" checked><span><i class="sw" style="background:#f08c00"></i>Nav warnings</span></label>
+            <label class="chip-toggle"><input type="checkbox" id="pp-tn"><span><i class="sw" style="background:#0b7285"></i>NAVTEX</span></label>
+            <label class="chip-toggle"><input type="checkbox" id="pp-ts"><span>Sea marks</span></label>
+          </div>
+          <div id="pp-map" role="application" aria-label="Route map"></div>
           <p class="msg" id="pp-mapmsg" role="status"></p>
           <p class="msg" id="pp-osmmsg" role="status"></p>
           <div class="field" style="margin-top:12px">
@@ -887,19 +901,6 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
               <div class="stat"><span class="k">To go</span><span class="big" id="pp-togo" style="font-size:24px">—</span><span class="sub" id="pp-eta"></span></div>
             </div>
           </details>
-          <details id="pp-layers">
-            <summary>Map layers</summary>
-          <div class="chips" role="group" aria-label="Map layers">
-            <label class="chip-toggle"><input type="checkbox" id="pp-tl" checked><span><i class="sw" style="background:#d6336c"></i>3 and 12 nm</span></label>
-            <label class="chip-toggle"><input type="checkbox" id="pp-ta" checked><span><i class="sw" style="background:#e8590c"></i>Special areas</span></label>
-            <label class="chip-toggle"><input type="checkbox" id="pp-tv" checked><span><i class="sw" style="background:#7048e8"></i>VTS and reporting</span></label>
-            <label class="chip-toggle"><input type="checkbox" id="pp-tr"><span><i class="sw" style="background:#c92a2a"></i>Restricted areas</span></label>
-            <label class="chip-toggle"><input type="checkbox" id="pp-tw" checked><span><i class="sw" style="background:#f08c00"></i>Nav warnings</span></label>
-            <label class="chip-toggle"><input type="checkbox" id="pp-tn"><span><i class="sw" style="background:#0b7285"></i>NAVTEX</span></label>
-            <label class="chip-toggle"><input type="checkbox" id="pp-ts"><span>Sea marks</span></label>
-          </div>
-          <p class="note">Tap the map to see the special areas and rules at that spot. Tap a marker to move the ship there.</p>
-          </details>
           <details id="pp-spot-wrap">
             <summary>MARPOL at this point</summary>
             <div id="pp-spot"></div>
@@ -910,12 +911,8 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
             <div id="pp-legs"></div>
           </details>
           <details id="pp-opt">
-            <summary>Speed, departure and options</summary>
+            <summary>More options</summary>
             <div class="form">
-          <div class="grid2">
-            <div class="field"><label for="pp-speed">Speed</label><div class="inwrap"><input type="number" class="has-unit" id="pp-speed" min="1" max="60" step="0.5" inputmode="decimal"><span class="u">kn</span></div></div>
-            <div class="field"><label for="pp-dep">Departure (UTC)</label><input type="datetime-local" id="pp-dep"></div>
-          </div>
               <label class="chip-toggle"><input type="checkbox" id="pp-ls" checked><span>Always on low-sulphur fuel (0.10%)</span></label>
               <p class="note">Untick to get fuel changeover reminders at emission control area boundaries.</p>
               <div class="field" id="pp-view-wrap" hidden>
@@ -927,11 +924,7 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
                 <input type="range" id="pp-near" min="2" max="30" step="1" value="10">
               </div>
               <p class="note">How far each side of the track the app looks in your publications for VTS, reporting, regulations and restricted areas.</p>
-              <div class="field">
-                <label for="pp-off">Ship's clock at departure</label>
-                <select id="pp-off"></select>
-              </div>
-              <p class="note">Set this to the time the yacht keeps when leaving. It starts at the zone for the departure longitude, which can differ from legal time in port. The clock then moves one hour at each time zone boundary by longitude (15° bands).</p>
+              <p class="note">Ship's clock at departure, at the top, is the time the yacht keeps when leaving. It starts at the zone for the departure longitude, which can differ from legal time in port. The clock then moves one hour at each time zone boundary by longitude (15° bands).</p>
             </div>
           </details>
         </section>
