@@ -259,6 +259,14 @@ details[open] > summary { margin-bottom: 10px; }
 input[type="datetime-local"] { width: 100%; background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; font: 500 16px/1.2 var(--font-mono); min-height: 44px; }
 #pp-map { height: min(56vh, 520px); min-height: 320px; margin-top: 4px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #cfd8dc; }
 .ev-list { display: grid; gap: 8px; }
+.tot { margin-top: 12px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.tot-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 10px 14px; border-top: 1px solid var(--line); background: var(--surface-2); }
+.tot-row:first-child { border-top: 0; }
+.tot-row .k { font: 500 12px/1.2 var(--font-mono); letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+.tot-row .v { text-align: right; min-width: 0; }
+.tot-row b { display: block; font: 600 24px/1.1 var(--font-display); letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+.tot-row small { display: block; font-size: 13px; color: var(--muted); }
+.tot-row.is-main b { color: var(--accent-text); }
 .fold-head { cursor: pointer; margin-bottom: 0; user-select: none; flex-wrap: nowrap; }
 .fold-head .pill { white-space: nowrap; }
 .fold-head h2 { min-width: 0; }
@@ -870,6 +878,11 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
             <div class="field"><label for="pp-speed">Speed</label><div class="inwrap"><input type="number" class="has-unit" id="pp-speed" min="1" max="60" step="0.5" inputmode="decimal"><span class="u">kn</span></div></div>
             <div class="field"><label for="pp-off">Ship's clock at departure</label><select id="pp-off"></select></div>
             <div class="field"><label for="pp-dep">Departure (UTC)</label><input type="datetime-local" id="pp-dep"></div>
+          </div>
+          <div class="tot" id="pp-total" aria-live="polite">
+            <div class="tot-row"><span class="k">Distance</span><span class="v"><b id="pp-t-dist">—</b><small id="pp-t-legs"></small></span></div>
+            <div class="tot-row"><span class="k">Time</span><span class="v"><b id="pp-t-dur">—</b><small id="pp-t-spd"></small></span></div>
+            <div class="tot-row is-main"><span class="k">ETA</span><span class="v"><b id="pp-t-eta">—</b><small id="pp-t-ship"></small></span></div>
           </div>
           <div class="chips" role="group" aria-label="Map layers" style="margin-top:14px">
             <label class="chip-toggle"><input type="checkbox" id="pp-tl" checked><span><i class="sw" style="background:#d6336c"></i>3 and 12 nm</span></label>
@@ -3906,6 +3919,7 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
     var mb = $('#pp-more'), mshown = 0; mb.textContent = '';
     pp.more.forEach(function (e) { if (e.d < rg[0] - 0.01 || e.d > rg[1] + 0.01) return; mshown++; mb.appendChild(ppPubRow(e, null)); });
     $('#pp-more-wrap').hidden = !mshown; $('#pp-more-sum').textContent = 'More from your publications (' + mshown + ')';
+    ppTotals();
     ppDrawRoute();
     ppMove(Math.max(rg[0], Math.min(rg[1], pp.d)));
   }
@@ -3913,6 +3927,15 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
     var rg = ppRange(), W = Math.max(0.5, (rg[1] - rg[0]) / 150), best = -1, bd = 1e9;
     pp.ev.forEach(function (e, i) { var x = Math.abs(e.d - d); if (x <= W && x < bd) { bd = x; best = i; } });
     return best;
+  }
+  function ppTotals() {
+    var R = pp.R, rg = ppRange(), h = hoursAt(R, pp.H, rg[1]) - hoursAt(R, pp.H, rg[0]), e = routeAt(R, rg[1]), z = ppOff(rg[1], e.lon), nm = rg[1] - rg[0];
+    $('#pp-t-dist').textContent = nm.toFixed(1) + ' nm';
+    $('#pp-t-legs').textContent = pp.view >= 0 ? 'This section' : R.legs.length + (R.legs.length === 1 ? ' leg' : ' legs');
+    $('#pp-t-dur').textContent = fmtDur(h);
+    $('#pp-t-spd').textContent = h > 0 ? 'Average ' + (nm / h).toFixed(1) + ' kn' : '';
+    $('#pp-t-eta').textContent = fmtDT(ppTime(rg[1]), 0) + ' UTC';
+    $('#pp-t-ship').textContent = 'Ship\'s time ' + fmtDT(ppTime(rg[1]), z) + ' (' + zoneName(z) + ')';
   }
   function ppMove(d) {
     var R = pp.R, rg = ppRange();
@@ -4097,7 +4120,7 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
     pp.dep = t; if (pp.R) { ppRender(); ppGmdss(); ppWarnCheck(); }
   });
   (function () { var s = $('#pp-off'); for (var z = -11; z <= 12; z++) { var o = el('option', '', zoneName(z)); o.value = String(z); s.appendChild(o); } })();
-  $('#pp-off').addEventListener('change', function () { pp.off = Number(this.value); if (pp.R) ppMove(pp.d); });
+  $('#pp-off').addEventListener('change', function () { pp.off = Number(this.value); if (pp.R) { ppTotals(); ppMove(pp.d); } });
   function ppNearLabel() { $('#pp-near-lab').textContent = 'Search corridor: ' + pp.corridor + ' nm each side of the track'; $('#pp-more-note').textContent = 'Pilotage at the ends of the route, regulations, and restricted or prohibited areas within ' + pp.corridor + ' nm of the track.'; }
   $('#pp-near').value = String(pp.corridor); ppNearLabel();
   $('#pp-near').addEventListener('input', function () { pp.corridor = Number(this.value); ppNearLabel(); });
