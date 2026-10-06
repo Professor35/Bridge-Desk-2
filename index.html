@@ -91,10 +91,22 @@ fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 .topbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding-block: 10px 14px; border-bottom: 1px solid var(--line); }
 .brand { display: inline-flex; align-items: center; gap: 10px; background: none; border: 0; padding: 2px 0; cursor: pointer; font: 400 26px/1 "Marcellus", Georgia, serif; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg); }
 .brand-mark { width: 34px; height: 34px; fill: none; stroke-linecap: round; flex: none; }
-.topbar-right { flex: 1 0 100%; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; }
-.topbar-right #top-ai { justify-self: start; }
-.topbar-right #night { justify-self: end; }
-.topbar-right .clock { justify-self: center; }
+.topbar { flex-wrap: nowrap; }
+.topbar-right { display: flex; align-items: center; gap: 10px; flex: none; }
+@media (max-width: 420px) { .topbar .brand { font-size: 20px; letter-spacing: 0.12em; gap: 8px; } .topbar .brand-mark { width: 28px; height: 28px; } .topbar .clock { font-size: 12px; } .topbar #night { padding: 0 12px; } }
+.drawer { position: fixed; inset: 0; z-index: 60; background: rgba(0, 0, 0, 0.55); }
+.drawer[hidden] { display: none; }
+.drawer-panel { position: absolute; inset: 0 auto 0 0; width: min(86vw, 320px); background: var(--surface); border-right: 1px solid var(--line); padding: 18px 14px; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; }
+.drawer-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 6px 12px; margin-bottom: 8px; border-bottom: 1px solid var(--line); }
+.drawer-head .brand { cursor: default; font-size: 22px; }
+.drawer-label { padding: 12px 8px 4px; font: 500 11px/1.2 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.drawer-item { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 10px; border: 0; border-radius: 8px; background: none; color: var(--fg); font: 500 16px var(--font-body); text-align: left; cursor: pointer; }
+.drawer-item:hover, .drawer-item[aria-current="page"] { background: var(--surface-2); }
+.drawer-item[aria-current="page"] { color: var(--accent-text); }
+.drawer-item svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.tile.is-dept { flex-direction: row; align-items: center; gap: 16px; }
+.tile.is-dept .glyph { width: 52px; height: 52px; flex: none; }
+.tile.is-dept .tile-text { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .clock { font: 500 13px/1 var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
 
 .btn { text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 0 16px; border-radius: 6px; border: 1px solid var(--line); background: var(--surface-2); cursor: pointer; font: 500 14px var(--font-body); color: var(--fg); transition: border-color 0.15s; text-align: center; }
@@ -327,9 +339,8 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
 
 <div class="app">
   <header class="topbar">
-    <button class="brand" id="home" type="button" aria-label="Sumner, home"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><line x1="14" y1="82" x2="76" y2="27" stroke="var(--fg)" stroke-width="5"/><circle cx="27" cy="70.5" r="6.5" fill="var(--bg)" stroke="var(--accent)" stroke-width="5"/><circle cx="43" cy="56.3" r="6.5" fill="var(--bg)" stroke="var(--accent)" stroke-width="5"/><circle cx="59" cy="42.1" r="6.5" fill="var(--bg)" stroke="var(--accent)" stroke-width="5"/><path d="M84 6 L87.4 16.6 L98 20 L87.4 23.4 L84 34 L80.6 23.4 L70 20 L80.6 16.6 Z" fill="var(--accent)"/></svg><span>Sumner</span></button>
+    <button class="brand" id="home" type="button" aria-label="Sumner menu" aria-haspopup="dialog" aria-controls="drawer"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><line x1="14" y1="82" x2="76" y2="27" stroke="var(--fg)" stroke-width="5"/><circle cx="27" cy="70.5" r="6.5" fill="var(--bg)" stroke="var(--accent)" stroke-width="5"/><circle cx="43" cy="56.3" r="6.5" fill="var(--bg)" stroke="var(--accent)" stroke-width="5"/><circle cx="59" cy="42.1" r="6.5" fill="var(--bg)" stroke="var(--accent)" stroke-width="5"/><path d="M84 6 L87.4 16.6 L98 20 L87.4 23.4 L84 34 L80.6 23.4 L70 20 L80.6 16.6 Z" fill="var(--accent)"/></svg><span>Sumner</span></button>
     <div class="topbar-right">
-      <button class="btn" id="top-ai" type="button">AI</button>
       <span class="clock" id="utc" aria-label="UTC time">--:--:-- UTC</span>
       <button class="btn" id="night" type="button" aria-pressed="false">Night</button>
     </div>
@@ -339,8 +350,38 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
     <!-- Hub -->
     <section id="view-hub" aria-labelledby="hub-title">
       <div class="hub-head">
-        <h1 id="hub-title" tabindex="-1">Duties</h1>
-        <p class="muted">Each tile opens one focused tool.</p>
+        <h1 id="hub-title" tabindex="-1">Departments</h1>
+        <p class="muted">Choose where you work.</p>
+      </div>
+      <div class="tiles" style="grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))">
+        <button class="tile is-dept" type="button" data-open="bridge">
+          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="9"/><circle cx="24" cy="24" r="17"/><path d="M24 3v12M24 33v12M3 24h12M33 24h12M9.2 9.2l8.4 8.4M30.4 30.4l8.4 8.4M38.8 9.2l-8.4 8.4M17.6 30.4l-8.4 8.4"/></svg>
+          <span class="tile-text"><span class="tile-name">Bridge</span><span class="tile-desc">Compass error, passage planning, MARPOL and watchkeeping.</span></span>
+        </button>
+        <button class="tile is-dept" type="button" data-open="deck">
+          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="9" r="4"/><path d="M24 13v30M14 21h20M7 30c2 8 8 13 17 13s15-5 17-13M7 30l-3 4M7 30l5 2M41 30l3 4M41 30l-5 2"/></svg>
+          <span class="tile-text"><span class="tile-name">Deck</span><span class="tile-desc">Deck inventory and deck tools.</span><span class="chip" style="align-self:flex-start">Planned</span></span>
+        </button>
+        <button class="tile is-dept" type="button" data-open="engine">
+          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="7"/><path d="M24 4v7M24 37v7M4 24h7M37 24h7M9.9 9.9l5 5M33.1 33.1l5 5M38.1 9.9l-5 5M14.9 33.1l-5 5"/><circle cx="24" cy="24" r="14"/></svg>
+          <span class="tile-text"><span class="tile-name">Engineering</span><span class="tile-desc">Tools for the engine room.</span><span class="chip" style="align-self:flex-start">Planned</span></span>
+        </button>
+        <button class="tile is-dept" type="button" data-open="interior">
+          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 40V20M42 40V28a6 6 0 0 0-6-6H6M6 34h36"/><rect x="10" y="14" width="12" height="8" rx="3"/></svg>
+          <span class="tile-text"><span class="tile-name">Interior</span><span class="tile-desc">Tools for the interior team.</span><span class="chip" style="align-self:flex-start">Planned</span></span>
+        </button>
+        <button class="tile is-dept" type="button" data-open="galley">
+          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><path d="M9 22h30v10a9 9 0 0 1-9 9H18a9 9 0 0 1-9-9zM5 22h38M18 14c0-3 3-3 3-6M27 14c0-3 3-3 3-6"/></svg>
+          <span class="tile-text"><span class="tile-name">Galley</span><span class="tile-desc">Tools for the galley.</span><span class="chip" style="align-self:flex-start">Planned</span></span>
+        </button>
+      </div>
+    </section>
+
+    <section id="view-bridge" hidden aria-labelledby="bridge-title">
+      <div class="tool-head">
+        <div class="tool-bar"><button class="btn" type="button" data-open="hub">‹ Home</button></div>
+        <h1 id="bridge-title" tabindex="-1">Bridge</h1>
+        <p class="lede">Each tile opens one focused tool.</p>
       </div>
       <div class="tiles">
         <button class="tile" type="button" data-open="compass">
@@ -369,11 +410,86 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
         </div>
       </div>
     </section>
+    <section id="view-deck" hidden aria-labelledby="deck-title">
+      <div class="tool-head">
+        <div class="tool-bar"><button class="btn" type="button" data-open="hub">‹ Home</button></div>
+        <h1 id="deck-title" tabindex="-1">Deck</h1>
+        <p class="lede">Nothing here yet. This department is planned.</p>
+      </div>
+      <div class="tiles">
+        <div class="tile is-planned">
+          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="9" r="4"/><path d="M24 13v30M14 21h20M7 30c2 8 8 13 17 13s15-5 17-13M7 30l-3 4M7 30l5 2M41 30l3 4M41 30l-5 2"/></svg>
+          <span class="tile-name">Deck inventory</span>
+          <span class="tile-desc">Stores, lines, paint, safety gear and where each item lives.</span>
+          <span class="chip">Planned</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-engine" hidden aria-labelledby="engine-title">
+      <div class="tool-head">
+        <div class="tool-bar"><button class="btn" type="button" data-open="hub">‹ Home</button></div>
+        <h1 id="engine-title" tabindex="-1">Engineering</h1>
+        <p class="lede">Nothing here yet. This department is planned.</p>
+      </div>
+      <div class="tiles">
+        <div class="tile is-planned">
+          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="7"/><path d="M24 4v7M24 37v7M4 24h7M37 24h7M9.9 9.9l5 5M33.1 33.1l5 5M38.1 9.9l-5 5M14.9 33.1l-5 5"/><circle cx="24" cy="24" r="14"/></svg>
+          <span class="tile-name">Engineering tools</span>
+          <span class="tile-desc">To be decided with the engineers.</span>
+          <span class="chip">Planned</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-interior" hidden aria-labelledby="interior-title">
+      <div class="tool-head">
+        <div class="tool-bar"><button class="btn" type="button" data-open="hub">‹ Home</button></div>
+        <h1 id="interior-title" tabindex="-1">Interior</h1>
+        <p class="lede">Nothing here yet. This department is planned.</p>
+      </div>
+      <div class="tiles">
+        <div class="tile is-planned">
+          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 40V20M42 40V28a6 6 0 0 0-6-6H6M6 34h36"/><rect x="10" y="14" width="12" height="8" rx="3"/></svg>
+          <span class="tile-name">Interior tools</span>
+          <span class="tile-desc">To be decided with the interior team.</span>
+          <span class="chip">Planned</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-galley" hidden aria-labelledby="galley-title">
+      <div class="tool-head">
+        <div class="tool-bar"><button class="btn" type="button" data-open="hub">‹ Home</button></div>
+        <h1 id="galley-title" tabindex="-1">Galley</h1>
+        <p class="lede">Nothing here yet. This department is planned.</p>
+      </div>
+      <div class="tiles">
+        <div class="tile is-planned">
+          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><path d="M9 22h30v10a9 9 0 0 1-9 9H18a9 9 0 0 1-9-9zM5 22h38M18 14c0-3 3-3 3-6M27 14c0-3 3-3 3-6"/></svg>
+          <span class="tile-name">Galley tools</span>
+          <span class="tile-desc">To be decided with the galley.</span>
+          <span class="chip">Planned</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-account" hidden aria-labelledby="account-title">
+      <div class="tool-head">
+        <div class="tool-bar"><button class="btn" type="button" data-open="hub">‹ Home</button></div>
+        <h1 id="account-title" tabindex="-1">Account</h1>
+        <p class="lede">Signing in with Google is not available yet.</p>
+      </div>
+      <div class="panel">
+        <p class="note">Accounts need a sign-in service and a server behind the app, which are not set up. Until then everything you save stays in this browser on this device, and nothing is sent anywhere except the photo reading you switch on under Settings.</p>
+      </div>
+    </section>
+
 
     <!-- Compass error menu -->
     <section id="view-compass" hidden aria-labelledby="compass-title">
       <div class="tool-head">
-        <div class="tool-bar"><button class="btn" type="button" id="back">‹ Duties</button></div>
+        <div class="tool-bar"><button class="btn" type="button" id="back">‹ Bridge</button></div>
         <h1 id="compass-title" tabindex="-1">Compass error</h1>
         <p class="lede">What do you need to work out?</p>
       </div>
@@ -761,7 +877,7 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
     <!-- MARPOL menu -->
     <section id="view-marpol" hidden aria-labelledby="marpol-title">
       <div class="tool-head">
-        <div class="tool-bar"><button class="btn" type="button" id="back-marpol-menu">‹ Duties</button></div>
+        <div class="tool-bar"><button class="btn" type="button" id="back-marpol-menu">‹ Bridge</button></div>
         <h1 id="marpol-title" tabindex="-1">MARPOL</h1>
         <p class="lede">What do you need?</p>
       </div>
@@ -822,7 +938,7 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
     <!-- Passage planning menu -->
     <section id="view-passage" hidden aria-labelledby="passage-title">
       <div class="tool-head">
-        <div class="tool-bar"><button class="btn" type="button" id="back-passage">‹ Duties</button></div>
+        <div class="tool-bar"><button class="btn" type="button" id="back-passage">‹ Bridge</button></div>
         <h1 id="passage-title" tabindex="-1">Passage planning</h1>
         <p class="lede">What do you need?</p>
       </div>
@@ -1057,8 +1173,8 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
     <!-- AI settings -->
     <section id="view-settings" hidden aria-labelledby="settings-title">
       <div class="tool-head">
-        <button class="btn" type="button" id="back-settings">‹ Duties</button>
-        <h1 id="settings-title" tabindex="-1">AI settings</h1>
+        <button class="btn" type="button" id="back-settings">‹ Home</button>
+        <h1 id="settings-title" tabindex="-1">Settings</h1>
         <p class="lede">Connect a free Google Gemini key so the app can read photos of your deviation card and the chart variation.</p>
       </div>
       <div class="panels">
@@ -1093,6 +1209,21 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
       </div>
     </section>
   </main>
+  <div class="drawer" id="drawer" hidden role="dialog" aria-modal="true" aria-label="Menu">
+    <nav class="drawer-panel">
+      <div class="drawer-head"><span class="brand">Sumner</span><button class="btn" type="button" id="drawer-close">Close</button></div>
+      <button class="drawer-item" type="button" data-go="hub"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 22L24 7l18 15M11 19v21h26V19"/></svg>Home</button>
+      <div class="drawer-label">Departments</div>
+      <button class="drawer-item" type="button" data-go="bridge"><svg class="" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="9"/><circle cx="24" cy="24" r="17"/><path d="M24 3v12M24 33v12M3 24h12M33 24h12M9.2 9.2l8.4 8.4M30.4 30.4l8.4 8.4M38.8 9.2l-8.4 8.4M17.6 30.4l-8.4 8.4"/></svg>Bridge</button>
+      <button class="drawer-item" type="button" data-go="deck"><svg class="" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="9" r="4"/><path d="M24 13v30M14 21h20M7 30c2 8 8 13 17 13s15-5 17-13M7 30l-3 4M7 30l5 2M41 30l3 4M41 30l-5 2"/></svg>Deck</button>
+      <button class="drawer-item" type="button" data-go="engine"><svg class="" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="7"/><path d="M24 4v7M24 37v7M4 24h7M37 24h7M9.9 9.9l5 5M33.1 33.1l5 5M38.1 9.9l-5 5M14.9 33.1l-5 5"/><circle cx="24" cy="24" r="14"/></svg>Engineering</button>
+      <button class="drawer-item" type="button" data-go="interior"><svg class="" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 40V20M42 40V28a6 6 0 0 0-6-6H6M6 34h36"/><rect x="10" y="14" width="12" height="8" rx="3"/></svg>Interior</button>
+      <button class="drawer-item" type="button" data-go="galley"><svg class="" viewBox="0 0 48 48" aria-hidden="true"><path d="M9 22h30v10a9 9 0 0 1-9 9H18a9 9 0 0 1-9-9zM5 22h38M18 14c0-3 3-3 3-6M27 14c0-3 3-3 3-6"/></svg>Galley</button>
+      <div class="drawer-label">You</div>
+      <button class="drawer-item" type="button" data-go="settings" id="top-ai"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 14h20M36 14h4M8 24h6M22 24h18M8 34h16M32 34h8"/><circle cx="32" cy="14" r="4"/><circle cx="18" cy="24" r="4"/><circle cx="28" cy="34" r="4"/></svg>Settings</button>
+      <button class="drawer-item" type="button" data-go="account"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="17" r="8"/><path d="M8 42c2-9 8-13 16-13s14 4 16 13"/></svg>Account</button>
+    </nav>
+  </div>
   <div class="sheet" id="gb-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="gb-sheet-title">
     <div class="sheet-card">
       <h2 id="gb-sheet-title">Save to log</h2>
@@ -3507,7 +3638,7 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
   });
   $('#top-garlog').addEventListener('click', function () { renderLog(); go('garlog'); });
   $('#back-marpol').addEventListener('click', function () { go('marpol'); });
-  $('#back-marpol-menu').addEventListener('click', function () { go('hub'); });
+  $('#back-marpol-menu').addEventListener('click', function () { go('bridge'); });
   $('#back-garlog').addEventListener('click', function () { go('garbage'); });
   renderLogCount();
 
@@ -4733,13 +4864,13 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
   $('#pdf-in').addEventListener('click', function () { vw.zoom = Math.min(3, vw.zoom * 1.25); viewerRender(); });
   $('#pdf-out').addEventListener('click', function () { vw.zoom = Math.max(1, vw.zoom / 1.25); viewerRender(); });
   $('#back-pdf').addEventListener('click', function () { go(vw.back); });
-  $('#back-passage').addEventListener('click', function () { go('hub'); });
+  $('#back-passage').addEventListener('click', function () { go('bridge'); });
   $('#back-plan').addEventListener('click', function () { go('passage'); });
   $('#back-plans').addEventListener('click', function () { go('passage'); });
   $('#back-publib').addEventListener('click', function () { go('passage'); });
 
   /* ---------- Views ---------- */
-  var VIEWS = ['hub', 'compass', 'logbook', 'bearing', 'garbage', 'garlog', 'marpol', 'marpolmap', 'passage', 'plan', 'plans', 'publib', 'pdf', 'settings'];
+  var VIEWS = ['hub', 'bridge', 'deck', 'engine', 'interior', 'galley', 'account', 'compass', 'logbook', 'bearing', 'garbage', 'garlog', 'marpol', 'marpolmap', 'passage', 'plan', 'plans', 'publib', 'pdf', 'settings'];
   function show(name) {
     VIEWS.forEach(function (v) { $('#view-' + v).hidden = v !== name; });
     if (name === 'marpolmap') mpOpen();
@@ -4764,12 +4895,11 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
   document.querySelectorAll('[data-open]').forEach(function (b) {
     b.addEventListener('click', function () { go(b.getAttribute('data-open')); });
   });
-  $('#back').addEventListener('click', function () { go('hub'); });
+  $('#back').addEventListener('click', function () { go('bridge'); });
   $('#back-log').addEventListener('click', function () { go('compass'); });
   $('#back-garbage').addEventListener('click', function () { go('marpol'); });
   $('#back-bearing').addEventListener('click', function () { go('compass'); });
   $('#back-settings').addEventListener('click', function () { go('hub'); });
-  $('#top-ai').addEventListener('click', function () { go('settings'); });
   $('#top-dev').addEventListener('click', function () {
     go('logbook');
     devPanelOpen = true;
@@ -4820,7 +4950,24 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
     });
   });
   renderKey();
-  $('#home').addEventListener('click', function () { go('hub'); });
+  /* ---------- Side menu ---------- */
+  function drawer(open) {
+    $('#drawer').hidden = !open;
+    $('#home').setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) {
+      var cur = (location.hash || '').replace('#', '') || 'hub';
+      document.querySelectorAll('#drawer [data-go]').forEach(function (b) { if (b.getAttribute('data-go') === cur) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+      $('#drawer-close').focus();
+    } else $('#home').focus();
+  }
+  $('#home').addEventListener('click', function () { drawer(true); });
+  $('#drawer-close').addEventListener('click', function () { drawer(false); });
+  $('#drawer').addEventListener('click', function (ev) {
+    if (ev.target === $('#drawer')) { drawer(false); return; }
+    var b = ev.target.closest ? ev.target.closest('[data-go]') : null;
+    if (b) { drawer(false); go(b.getAttribute('data-go')); }
+  });
+  document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && !$('#drawer').hidden) drawer(false); });
   window.addEventListener('hashchange', route);
 
   /* ---------- Night mode ---------- */
