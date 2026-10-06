@@ -259,6 +259,17 @@ details[open] > summary { margin-bottom: 10px; }
 input[type="datetime-local"] { width: 100%; background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; font: 500 16px/1.2 var(--font-mono); min-height: 44px; }
 #pp-map { height: min(56vh, 520px); min-height: 320px; margin-top: 4px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #cfd8dc; }
 .ev-list { display: grid; gap: 8px; }
+.fold-head { cursor: pointer; margin-bottom: 0; user-select: none; flex-wrap: nowrap; }
+.fold-head .pill { white-space: nowrap; }
+.fold-head h2 { min-width: 0; }
+.fold-head h2 { flex: 1; }
+.fold-head::after { content: '+'; font: 500 24px/1 var(--font-mono); color: var(--accent-text); width: 24px; text-align: center; }
+.fold-head[aria-expanded="true"] { margin-bottom: 14px; }
+.fold-head[aria-expanded="true"]::after { content: '−'; }
+#view-plan details > summary { min-height: 44px; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); color: var(--fg); justify-content: space-between; }
+#view-plan details { margin-top: 10px; }
+#view-plan details > summary::after { content: '+'; font: 500 20px/1 var(--font-mono); color: var(--accent-text); }
+#view-plan details[open] > summary::after { content: '−'; }
 .ev { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 4px 12px; width: 100%; text-align: left; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); color: var(--fg); font: inherit; }
 button.ev, .ev[data-ev] { cursor: pointer; }
 .ev-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
@@ -853,26 +864,11 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
             <p class="note" id="pp-pubs-note"></p>
             <div class="ev-list" id="pp-pubs-list" style="margin-top:10px"></div>
           </div>
-          <div class="actions" style="margin-top:12px"><button class="btn" type="button" id="pp-pubs-hide" aria-expanded="true" aria-controls="pp-pubs-body">Hide list</button></div>
         </section>
         <section class="panel" id="pp-main" hidden aria-label="Route">
-          <div class="grid2">
-            <div class="field"><label for="pp-speed">Speed</label><div class="inwrap"><input type="number" class="has-unit" id="pp-speed" min="1" max="60" step="0.5" inputmode="decimal"><span class="u">kn</span></div></div>
-            <div class="field"><label for="pp-dep">Departure (UTC)</label><input type="datetime-local" id="pp-dep"></div>
-          </div>
-          <div class="chips" role="group" aria-label="Map layers" style="margin-top:14px">
-            <label class="chip-toggle"><input type="checkbox" id="pp-tl" checked><span><i class="sw" style="background:#d6336c"></i>3 and 12 nm</span></label>
-            <label class="chip-toggle"><input type="checkbox" id="pp-ta" checked><span><i class="sw" style="background:#e8590c"></i>Special areas</span></label>
-            <label class="chip-toggle"><input type="checkbox" id="pp-tv" checked><span><i class="sw" style="background:#7048e8"></i>VTS and reporting</span></label>
-            <label class="chip-toggle"><input type="checkbox" id="pp-tr"><span><i class="sw" style="background:#c92a2a"></i>Restricted areas</span></label>
-            <label class="chip-toggle"><input type="checkbox" id="pp-tw" checked><span><i class="sw" style="background:#f08c00"></i>Nav warnings</span></label>
-            <label class="chip-toggle"><input type="checkbox" id="pp-tn"><span><i class="sw" style="background:#0b7285"></i>NAVTEX</span></label>
-            <label class="chip-toggle"><input type="checkbox" id="pp-ts"><span>Sea marks</span></label>
-          </div>
-          <div id="pp-map" role="application" aria-label="Route map"></div>
+          <div id="pp-map" role="application" aria-label="Route map" style="margin-top:0"></div>
           <p class="msg" id="pp-mapmsg" role="status"></p>
           <p class="msg" id="pp-osmmsg" role="status"></p>
-          <p class="note">Tap the map to see the special areas and rules at that spot. Tap a marker to move the ship there.</p>
           <div class="field" style="margin-top:12px">
             <label for="pp-slide">Move the ship along the route</label>
             <input type="range" id="pp-slide" min="0" max="100" step="0.1" value="0">
@@ -881,13 +877,29 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
             <button class="btn" type="button" id="pp-prev">‹ Previous event</button>
             <button class="btn" type="button" id="pp-next">Next event ›</button>
           </div>
-          <div class="stats">
-            <div class="stat"><span class="k">Position</span><span class="big" id="pp-pos" style="font-size:22px;white-space:pre-line">—</span><span class="sub" id="pp-leg"></span></div>
-            <div class="stat"><span class="k">UTC</span><span class="big" id="pp-utc" style="font-size:24px">—</span><span class="sub" id="pp-run"></span></div>
-            <div class="stat"><span class="k">Ship's time</span><span class="big" id="pp-ship" style="font-size:24px">—</span><span class="sub" id="pp-zone"></span></div>
-            <div class="stat"><span class="k">To go</span><span class="big" id="pp-togo" style="font-size:24px">—</span><span class="sub" id="pp-eta"></span></div>
-          </div>
           <div class="now-box" id="pp-now" aria-live="polite"></div>
+          <details id="pp-stats-wrap">
+            <summary>Position, time and distance to go</summary>
+            <div class="stats" style="margin-top:0">
+              <div class="stat"><span class="k">Position</span><span class="big" id="pp-pos" style="font-size:22px;white-space:pre-line">—</span><span class="sub" id="pp-leg"></span></div>
+              <div class="stat"><span class="k">UTC</span><span class="big" id="pp-utc" style="font-size:24px">—</span><span class="sub" id="pp-run"></span></div>
+              <div class="stat"><span class="k">Ship's time</span><span class="big" id="pp-ship" style="font-size:24px">—</span><span class="sub" id="pp-zone"></span></div>
+              <div class="stat"><span class="k">To go</span><span class="big" id="pp-togo" style="font-size:24px">—</span><span class="sub" id="pp-eta"></span></div>
+            </div>
+          </details>
+          <details id="pp-layers">
+            <summary>Map layers</summary>
+          <div class="chips" role="group" aria-label="Map layers">
+            <label class="chip-toggle"><input type="checkbox" id="pp-tl" checked><span><i class="sw" style="background:#d6336c"></i>3 and 12 nm</span></label>
+            <label class="chip-toggle"><input type="checkbox" id="pp-ta" checked><span><i class="sw" style="background:#e8590c"></i>Special areas</span></label>
+            <label class="chip-toggle"><input type="checkbox" id="pp-tv" checked><span><i class="sw" style="background:#7048e8"></i>VTS and reporting</span></label>
+            <label class="chip-toggle"><input type="checkbox" id="pp-tr"><span><i class="sw" style="background:#c92a2a"></i>Restricted areas</span></label>
+            <label class="chip-toggle"><input type="checkbox" id="pp-tw" checked><span><i class="sw" style="background:#f08c00"></i>Nav warnings</span></label>
+            <label class="chip-toggle"><input type="checkbox" id="pp-tn"><span><i class="sw" style="background:#0b7285"></i>NAVTEX</span></label>
+            <label class="chip-toggle"><input type="checkbox" id="pp-ts"><span>Sea marks</span></label>
+          </div>
+          <p class="note">Tap the map to see the special areas and rules at that spot. Tap a marker to move the ship there.</p>
+          </details>
           <details id="pp-spot-wrap">
             <summary>MARPOL at this point</summary>
             <div id="pp-spot"></div>
@@ -898,8 +910,12 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
             <div id="pp-legs"></div>
           </details>
           <details id="pp-opt">
-            <summary>Passage options</summary>
+            <summary>Speed, departure and options</summary>
             <div class="form">
+          <div class="grid2">
+            <div class="field"><label for="pp-speed">Speed</label><div class="inwrap"><input type="number" class="has-unit" id="pp-speed" min="1" max="60" step="0.5" inputmode="decimal"><span class="u">kn</span></div></div>
+            <div class="field"><label for="pp-dep">Departure (UTC)</label><input type="datetime-local" id="pp-dep"></div>
+          </div>
               <label class="chip-toggle"><input type="checkbox" id="pp-ls" checked><span>Always on low-sulphur fuel (0.10%)</span></label>
               <p class="note">Untick to get fuel changeover reminders at emission control area boundaries.</p>
               <div class="field" id="pp-view-wrap" hidden>
@@ -930,8 +946,8 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
         </section>
         <section class="panel" id="pp-warn" hidden aria-labelledby="h-pp-warn">
           <div class="panel-head"><h2 id="h-pp-warn">Navigational warnings</h2><span class="pill" id="pp-warn-count"></span></div>
-          <p class="note">Paste the NAVAREA, HYDROLANT or NAVTEX warnings in force. The app reads the positions in each and shows the ones inside your search corridor. It cannot fetch them itself yet.</p>
-          <div class="actions" style="margin-top:10px"><a class="btn" href="https://msi.nga.mil/NavWarnings" target="_blank" rel="noopener">Open NGA warnings</a></div>
+          <p class="note">Open the warnings for your NAVAREA, copy the text (SeaLagom has a free text export), and paste it here. The app reads the positions in each warning and shows the ones inside your search corridor.</p>
+          <div class="actions" id="pp-warn-links" style="margin-top:10px"></div>
           <div class="field" style="margin-top:12px"><label for="pp-warn-text">Warnings text</label><textarea id="pp-warn-text" spellcheck="false" placeholder="Paste warnings here"></textarea></div>
           <div class="actions" style="margin-top:10px"><button class="btn btn-primary" type="button" id="pp-warn-go">Check against route</button><button class="btn" type="button" id="pp-warn-clear">Clear</button></div>
           <p class="msg" id="pp-warn-msg" role="status"></p>
@@ -2421,7 +2437,7 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
   var WARN_POS = /(\d{1,2})[-°\s]\s?(\d{1,2}(?:[.,]\d+)?)['′]?\s?([NS])[\s,/-]{0,3}(\d{1,3})[-°\s]\s?(\d{1,2}(?:[.,]\d+)?)['′]?\s?([EW])\b/g;
   function warnParse(text) {
     var t = String(text || '').replace(/\r/g, ''), out = [];
-    var head = /^(?:NAVAREA\s+[IVX]+\s+\d+|HYDRO(?:LANT|PAC|ARC)\s+\d+|NAVTEX|COASTAL WARNING|AVURNAV|(?:[A-Z]{2}\d{2}\b)|ZCZC\b)/;
+    var head = /^(?:NAVAREA\s+[IVX]+\s+\d+|HYDRO(?:LANT|PAC|ARC)\s+\d+|NAVTEX|COASTAL WARNING|AVURNAV|(?:[A-Z]{2}\d{2}\b)|ZCZC\b|\d{3,4}\/\d{2}\b)/;
     var blocks = [], cur = [];
     t.split('\n').forEach(function (line) {
       var l = line.trim();
@@ -4144,6 +4160,25 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
     ppGmdss();
   });
 
+  /* ---------- Folding sections: closed until asked for, and remembered ---------- */
+  var PP_FOLD = 'bridge-desk-pp-fold', ppFold = {};
+  try { ppFold = JSON.parse(localStorage.getItem(PP_FOLD) || '{}') || {}; } catch (e) { ppFold = {}; }
+  function ppFoldSave() { try { localStorage.setItem(PP_FOLD, JSON.stringify(ppFold)); } catch (e) { /* optional */ } }
+  ['pp-pubs', 'pp-events', 'pp-warn', 'pp-gmdss'].forEach(function (id) {
+    var sec = $('#' + id), head = sec.querySelector('.panel-head'), body = el('div', 'fold-body');
+    while (head.nextSibling) body.appendChild(head.nextSibling);
+    sec.appendChild(body);
+    head.classList.add('fold-head'); head.tabIndex = 0; head.setAttribute('role', 'button');
+    function set(open) { body.hidden = !open; head.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+    set(ppFold[id] === true);
+    head.addEventListener('click', function () { var open = body.hidden; set(open); ppFold[id] = open; ppFoldSave(); });
+    head.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); head.click(); } });
+  });
+  document.querySelectorAll('#view-plan details[id]').forEach(function (d) {
+    if (ppFold[d.id] === true) d.open = true;
+    d.addEventListener('toggle', function () { ppFold[d.id] = d.open; ppFoldSave(); });
+  });
+
   /* ---------- Saved plans ---------- */
   function plansLoad() { try { var a = JSON.parse(localStorage.getItem(PP_PLANS) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
   function plansStore(a) { try { localStorage.setItem(PP_PLANS, JSON.stringify(a)); return true; } catch (e) { return false; } }
@@ -4472,8 +4507,16 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
   /* ---------- Navigational warnings (pasted) ---------- */
   var WARN_KEY = 'bridge-desk-warn';
   (function () { try { $('#pp-warn-text').value = localStorage.getItem(WARN_KEY) || ''; } catch (e) { /* none */ } })();
+  var NAVAREA_NUM = { I: 1, II: 2, III: 3, IV: 4, V: 5, VI: 6, VII: 7, VIII: 8, IX: 9, X: 10, XI: 11, XII: 12, XIII: 13, XIV: 14, XV: 15, XVI: 16 };
+  function ppWarnLinks() {
+    var box = $('#pp-warn-links'); box.textContent = '';
+    function link(text, url) { var a = el('a', 'btn', text); a.href = url; a.target = '_blank'; a.rel = 'noopener'; box.appendChild(a); }
+    navareasForRoute(pp.R).forEach(function (a) { if (NAVAREA_NUM[a]) link('NAVAREA ' + a + ' on SeaLagom', 'https://www.sealagom.com/navarea/' + NAVAREA_NUM[a] + '/'); });
+    link('NautoShark map', 'https://www.nautoshark.com/'); link('NGA warnings', 'https://msi.nga.mil/NavWarnings');
+  }
   function ppWarnCheck() {
     if (!pp.R) return;
+    ppWarnLinks();
     var text = $('#pp-warn-text').value, box = $('#pp-warn-list'); box.textContent = '';
     pp.warn = text.trim() ? warnParse(text) : [];
     pp.warnHits = warnMatch(pp.R, pp.warn, pp.corridor);
@@ -4559,7 +4602,7 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
   }
 
   /* ---------- Publications for a passage ---------- */
-  var ppPubsHidden = false, ppPubWant = null;
+  var ppPubWant = null;
   function ppPubs() {
     var box = $('#pp-pubs-list'), list = pubsForRoute(pp.R), have = 0;
     box.textContent = '';
@@ -4591,15 +4634,7 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
     $('#pp-pubs-count').textContent = have + ' of ' + list.length + ' in library';
     $('#pp-pubs-note').textContent = 'These free books cover this route. Tap Get to open the official download page, find the book by its number and save the PDF. Then come back, tap Add my copy and pick the file. Coverage is matched roughly, so near a boundary both neighbours are listed.';
     $('#pp-pubs').hidden = !list.length;
-    ppPubsFold();
   }
-  function ppPubsFold() {
-    var b = $('#pp-pubs-hide');
-    $('#pp-pubs-body').hidden = ppPubsHidden;
-    $('#pp-pubs').classList.toggle('is-setup', !ppPubsHidden);
-    b.textContent = ppPubsHidden ? 'Show list' : 'Hide list'; b.setAttribute('aria-expanded', ppPubsHidden ? 'false' : 'true');
-  }
-  $('#pp-pubs-hide').addEventListener('click', function () { ppPubsHidden = !ppPubsHidden; ppPubsFold(); });
   $('#pp-pubfile').addEventListener('change', function () {
     var f = this.files && this.files[0], c = ppPubWant; this.value = ''; ppPubWant = null;
     if (!f || !c) { setMsg('#pp-pubmsg', f ? 'Tap Add my copy on the book first.' : '', 'warn'); return; }
