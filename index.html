@@ -4,27 +4,31 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}:root{padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}</style>
-<title>Bridge Desk</title>
+<title>Sumner</title>
+<meta name="application-name" content="Sumner">
+<meta name="apple-mobile-web-app-title" content="Sumner">
+<meta name="theme-color" content="#0d141c">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%23121c27%22/%3E%3Cg fill=%22none%22 stroke-linecap=%22round%22%3E%3Cline x1=%2220%22 y1=%2280%22 x2=%2272%22 y2=%2233%22 stroke=%22%23f1ead9%22 stroke-width=%225%22/%3E%3Ccircle cx=%2231%22 cy=%2270%22 r=%226%22 fill=%22%23121c27%22 stroke=%22%23c9a24a%22 stroke-width=%225%22/%3E%3Ccircle cx=%2245%22 cy=%2257.4%22 r=%226%22 fill=%22%23121c27%22 stroke=%22%23c9a24a%22 stroke-width=%225%22/%3E%3Ccircle cx=%2259%22 cy=%2244.8%22 r=%226%22 fill=%22%23121c27%22 stroke=%22%23c9a24a%22 stroke-width=%225%22/%3E%3C/g%3E%3Cpath d=%22M79 12 L82 21.5 L91.5 24.5 L82 27.5 L79 37 L76 27.5 L66.5 24.5 L76 21.5 Z%22 fill=%22%23c9a24a%22/%3E%3C/svg%3E">
 </head>
 <body>
-<title>Bridge Desk</title>
+<title>Sumner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Marcellus&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
 /* Layout: one hub screen of duty tiles; each tile opens a single-purpose tool view.
    Instrument-panel look with a chart-room lamp accent. Dark first, since bridges run dark.
    Night mode is a red-only palette that protects night vision on the dark watch. */
 :root {
-  --bg: #0c1318;
-  --surface: #131d24;
-  --surface-2: #1a2730;
-  --line: #2a3b46;
-  --fg: #e3ebee;
-  --muted: #8ea1ac;
-  --accent: #e2a948;
-  --accent-text: #e2a948;
-  --accent-ink: #1a1204;
+  --bg: #0d141c;
+  --surface: #121c27;
+  --surface-2: #182533;
+  --line: #2b3a49;
+  --fg: #f1ead9;
+  --muted: #a2a99f;
+  --accent: #c9a24a;
+  --accent-text: #d8b45e;
+  --accent-ink: #15100a;
   --alert: #ff8f7a;
   --font-display: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
   --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -85,7 +89,8 @@ fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 .app { max-width: 980px; margin-inline: auto; padding-inline: 16px; padding-block: 12px 56px; }
 
 .topbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding-block: 10px 14px; border-bottom: 1px solid var(--line); }
-.brand { background: none; border: 0; padding: 4px 0; cursor: pointer; font: 600 22px/1 var(--font-display); letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg); }
+.brand { display: inline-flex; align-items: center; gap: 10px; background: none; border: 0; padding: 2px 0; cursor: pointer; font: 400 26px/1 "Marcellus", Georgia, serif; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg); }
+.brand-mark { width: 34px; height: 34px; fill: none; stroke-linecap: round; flex: none; }
 .topbar-right { flex: 1 0 100%; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; }
 .topbar-right #top-ai { justify-self: start; }
 .topbar-right #night { justify-self: end; }
@@ -322,7 +327,7 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
 
 <div class="app">
   <header class="topbar">
-    <button class="brand" id="home" type="button">Bridge Desk</button>
+    <button class="brand" id="home" type="button" aria-label="Sumner, home"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><line x1="14" y1="82" x2="76" y2="27" stroke="var(--fg)" stroke-width="5"/><circle cx="27" cy="70.5" r="6.5" fill="var(--bg)" stroke="var(--accent)" stroke-width="5"/><circle cx="43" cy="56.3" r="6.5" fill="var(--bg)" stroke="var(--accent)" stroke-width="5"/><circle cx="59" cy="42.1" r="6.5" fill="var(--bg)" stroke="var(--accent)" stroke-width="5"/><path d="M84 6 L87.4 16.6 L98 20 L87.4 23.4 L84 34 L80.6 23.4 L70 20 L80.6 16.6 Z" fill="var(--accent)"/></svg><span>Sumner</span></button>
     <div class="topbar-right">
       <button class="btn" id="top-ai" type="button">AI</button>
       <span class="clock" id="utc" aria-label="UTC time">--:--:-- UTC</span>
