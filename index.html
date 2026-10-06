@@ -326,6 +326,8 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
 .leaflet-tooltip.pp-tip::before { display: none; }
 .pp-pop b { display: block; margin-top: 6px; }
 .pp-pop b:first-child { margin-top: 0; }
+#gm-map { height: min(46vh, 420px); min-height: 260px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #cfd8dc; }
+.mmsi { font: 600 22px/1.1 var(--font-mono); letter-spacing: 0.06em; color: var(--accent-text); user-select: all; }
 #pp-mini-map { height: min(48vh, 420px); min-height: 240px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #cfd8dc; }
 .leaflet-tooltip.pp-tip.is-nx { background: #0b7285; }
 .leaflet-tooltip.pp-tip.is-wn { background: #f08c00; color: #1a1204; }
@@ -395,6 +397,12 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
           <span class="tile-name">Passage planning</span>
           <span class="tile-desc">Route file in, map with what to do and where. Your publications library.</span>
           <span class="chip chip-ready">Ready</span>
+        </button>
+        <button class="tile" type="button" data-open="gmdss">
+          <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 44V22M16 44h16"/><circle cx="24" cy="18" r="4"/><path d="M14 28a14 14 0 0 1 0-20M34 8a14 14 0 0 1 0 20M8 33a22 22 0 0 1 0-30M40 3a22 22 0 0 1 0 30"/></svg>
+          <span class="tile-name">GMDSS</span>
+          <span class="tile-desc">Your position, NAVAREA, NAVTEX stations in range and your DSC test stations with their MMSI.</span>
+          <span class="chip chip-ready">Part built</span>
         </button>
         <button class="tile" type="button" data-open="marpol">
           <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><path d="M13 15h22l-2 25H15z"/><path d="M10 15h28M19 15v-4h10v4"/><path d="M21 21v13M27 21v13"/></svg>
@@ -872,6 +880,77 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
         <p class="lede">Every discharge you saved, newest first. Saved on this device only.</p>
       </div>
       <div class="panels" id="garlog-list"></div>
+    </section>
+
+
+    <!-- GMDSS -->
+    <section id="view-gmdss" hidden aria-labelledby="gmdss-title">
+      <div class="tool-head">
+        <div class="tool-bar">
+          <button class="btn" type="button" data-open="bridge">‹ Bridge</button>
+          <button class="btn btn-primary" type="button" id="gm-gps">My position</button>
+        </div>
+        <h1 id="gmdss-title" tabindex="-1">GMDSS</h1>
+        <p class="lede" id="gm-sum">Stations for your radio checks, by position.</p>
+      </div>
+      <div class="panels">
+        <section class="panel" aria-label="Position">
+          <div id="gm-map" role="application" aria-label="Station map"></div>
+          <p class="msg" id="gm-status" role="status"></p>
+          <details id="gm-manual">
+            <summary>Enter a position</summary>
+            <div class="grid2">
+              <div class="field"><label for="gm-lat">Latitude</label><input type="text" id="gm-lat" autocomplete="off" placeholder="43 35.2 N"></div>
+              <div class="field"><label for="gm-lon">Longitude</label><input type="text" id="gm-lon" autocomplete="off" placeholder="007 07.5 E"></div>
+            </div>
+            <div class="actions" style="margin-top:10px"><button class="btn btn-primary" type="button" id="gm-go">Use this position</button></div>
+          </details>
+        </section>
+        <section class="panel" aria-labelledby="h-gm-dsc">
+          <div class="panel-head"><h2 id="h-gm-dsc">DSC test stations</h2><span class="pill" id="gm-dsc-count"></span></div>
+          <div class="ev is-wide" id="gm-book" style="margin-bottom:10px">
+            <span class="what">
+              <span class="ttl">IMO GMDSS Master Plan</span>
+              <span class="txt" id="gm-book-txt"></span>
+              <span class="ev-tools">
+                <a class="btn btn-primary" id="gm-book-get" href="https://gisis.imo.org/Public/Default.aspx" target="_blank" rel="noopener">Get from IMO</a>
+                <a class="btn" id="gm-book-alt" href="https://www.register-iri.com/wp-content/uploads/GMDSS.1-Circ.17.pdf" target="_blank" rel="noopener">Older copy</a>
+                <input class="vh" type="file" id="gm-book-file" accept="application/pdf,.pdf" tabindex="-1" aria-hidden="true">
+                <label class="btn" for="gm-book-file" id="gm-book-add" role="button" tabindex="0">Add my copy</label>
+                <button class="btn" type="button" id="gm-book-open" hidden>Open</button>
+              </span>
+              <span class="msg" id="gm-book-msg" role="status" style="display:block"></span>
+            </span>
+          </div>
+          <div class="field"><label for="gm-band">Show</label><select id="gm-band"><option value="">All bands</option><option>VHF</option><option>MF</option><option>HF</option></select></div>
+          <p class="note" style="margin-top:10px">Nearest first. Stations read from your copy of the Master Plan link to the page they came from. Your own entries are marked as yours.</p>
+          <div class="ev-list" id="gm-dsc-list" style="margin-top:10px"></div>
+          <details id="gm-add">
+            <summary>Add a station</summary>
+            <div class="form">
+              <div class="field"><label for="gm-a-name">Station name</label><input type="text" id="gm-a-name" autocomplete="off" placeholder="e.g. Olympia Radio"></div>
+              <div class="grid2">
+                <div class="field"><label for="gm-a-mmsi">MMSI</label><input type="text" id="gm-a-mmsi" autocomplete="off" inputmode="numeric" placeholder="9 digits"></div>
+                <div class="field"><label for="gm-a-band">Band</label><select id="gm-a-band"><option>MF/HF</option><option>MF</option><option>HF</option><option>VHF</option></select></div>
+              </div>
+              <div class="grid2">
+                <div class="field"><label for="gm-a-lat">Latitude</label><input type="text" id="gm-a-lat" autocomplete="off" placeholder="37 36 N"></div>
+                <div class="field"><label for="gm-a-lon">Longitude</label><input type="text" id="gm-a-lon" autocomplete="off" placeholder="021 29 E"></div>
+              </div>
+              <div class="field"><label for="gm-a-note">Notes (frequencies, hours, where you found it)</label><input type="text" id="gm-a-note" autocomplete="off" placeholder="e.g. 2187.5, 8414.5 kHz. ALRS Vol 5"></div>
+              <div class="actions"><button class="btn btn-primary" type="button" id="gm-a-save">Save station</button></div>
+              <p class="msg" id="gm-a-msg" role="status"></p>
+            </div>
+          </details>
+        </section>
+        <section class="panel" aria-labelledby="h-gm-nx">
+          <div class="panel-head"><h2 id="h-gm-nx">NAVTEX in range</h2><span class="pill" id="gm-nx-count"></span></div>
+          <p class="msg" id="gm-nx-msg" role="status"></p>
+          <div class="ev-list" id="gm-nx-list"></div>
+          <div class="actions" style="margin-top:10px"><button class="btn" type="button" id="gm-nx-load">Load NAVTEX stations</button></div>
+        </section>
+      </div>
+      <p class="foot">Planning aid only. NAVAREA limits here are simplified. NAVTEX stations come from Wikipedia's list and DSC stations are the ones you entered, so confirm every MMSI, frequency and time in ALRS Volume 5 before relying on it. Map: OpenStreetMap.</p>
     </section>
 
     <!-- MARPOL menu -->
@@ -2608,6 +2687,74 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
       if (best && best.nm <= near) out.push({ w: w, d: best.d, nm: best.nm, lat: bp[0], lon: bp[1] });
     });
     out.sort(function (a, b) { return a.d - b.d; });
+    return out;
+  }
+
+  // ---- GMDSS page helpers
+  function gcBrg(lat1, lon1, lat2, lon2) {
+    var a = rad(lat1), b = rad(lat2), dl = rad(normLon(lon2 - lon1));
+    return norm360(Math.atan2(Math.sin(dl) * Math.cos(b), Math.cos(a) * Math.sin(b) - Math.sin(a) * Math.cos(b) * Math.cos(dl)) * 180 / Math.PI);
+  }
+  // Stations within their listed range of a position (defRange when none is listed), nearest first.
+  function stationsNear(stations, lat, lon, defRange, keepAll) {
+    var out = [];
+    stations.forEach(function (s) {
+      var nm = gcNm(lat, lon, s.lat, s.lon), rg = s.range || defRange;
+      if (keepAll || nm <= rg) out.push({ st: s, nm: nm, brg: gcBrg(lat, lon, s.lat, s.lon), rangeNm: rg, assumed: !s.range, inRange: nm <= rg });
+    });
+    out.sort(function (a, b) { return a.nm - b.nm; });
+    return out;
+  }
+  // Next broadcast from a list of 'HHMM' times: { time: 'HHMM', mins } or null.
+  function nextBroadcast(times, nowMs) {
+    var d = new Date(nowMs), now = d.getUTCHours() * 60 + d.getUTCMinutes(), best = null;
+    (times || []).forEach(function (t) {
+      if (!/^\d{4}$/.test(t)) return;
+      var m = Number(t.slice(0, 2)) * 60 + Number(t.slice(2)), wait = (m - now + 1440) % 1440;
+      if (!best || wait < best.mins) best = { time: t, mins: wait };
+    });
+    return best;
+  }
+  // MMSI as typed: digits only. ok when it has 9 digits; coast when it starts 00.
+  function mmsiClean(s) {
+    var d = String(s || '').replace(/\D/g, '');
+    return { mmsi: d, ok: d.length === 9, coast: /^00\d{7}$/.test(d) };
+  }
+
+  // ---- DSC coast stations read from a GMDSS station list (for example the IMO Master Plan): an MMSI starting 00 with a position beside it
+  var DSC_POS = /(\d{1,2})\s?[°º\s-]\s?(\d{1,2}(?:[.,]\d+)?)\s?['′’]?\s?([NS])[\s,/-]{0,3}(\d{1,3})\s?[°º\s-]\s?(\d{1,2}(?:[.,]\d+)?)\s?['′’]?\s?([EW])\b|\b(\d{2})(\d{2})([NS])\s?(\d{3})(\d{2})([EW])\b/g;
+  function dscExtract(pages) {
+    var out = [], seen = {}, band = '';
+    pages.forEach(function (raw, pi) {
+      var t = String(raw || ''), flat = t.replace(/\s+/g, ' ');
+      var hb = /SEA AREAS? A1\b|VHF[ -]DSC|VHF COAST/i.test(flat) ? 'VHF' : /SEA AREAS? A2\b|MF[ -]DSC|MF COAST/i.test(flat) ? 'MF' : /SEA AREAS? A[34]\b|HF[ -]DSC|HF COAST/i.test(flat) ? 'HF' : '';
+      if (hb) band = hb;
+      var lines = t.split(/\n+/).map(function (l) { return l.replace(/\s+/g, ' ').trim(); }).filter(function (l) { return l; });
+      if (lines.length < 3) lines = [flat];
+      for (var li = 0; li < lines.length; li++) {
+        var line = lines[li], re = /\b00\d{7}\b/g, m;
+        while ((m = re.exec(line))) {
+        var after = (line.slice(m.index + 9) + ' ' + (lines[li + 1] || '')).slice(0, 170), before = line.slice(Math.max(0, m.index - 150), m.index), c, pos = null;
+        DSC_POS.lastIndex = 0;
+        if ((c = DSC_POS.exec(after))) pos = c;
+        else { var last = null; DSC_POS.lastIndex = 0; while ((c = DSC_POS.exec(before))) last = c; if (last) pos = last; }
+        if (!pos) continue;
+        var la, lo;
+        if (pos[1] !== undefined) { la = (Number(pos[1]) + Number(pos[2].replace(',', '.')) / 60) * (pos[3] === 'S' ? -1 : 1); lo = (Number(pos[4]) + Number(pos[5].replace(',', '.')) / 60) * (pos[6] === 'W' ? -1 : 1); }
+        else { la = (Number(pos[7]) + Number(pos[8]) / 60) * (pos[9] === 'S' ? -1 : 1); lo = (Number(pos[10]) + Number(pos[11]) / 60) * (pos[12] === 'W' ? -1 : 1); }
+        if (!(Math.abs(la) <= 90 && Math.abs(lo) <= 180)) continue;
+        // name: the words on the line before the MMSI (or the line above when there are none)
+        var nm = before.replace(/.*(?:\d['′’]?\s?[NSEW]\b|\b00\d{7}\b)/, '').replace(/[^A-Za-zÀ-ÿ0-9'’().\/ -]/g, ' ').replace(/\s+/g, ' ').trim();
+        if (nm.length < 2 && li > 0 && lines[li - 1].length < 60 && !/\d{5}/.test(lines[li - 1])) nm = lines[li - 1];
+        nm = nm.split(' ').slice(-6).join(' ');
+        if (nm.length < 2) nm = 'Station ' + m[0];
+        var rg = /\b(\d{2,3})\s?(?:nm|n\.? ?miles?|M)\b/i.exec(after), key = m[0] + '|' + band;
+        if (seen[key]) continue;
+        seen[key] = 1;
+        out.push({ name: nm.slice(0, 50), mmsi: m[0], band: band || 'DSC', lat: la, lon: lo, range: rg ? Number(rg[1]) : null, page: pi + 1 });
+        }
+      }
+    });
     return out;
   }
   /*LOGIC-END*/
@@ -4869,11 +5016,165 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
   $('#back-plans').addEventListener('click', function () { go('passage'); });
   $('#back-publib').addEventListener('click', function () { go('passage'); });
 
+
+  /* ---------- GMDSS page ---------- */
+  var GM_DSC = 'bridge-desk-dsc';
+  var GM_CAT = { id: 'imo-gmdss', type: 'Regulations', title: 'IMO GMDSS Master Plan' };
+  var gm = { map: null, pos: null, g: null, dsc: [], book: [], bookPub: null, opened: false };
+  try { var gd = JSON.parse(localStorage.getItem(GM_DSC) || '[]'); if (Array.isArray(gd)) gm.dsc = gd; } catch (e) { gm.dsc = []; }
+  function gmStatus(t, cls) { setMsg('#gm-status', t, cls || ''); }
+  // The Master Plan in the library, and the stations read from it.
+  function gmBook() {
+    return libRefresh().then(function () {
+      var pub = lib.pubs.filter(function (x) { return x.cat === GM_CAT.id && x.indexed > 0; })[0] || null;
+      gm.bookPub = pub;
+      if (!pub) { gm.book = []; return; }
+      return libPages(pub.id).then(function (pages) { gm.book = dscExtract(pages); });
+    }).catch(function () { gm.book = []; }).then(function () { gmRender(); gmDraw(); });
+  }
+  function gmOpen() {
+    gmRender(); gmBook();
+    leafletLoad().then(function (Lf) {
+      if (!gm.map) {
+        var start = [43.0, 7.0];
+        try { var lp = JSON.parse(localStorage.getItem('bridge-desk-lastpos') || 'null'); if (lp && isFinite(lp[0]) && isFinite(lp[1])) start = lp; } catch (e) { /* default */ }
+        gm.map = Lf.map('gm-map', { worldCopyJump: true }).setView(start, 5);
+        Lf.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '© OpenStreetMap contributors' }).addTo(gm.map);
+        gm.map.on('click', function (e) { gmSet(e.latlng.lat, normLon(e.latlng.lng), 'Tapped position'); });
+      }
+      setTimeout(function () { gm.map.invalidateSize(); gmDraw(); }, 60);
+      if (!gm.opened) { gm.opened = true; gmLocate(); }
+    }).catch(function () { gmStatus('The map could not load. Check the internet connection. The lists below still work.', 'bad'); });
+  }
+  function gmLocate() {
+    if (!navigator.geolocation) { gmStatus('This browser cannot give a GPS position. Enter one below.', 'warn'); $('#gm-manual').open = true; return; }
+    gmStatus('Getting your position…');
+    navigator.geolocation.getCurrentPosition(function (pos) { gmStatus(''); gmSet(pos.coords.latitude, pos.coords.longitude, 'Your position (GPS)'); }, function (err) {
+      gmStatus(err && err.code === 1 ? 'Location is blocked for this page. Allow it in the browser settings, or enter a position below.' : 'No GPS position is available. Enter one below, or tap the map.', 'warn');
+      $('#gm-manual').open = true;
+    }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 30000 });
+  }
+  function gmSet(lat, lon, label) {
+    gm.pos = { lat: lat, lon: lon, label: label };
+    try { localStorage.setItem('bridge-desk-lastpos', JSON.stringify([lat, lon])); } catch (e) { /* optional */ }
+    gmRender();
+    if (gm.map) { gm.map.setView([lat, lon], Math.max(gm.map.getZoom(), 5)); gmDraw(); }
+  }
+  function gmRender() {
+    var p = gm.pos, na = p ? navareaAt(p.lat, p.lon) : '';
+    $('#gm-sum').textContent = p ? fmtPos(p.lat, p.lon) + '. ' + (na ? (na === 'Arctic' ? NAVAREA_NAMES[na] : 'NAVAREA ' + na + ' (' + NAVAREA_NAMES[na] + ')') + '.' : 'NAVAREA not found, check ALRS Volume 5.') : 'Stations for your radio checks, by position. Tap My position, tap the map, or enter a position.';
+    // DSC stations: the book's and your own
+    var box = $('#gm-dsc-list'); box.textContent = '';
+    var bandF = $('#gm-band').value, all = gm.book.map(function (s) { return Object.assign({ src: 'book' }, s); }).concat(gm.dsc.map(function (s) { return Object.assign({ src: 'mine', ref: s }, s); }));
+    if (bandF) all = all.filter(function (s) { return String(s.band).indexOf(bandF) >= 0; });
+    $('#gm-dsc-count').textContent = (gm.book.length ? gm.book.length + ' from the book' : 'No book') + (gm.dsc.length ? ', ' + gm.dsc.length + ' yours' : '');
+    $('#gm-book-txt').textContent = gm.bookPub ? (gm.book.length ? gm.book.length + ' DSC stations read from your copy' + (gm.bookPub.edition ? ' (' + gm.bookPub.edition + ')' : '') + '. Check each one on its page before you rely on it.' : 'Your copy is in the library, but no stations could be read from it. Its layout may differ from what the app expects.') : 'The worldwide list of DSC coast stations with their MMSIs. Free from IMO (GISIS needs a free public account). Save the PDF, then tap Add my copy.';
+    $('#gm-book-open').hidden = !gm.bookPub; $('#gm-book-add').textContent = gm.bookPub ? 'Replace my copy' : 'Add my copy';
+    var rows = p ? stationsNear(all, p.lat, p.lon, 1e9, true) : all.map(function (s) { return { st: s, nm: null, brg: null }; });
+    var total = rows.length; rows = rows.slice(0, 15);
+    if (!total) box.appendChild(el('p', 'note', 'No stations yet. Add the Master Plan, or add the stations you use under Add a station.'));
+    rows.forEach(function (r) {
+      var s = r.st, card = el('div', 'ev'), when = el('span', 'when'), what = el('span', 'what');
+      when.appendChild(el('b', '', s.band)); when.appendChild(document.createTextNode(r.nm === null ? '' : r.nm.toFixed(0) + ' nm, ' + fmtCourse(r.brg).replace('.0', '') + 'T'));
+      what.appendChild(el('span', 'ttl', s.name)); what.appendChild(el('span', 'mmsi', s.mmsi));
+      what.appendChild(el('span', 'txt', fmtPos(s.lat, s.lon) + (s.range ? '. Listed range ' + s.range + ' nm' + (r.nm !== null && r.nm > s.range ? ', so out of range here' : '') : '') + (s.note ? '. ' + s.note : '')));
+      what.appendChild(el('span', 'src', s.src === 'book' ? 'Read from your copy of the Master Plan, page ' + s.page + '. Confirm on the page.' : 'Entered by you. Confirm in ALRS Volume 5.'));
+      var tools = el('span', 'ev-tools'), show = el('button', 'btn', 'Show on map'); show.type = 'button';
+      show.addEventListener('click', function () { if (gm.map) { gm.map.setView([s.lat, s.lon], 6); $('#gm-map').scrollIntoView({ block: 'start' }); } });
+      tools.appendChild(show);
+      if (s.src === 'book') { var pg = el('button', 'btn', 'Page ' + s.page); pg.type = 'button'; pg.addEventListener('click', function () { viewerOpen(gm.bookPub.id, s.page, 'gmdss'); }); tools.appendChild(pg); }
+      else {
+        var del = el('button', 'btn', 'Remove'); del.type = 'button';
+        del.addEventListener('click', function () {
+          if (del.getAttribute('data-sure') !== '1') { del.setAttribute('data-sure', '1'); del.textContent = 'Tap again to remove'; return; }
+          gm.dsc = gm.dsc.filter(function (x) { return x !== s.ref; }); gmStore(); gmRender(); gmDraw();
+        });
+        tools.appendChild(del);
+      }
+      what.appendChild(tools); card.appendChild(when); card.appendChild(what); box.appendChild(card);
+    });
+    if (total > rows.length) box.appendChild(el('p', 'note', 'Showing the nearest ' + rows.length + ' of ' + total + '. Choose a band to narrow it.'));
+    // NAVTEX
+    var nb = $('#gm-nx-list'); nb.textContent = '';
+    $('#gm-nx-load').textContent = pp.navtex ? 'Refresh station list' : 'Load NAVTEX stations';
+    if (!pp.navtex) { $('#gm-nx-count').textContent = 'Not loaded'; setMsg('#gm-nx-msg', 'Load the station list once (about 50 KB). It is kept for 30 days.', ''); return; }
+    if (!p) { $('#gm-nx-count').textContent = ''; setMsg('#gm-nx-msg', 'Set a position to see the stations in range.', ''); return; }
+    var near = stationsNear(pp.navtex.st.filter(function (s) { return s.khz === '518' || s.khz === '490'; }), p.lat, p.lon, 250, false);
+    $('#gm-nx-count').textContent = near.length + ' in range';
+    setMsg('#gm-nx-msg', near.length ? '' : 'No listed NAVTEX station reaches this position.', near.length ? '' : 'warn');
+    near.forEach(function (r) {
+      var s = r.st, nx = nextBroadcast(s.times, Date.now()), b = el('button', 'ev'), when = el('span', 'when'), what = el('span', 'what'); b.type = 'button';
+      when.appendChild(el('b', '', s.id + '  ' + s.khz + ' kHz')); when.appendChild(document.createTextNode(r.nm.toFixed(0) + ' nm, ' + fmtCourse(r.brg).replace('.0', '') + 'T'));
+      what.appendChild(el('span', 'ttl', s.name + (s.active === 0 ? ' (listed as not active)' : '')));
+      what.appendChild(el('span', 'txt', (nx ? 'Next broadcast ' + nx.time.slice(0, 2) + ':' + nx.time.slice(2) + ' UTC, in ' + fmtDur(nx.mins / 60) + '. ' : '') + (s.times.length ? 'Daily at ' + s.times.join(', ') + ' UTC. ' : 'Broadcast times not listed. ') + (r.assumed ? 'Range not listed, 250 nm assumed.' : 'Listed range ' + r.rangeNm + ' nm.') + (s.khz === '490' ? ' National language service.' : '')));
+      what.appendChild(el('span', 'src', 'NAVAREA ' + s.nav + '. Source: Wikipedia, List of Navtex stations. Not official, so confirm in ALRS Volume 5.'));
+      b.appendChild(when); b.appendChild(what);
+      b.addEventListener('click', function () { if (gm.map) { gm.map.setView([s.lat, s.lon], 6); $('#gm-map').scrollIntoView({ block: 'start' }); } });
+      nb.appendChild(b);
+    });
+  }
+  function gmDraw() {
+    var map = gm.map, Lf = mp.L;
+    if (!map) return;
+    if (gm.g) map.removeLayer(gm.g);
+    var g = Lf.layerGroup(), p = gm.pos;
+    var marks = gm.dsc.slice(); if (p) stationsNear(gm.book, p.lat, p.lon, 1e9, true).slice(0, 30).forEach(function (r) { marks.push(r.st); }); else gm.book.slice(0, 30).forEach(function (s) { marks.push(s); });
+    marks.forEach(function (s) {
+      var m = Lf.circleMarker([s.lat, s.lon], { radius: 8, color: '#ffffff', weight: 2, fillColor: '#7048e8', fillOpacity: 1, bubblingMouseEvents: false }).addTo(g);
+      if (m.bindTooltip) m.bindTooltip(s.name + ' ' + s.mmsi, { permanent: true, direction: 'top', offset: [0, -8], className: 'pp-tip' });
+    });
+    if (pp.navtex && p) stationsNear(pp.navtex.st.filter(function (s) { return s.khz === '518'; }), p.lat, p.lon, 250, false).forEach(function (r) {
+      var s = r.st, m = Lf.circleMarker([s.lat, s.lon], { radius: 7, color: '#ffffff', weight: 2, fillColor: '#0b7285', fillOpacity: 1, bubblingMouseEvents: false }).addTo(g);
+      if (m.bindTooltip) m.bindTooltip(s.id + ' ' + s.name, { permanent: true, direction: 'top', offset: [0, -8], className: 'pp-tip is-nx' });
+    });
+    if (p) Lf.circleMarker([p.lat, p.lon], { radius: 9, color: '#ffffff', weight: 3, fillColor: '#1c7ed6', fillOpacity: 1, interactive: false }).addTo(g);
+    g.addTo(map); gm.g = g;
+  }
+  function gmStore() { try { localStorage.setItem(GM_DSC, JSON.stringify(gm.dsc)); return true; } catch (e) { return false; } }
+  $('#gm-gps').addEventListener('click', gmLocate);
+  $('#gm-band').addEventListener('change', gmRender);
+  $('#gm-book-open').addEventListener('click', function () { if (gm.bookPub) viewerOpen(gm.bookPub.id, 1, 'gmdss'); });
+  $('#gm-book-add').addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); this.click(); } });
+  $('#gm-book-file').addEventListener('change', function () {
+    var f = this.files && this.files[0]; this.value = '';
+    if (!f) return;
+    if (lib.busy) { setMsg('#gm-book-msg', 'Wait until the current publication has been read.', 'warn'); return; }
+    if (!/\.pdf$/i.test(f.name) && f.type !== 'application/pdf') { setMsg('#gm-book-msg', 'That is not a PDF file.', 'bad'); return; }
+    var old = gm.bookPub, ed = /Circ\.?\s?(\d+)/i.exec(f.name), yr = /(20\d\d)/.exec(f.name);
+    setMsg('#gm-book-msg', 'Reading your copy…', '');
+    (old ? libRemove(old.id) : Promise.resolve()).then(function () {
+      return libAdd(f, { cat: GM_CAT.id, type: GM_CAT.type, title: GM_CAT.title, edition: ed ? 'Circ.' + ed[1] : yr ? yr[1] : '' });
+    }).then(function () { return gmBook(); }).then(function () {
+      setMsg('#gm-book-msg', gm.bookPub ? (gm.book.length ? gm.book.length + ' stations read.' : 'The file was added but no stations could be read from it.') : $('#lib-msg').textContent || 'The file could not be added.', gm.book.length ? '' : 'warn');
+    });
+  });
+  $('#gm-go').addEventListener('click', function () {
+    var la = parseCoord($('#gm-lat').value, true), lo = parseCoord($('#gm-lon').value, false);
+    if (la === null || lo === null) { gmStatus('Could not read that position. Use for example 43 35.2 N and 007 07.5 E.', 'bad'); return; }
+    gmStatus(''); gmSet(la, lo, 'Entered position');
+  });
+  $('#gm-nx-load').addEventListener('click', function () {
+    setMsg('#gm-nx-msg', 'Loading the NAVTEX station list…', '');
+    ppNavtexLoad(true).then(function () { gmRender(); gmDraw(); if (!pp.navtex) setMsg('#gm-nx-msg', 'The NAVTEX station list could not be loaded. Check the internet connection and try again.', 'warn'); });
+  });
+  $('#gm-a-save').addEventListener('click', function () {
+    var name = $('#gm-a-name').value.trim(), mm = mmsiClean($('#gm-a-mmsi').value), la = parseCoord($('#gm-a-lat').value, true), lo = parseCoord($('#gm-a-lon').value, false);
+    if (!name) { setMsg('#gm-a-msg', 'Add the station name.', 'bad'); return; }
+    if (!mm.ok) { setMsg('#gm-a-msg', 'An MMSI has 9 digits. This one has ' + mm.mmsi.length + '.', 'bad'); return; }
+    if (la === null || lo === null) { setMsg('#gm-a-msg', 'Could not read the position. Use for example 37 36 N and 021 29 E.', 'bad'); return; }
+    gm.dsc.push({ name: name.slice(0, 60), mmsi: mm.mmsi, band: $('#gm-a-band').value, lat: la, lon: lo, note: $('#gm-a-note').value.trim().slice(0, 160) });
+    if (!gmStore()) { gm.dsc.pop(); setMsg('#gm-a-msg', 'Could not save on this device.', 'bad'); return; }
+    ['gm-a-name', 'gm-a-mmsi', 'gm-a-lat', 'gm-a-lon', 'gm-a-note'].forEach(function (i) { $('#' + i).value = ''; });
+    setMsg('#gm-a-msg', 'Saved.' + (mm.coast ? '' : ' Note: coast station MMSIs normally start with 00, and this one does not.'), mm.coast ? '' : 'warn');
+    gmRender(); gmDraw();
+  });
+
   /* ---------- Views ---------- */
-  var VIEWS = ['hub', 'bridge', 'deck', 'engine', 'interior', 'galley', 'account', 'compass', 'logbook', 'bearing', 'garbage', 'garlog', 'marpol', 'marpolmap', 'passage', 'plan', 'plans', 'publib', 'pdf', 'settings'];
+  var VIEWS = ['hub', 'gmdss', 'bridge', 'deck', 'engine', 'interior', 'galley', 'account', 'compass', 'logbook', 'bearing', 'garbage', 'garlog', 'marpol', 'marpolmap', 'passage', 'plan', 'plans', 'publib', 'pdf', 'settings'];
   function show(name) {
     VIEWS.forEach(function (v) { $('#view-' + v).hidden = v !== name; });
     if (name === 'marpolmap') mpOpen();
+    if (name === 'gmdss') gmOpen();
     if (name === 'plan' && pp.R) ppMapInit();
     if (name === 'plans') plansRender();
     if (name === 'publib') libRefresh();
