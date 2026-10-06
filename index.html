@@ -290,6 +290,9 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
 .leaflet-tooltip.pp-tip::before { display: none; }
 .pp-pop b { display: block; margin-top: 6px; }
 .pp-pop b:first-child { margin-top: 0; }
+#pp-mini-map { height: min(48vh, 420px); min-height: 240px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #cfd8dc; }
+.leaflet-tooltip.pp-tip.is-nx { background: #0b7285; }
+.leaflet-tooltip.pp-tip.is-wn { background: #f08c00; color: #1a1204; }
 #pdf-wrap { margin-top: 12px; overflow: auto; max-height: 82vh; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
 #pdf-canvas { display: block; }
 :root[data-mode="night"] #pdf-wrap { background: #ff2a1a; }
@@ -862,6 +865,8 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
             <label class="chip-toggle"><input type="checkbox" id="pp-ta" checked><span><i class="sw" style="background:#e8590c"></i>Special areas</span></label>
             <label class="chip-toggle"><input type="checkbox" id="pp-tv" checked><span><i class="sw" style="background:#7048e8"></i>VTS and reporting</span></label>
             <label class="chip-toggle"><input type="checkbox" id="pp-tr"><span><i class="sw" style="background:#c92a2a"></i>Restricted areas</span></label>
+            <label class="chip-toggle"><input type="checkbox" id="pp-tw" checked><span><i class="sw" style="background:#f08c00"></i>Nav warnings</span></label>
+            <label class="chip-toggle"><input type="checkbox" id="pp-tn"><span><i class="sw" style="background:#0b7285"></i>NAVTEX</span></label>
             <label class="chip-toggle"><input type="checkbox" id="pp-ts"><span>Sea marks</span></label>
           </div>
           <div id="pp-map" role="application" aria-label="Route map"></div>
@@ -922,6 +927,26 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
             <p class="note" id="pp-more-note"></p>
             <div class="ev-list" id="pp-more" style="margin-top:10px"></div>
           </details>
+        </section>
+        <section class="panel" id="pp-warn" hidden aria-labelledby="h-pp-warn">
+          <div class="panel-head"><h2 id="h-pp-warn">Navigational warnings</h2><span class="pill" id="pp-warn-count"></span></div>
+          <p class="note">Paste the NAVAREA, HYDROLANT or NAVTEX warnings in force. The app reads the positions in each and shows the ones inside your search corridor. It cannot fetch them itself yet.</p>
+          <div class="actions" style="margin-top:10px"><a class="btn" href="https://msi.nga.mil/NavWarnings" target="_blank" rel="noopener">Open NGA warnings</a></div>
+          <div class="field" style="margin-top:12px"><label for="pp-warn-text">Warnings text</label><textarea id="pp-warn-text" spellcheck="false" placeholder="Paste warnings here"></textarea></div>
+          <div class="actions" style="margin-top:10px"><button class="btn btn-primary" type="button" id="pp-warn-go">Check against route</button><button class="btn" type="button" id="pp-warn-clear">Clear</button></div>
+          <p class="msg" id="pp-warn-msg" role="status"></p>
+          <div class="ev-list" id="pp-warn-list"></div>
+        </section>
+        <section class="panel" id="pp-gmdss" hidden aria-labelledby="h-pp-gm">
+          <div class="panel-head"><h2 id="h-pp-gm">GMDSS for this route</h2></div>
+          <div class="spot-h3" style="margin-top:0">NAVAREAs</div>
+          <p id="pp-gm-nav" style="margin-top:6px"></p>
+          <p class="note">Worked out from simplified boundaries, so near a limit confirm in ALRS Volume 5.</p>
+          <div class="spot-h3">NAVTEX stations in range</div>
+          <p class="msg" id="pp-gm-msg" role="status"></p>
+          <div class="actions" style="margin-top:8px"><button class="btn btn-primary" type="button" id="pp-gm-load">Load NAVTEX stations</button></div>
+          <div class="ev-list" id="pp-gm-list" style="margin-top:10px"></div>
+          <p class="note" style="margin-top:12px">Not included: DSC coast stations, sea areas A1 and A2, and rescue centre contacts. They are not in the free sources, so use ALRS Volume 5 or the GMDSS Master Plan.</p>
         </section>
       </div>
       <p class="foot">Planning aid only. Verify every item on ECDIS and in your official publications before use. Special area outlines and shore distances are indicative: they come from the IMO descriptions and public coastline data, which is coarse near harbours and narrow channels. TSS, VTS and reporting items are the book's own words, found by matching the positions printed in your publications to the route. Their positions are approximate, the books do not list everything, and editions go out of date, so cross-check against ALRS and the chart. Area and traffic separation outlines: OpenStreetMap sea mark data, mapped by volunteers. Map: OpenStreetMap. Sea marks: OpenSeaMap. Coastline: Natural Earth.</p>
@@ -1074,6 +1099,18 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
       <div class="actions">
         <button class="btn btn-primary" type="button" id="pp-sheet-save">Save</button>
         <button class="btn" type="button" id="pp-sheet-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <div class="sheet" id="pp-mini" hidden role="dialog" aria-modal="true" aria-labelledby="pp-mini-title">
+    <div class="sheet-card" style="max-width:640px">
+      <h2 id="pp-mini-title"></h2>
+      <p class="note" id="pp-mini-text" style="max-height:22vh;overflow:auto"></p>
+      <div id="pp-mini-map" role="application" aria-label="Location map"></div>
+      <p class="msg" id="pp-mini-msg"></p>
+      <div class="actions">
+        <button class="btn btn-primary" type="button" id="pp-mini-close">Close</button>
+        <button class="btn" type="button" id="pp-mini-main">Show on main map</button>
       </div>
     </div>
   </div>
@@ -2283,6 +2320,136 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
       var f = rings[0][0], l = rings[0][rings[0].length - 1], closed = rings.length === 1 && rings[0].length > 3 && Math.abs(f[0] - l[0]) < 1e-7 && Math.abs(f[1] - l[1]) < 1e-7;
       out.push({ id: el.type + '/' + el.id, kind: kind, title: name || (kind === 'restricted' ? (res ? osmWords(res.split(',')[0]) : 'Restricted area') : 'Traffic separation scheme'), lines: lines, rings: rings, closed: closed });
     });
+    return out;
+  }
+
+  // ---- GMDSS helpers: distances, NAVAREAs (indicative), NAVTEX stations, pasted navigational warnings
+  function gcNm(lat1, lon1, lat2, lon2) {
+    var a = rad(lat1), b = rad(lat2), dl = rad(normLon(lon2 - lon1)), h = Math.sin((b - a) / 2) * Math.sin((b - a) / 2) + Math.cos(a) * Math.cos(b) * Math.sin(dl / 2) * Math.sin(dl / 2);
+    return 2 * Math.asin(Math.min(1, Math.sqrt(h))) * 3437.7468;
+  }
+  var NAVAREA_NAMES = { I: 'United Kingdom', II: 'France', III: 'Spain', IV: 'United States (east)', V: 'Brazil', VI: 'Argentina', VII: 'South Africa', VIII: 'India', IX: 'Pakistan', X: 'Australia', XI: 'Japan', XII: 'United States (west)', XIII: 'Russia', XIV: 'New Zealand', XV: 'Chile', XVI: 'Peru', Arctic: 'Arctic NAVAREAs XVII to XXI' };
+  // Rough NAVAREA for a position. Boundaries are simplified, so near a limit confirm in ALRS Volume 5.
+  function navareaAt(lat, lon) {
+    lon = normLon(lon);
+    function box(w, s, e, n) { return lon >= w && lon <= e && lat >= s && lat <= n; }
+    var inMed = false;
+    MAREAS.forEach(function (ar) { if (ar.id !== 'med' && ar.id !== 'black') return; ar.polys.forEach(function (p) { if (pipPoly(p.pts, lon, lat)) inMed = true; }); });
+    if (inMed) return 'III';
+    if (lat > 67 && (lon < -35 || lon > 31 || lat > 75)) return 'Arctic';
+    if (box(-100, 7, -77.5, 17) && lat < 17 - 0.4615 * (lon + 97)) return 'XII';
+    if (box(-35, 48.45, 31, 75)) return 'I';
+    if (box(-35, -6, 14, 48.45)) return 'II';
+    if (box(-100, 7, -35, 67)) return 'IV';
+    if (box(-55, -35.83, -20, 7)) return 'V';
+    if (box(-67.27, -90, -20, -35.83)) return 'VI';
+    if (box(-20, -90, 20, -6) || box(20, -90, 55, -10.5) || box(55, -90, 80, -30)) return 'VII';
+    if (box(32, 12, 63, 31) || (box(63, 12, 68, 26) && lat > 12 + (lon - 63) * 2.35)) return 'IX';
+    if (box(40, -10.5, 55, 12) || box(55, -30, 95, 26) || (box(95, 6, 98.5, 18) && lat > 6 + (lon - 95) * 1.14)) return 'VIII';
+    if (box(80, -90, 95, -30) || box(95, -90, 141, -10) || box(141, -90, 170, -12) || box(127, -12, 141, -9)) return 'X';
+    if (box(95, -12, 180, 45)) return 'XI';
+    if (box(135, 45, 180, 67) || box(120, 45, 135, 67)) return 'XIII';
+    if (box(170, -90, 180, -12) || box(-180, -90, -120, 0)) return 'XIV';
+    if (box(-180, 0, -100, 67) || box(-120, 3.4, -77, 18) || box(-100, 17, -95, 30)) return 'XII';
+    if (box(-120, -3.4, -77, 3.4) || box(-120, -18.35, -70, -3.4)) return 'XVI';
+    if (box(-120, -90, -67.27, -18.35)) return 'XV';
+    return '';
+  }
+  function navareasForRoute(R) {
+    var out = [], step = Math.max(2, R.total / 300);
+    for (var d = 0; d <= R.total + step; d += step) { var p = routeAt(R, Math.min(d, R.total)), a = navareaAt(p.lat, p.lon); if (a && out.indexOf(a) < 0) out.push(a); }
+    return out;
+  }
+  // Wikipedia "List of Navtex stations" wikitext to stations.
+  function navtexParse(wikitext) {
+    var w = String(wikitext || '').replace(/\{\{[^{}]*\}\}/g, function (m) { return m.replace(/\|/g, '¦'); }), out = [];
+    function clean(c) { return String(c || '').replace(/<!--[\s\S]*?-->/g, '').replace(/<ref[\s\S]*?(<\/ref>|\/>)/g, '').replace(/\[\[(?:[^\]|]*\|)?([^\]]*)\]\]/g, '$1').replace(/<[^>]*>/g, ' ').replace(/''+/g, '').replace(/\{\{[^}]*\}\}/g, '').replace(/&nbsp;/g, ' ').trim(); }
+    w.split(/\n(?===[^=])/).forEach(function (sec) {
+      var hm = /^==\s*([^=]+?)\s*==/.exec(sec);
+      if (!hm) return;
+      var navm = /Navarea\s*(\d+)/i.exec(hm[1]), is4 = /4209/.test(hm[1]);
+      if (!navm && !is4) return;
+      var re = /\{\|[\s\S]*?\n\|\}/g, m, pos = 0;
+      while ((m = re.exec(sec))) {
+        var before = sec.slice(pos, m.index), kk = before.match(/([\d.]+)(?:&nbsp;| )kHz/g), khz = kk ? kk[kk.length - 1].replace(/[^\d.]/g, '') : (is4 ? '4209.5' : '518');
+        pos = re.lastIndex;
+        var tb = m[0], hdr = tb.split('\n').filter(function (l) { return /^!/.test(l); }).map(function (l) { return l.replace(/^!\s*/, ''); }).join('||').split(/\|\||!!/).map(function (h) { return h.replace(/class="[^"]*"\s*\|/, '').trim().toLowerCase(); });
+        var ix = function (r) { for (var i = 0; i < hdr.length; i++) if (r.test(hdr[i])) return i; return -1; };
+        var iId = ix(/^id/), iSt = ix(/^station/), iPos = ix(/^position/), iT = ix(/transmission/), iR = ix(/^(range|dist)/), iA = ix(/^active/), iK = ix(/^khz/), iAr = ix(/^area/);
+        if (iId < 0 || iSt < 0 || iPos < 0) continue;
+        tb.split(/\n\|-[^\n]*/).slice(1).forEach(function (row) {
+          var cells = [];
+          row.split('\n').forEach(function (l) {
+            if (/^\|\}/.test(l)) return;
+            if (/^\|/.test(l)) l.slice(1).split('||').forEach(function (c) { cells.push(c.trim()); });
+            else if (cells.length && l.trim()) cells[cells.length - 1] += ' ' + l.trim();
+          });
+          if (cells.length < 4) return;
+          var id = clean(cells[iId]).replace(/[^A-Za-z]/g, '').toUpperCase();
+          if (id.length !== 1) return;
+          var cm = /\{\{coord¦([^}]*)\}\}/i.exec(cells[iPos] || ''), lat = null, lon = null;
+          if (cm) {
+            var a = cm[1].split('¦').map(function (x) { return x.trim(); }).filter(function (x) { return x !== ''; }), iN = -1, iE = -1;
+            a.forEach(function (x, k) { if (iN < 0 && /^[NS]$/.test(x)) iN = k; if (iE < 0 && /^[EW]$/.test(x)) iE = k; });
+            var f = function (arr) { return arr.reduce(function (t, x, k) { return t + Number(x) / Math.pow(60, k); }, 0); };
+            if (iN > 0 && iE > iN) { lat = f(a.slice(0, iN)) * (a[iN] === 'S' ? -1 : 1); lon = f(a.slice(iN + 1, iE)) * (a[iE] === 'W' ? -1 : 1); }
+            else if (isFinite(a[0]) && isFinite(a[1])) { lat = Number(a[0]); lon = Number(a[1]); }
+          }
+          if (lat === null || !isFinite(lat) || !isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) return;
+          var times = (clean(iT >= 0 ? cells[iT] : '').match(/\b\d{2}:?\d{2}\b/g) || []).map(function (t) { return t.replace(':', ''); });
+          var k = iK >= 0 ? clean(cells[iK]).replace(/[^\d.]/g, '') : khz, rg = iR >= 0 ? parseInt(clean(cells[iR]).replace(/[^\d-]/g, ''), 10) : NaN, act = iA >= 0 ? clean(cells[iA]) : '';
+          out.push({ nav: navm ? Number(navm[1]) : Number((clean(iAr >= 0 ? cells[iAr] : '').match(/\d+/) || [0])[0]), khz: String(Number(k || khz)), id: id, name: clean(cells[iSt]), lat: lat, lon: lon, times: times, range: rg > 0 ? rg : null, active: /^\s*y/i.test(act) ? 1 : /^\s*n/i.test(act) ? 0 : null });
+        });
+      }
+    });
+    return out;
+  }
+  // Stations whose stated range reaches the route: [{ st, d0, d1, minNm, rangeNm, assumed }]
+  function navtexForRoute(R, stations, defRange) {
+    var out = [], step = Math.max(2, Math.min(15, R.total / 200)), samples = [];
+    for (var d = 0; d < R.total; d += step) { var p = routeAt(R, d); samples.push([d, p.lat, p.lon]); }
+    var e = routeAt(R, R.total); samples.push([R.total, e.lat, e.lon]);
+    stations.forEach(function (st) {
+      var rg = st.range || defRange || 250, d0 = null, d1 = null, mn = 1e9;
+      samples.forEach(function (s) { var x = gcNm(st.lat, st.lon, s[1], s[2]); if (x < mn) mn = x; if (x <= rg) { if (d0 === null) d0 = s[0]; d1 = s[0]; } });
+      if (d0 !== null) out.push({ st: st, d0: d0, d1: d1, minNm: mn, rangeNm: rg, assumed: !st.range });
+    });
+    out.sort(function (a, b) { return a.d0 - b.d0 || a.minNm - b.minNm; });
+    return out;
+  }
+  // Pasted navigational warnings: split into messages and read the positions in each.
+  var WARN_POS = /(\d{1,2})[-°\s]\s?(\d{1,2}(?:[.,]\d+)?)['′]?\s?([NS])[\s,/-]{0,3}(\d{1,3})[-°\s]\s?(\d{1,2}(?:[.,]\d+)?)['′]?\s?([EW])\b/g;
+  function warnParse(text) {
+    var t = String(text || '').replace(/\r/g, ''), out = [];
+    var head = /^(?:NAVAREA\s+[IVX]+\s+\d+|HYDRO(?:LANT|PAC|ARC)\s+\d+|NAVTEX|COASTAL WARNING|AVURNAV|(?:[A-Z]{2}\d{2}\b)|ZCZC\b)/;
+    var blocks = [], cur = [];
+    t.split('\n').forEach(function (line) {
+      var l = line.trim();
+      if (!l) { if (cur.length) { blocks.push(cur); cur = []; } return; }
+      if (head.test(l) && cur.length) { blocks.push(cur); cur = []; }
+      cur.push(l);
+    });
+    if (cur.length) blocks.push(cur);
+    blocks.forEach(function (b) {
+      var body = b.join(' ').replace(/\s+/g, ' '), pts = [], m;
+      WARN_POS.lastIndex = 0;
+      while ((m = WARN_POS.exec(body))) {
+        var la = (Number(m[1]) + Number(m[2].replace(',', '.')) / 60) * (m[3] === 'S' ? -1 : 1), lo = (Number(m[4]) + Number(m[5].replace(',', '.')) / 60) * (m[6] === 'W' ? -1 : 1);
+        if (Number(m[2].replace(',', '.')) < 60 && Number(m[5].replace(',', '.')) < 60 && Math.abs(la) <= 90 && Math.abs(lo) <= 180) pts.push([la, lo]);
+      }
+      if (body.length < 12) return;
+      out.push({ title: b[0].slice(0, 70), text: body.slice(0, 900), pts: pts, area: pts.length >= 3 && /\bAREA\b|BOUND/i.test(body) });
+    });
+    return out;
+  }
+  function warnMatch(R, warns, near) {
+    var out = [];
+    warns.forEach(function (w) {
+      var best = null, bp = null;
+      w.pts.forEach(function (p) { var r = routeNearest(R, p[0], p[1]); if (!best || r.nm < best.nm) { best = r; bp = p; } });
+      if (best && best.nm <= near) out.push({ w: w, d: best.d, nm: best.nm, lat: bp[0], lon: bp[1] });
+    });
+    out.sort(function (a, b) { return a.d - b.d; });
     return out;
   }
   /*LOGIC-END*/
@@ -3566,7 +3733,7 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
   var EV_COL = { area: '#e8590c', shore: '#d6336c', zone: '#1971c2', end: '#2f9e44', pub: '#7048e8' };
   var PX_LABEL = { vts: 'VTS', tss: 'TSS', reg: 'Regulations', pilot: 'Pilotage', area: 'Restricted area' };
   var pp = { corridor: 10, map: null, R: null, name: '', breaks: [], secNames: {}, secSpeeds: {}, speed: 12, dep: 0, ls: true, ev: [], d: 0, H: null, secs: [], view: -1, id: null,
-    osm: [], osmKey: '', osmBusy: false, off: null, calc: [], pubEv: [], more: [], ver: {}, scanSeq: 0, g: null, ship: null, o: { lines: null, mask: null }, sea: null, timer: 0, near: -1, U: null, routes: null, coastMsg: '' };
+    osm: [], osmKey: '', osmBusy: false, navtex: null, navRows: [], warn: [], warnHits: [], mini: null, miniG: null, off: null, calc: [], pubEv: [], more: [], ver: {}, scanSeq: 0, g: null, ship: null, o: { lines: null, mask: null }, sea: null, timer: 0, near: -1, U: null, routes: null, coastMsg: '' };
   (function () {
     try {
       var st = JSON.parse(localStorage.getItem(PP_SET) || 'null');
@@ -3574,14 +3741,14 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
         if (st.speed > 0 && st.speed <= 60) pp.speed = st.speed;
         if (st.ls === false) pp.ls = false;
         if (st.corridor >= 2 && st.corridor <= 30) pp.corridor = Math.round(st.corridor);
-        ['pp-tl', 'pp-ta', 'pp-ts', 'pp-tv', 'pp-tr'].forEach(function (k) { if (typeof st[k] === 'boolean') $('#' + k).checked = st[k]; });
+        ['pp-tl', 'pp-ta', 'pp-ts', 'pp-tv', 'pp-tr', 'pp-tw', 'pp-tn'].forEach(function (k) { if (typeof st[k] === 'boolean') $('#' + k).checked = st[k]; });
       }
     } catch (e) { /* defaults */ }
     var d = new Date(Math.ceil(Date.now() / 3600000) * 3600000);
     pp.dep = d.getTime();
   })();
   function ppSaveSet() {
-    try { localStorage.setItem(PP_SET, JSON.stringify({ speed: pp.speed, ls: pp.ls, corridor: pp.corridor, 'pp-tl': $('#pp-tl').checked, 'pp-ta': $('#pp-ta').checked, 'pp-ts': $('#pp-ts').checked, 'pp-tv': $('#pp-tv').checked, 'pp-tr': $('#pp-tr').checked })); } catch (e) { /* optional */ }
+    try { localStorage.setItem(PP_SET, JSON.stringify({ speed: pp.speed, ls: pp.ls, corridor: pp.corridor, 'pp-tl': $('#pp-tl').checked, 'pp-ta': $('#pp-ta').checked, 'pp-ts': $('#pp-ts').checked, 'pp-tv': $('#pp-tv').checked, 'pp-tr': $('#pp-tr').checked, 'pp-tw': $('#pp-tw').checked, 'pp-tn': $('#pp-tn').checked })); } catch (e) { /* optional */ }
   }
   function ppWp(i) { return pp.R.pts[i].name || 'WP ' + (i + 1); }
   function ppSecName(k) { var s = pp.secs[k]; return pp.secNames[s.from] || ppWp(s.from) + ' to ' + ppWp(s.to); }
@@ -3609,11 +3776,12 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
     $('#pp-speed').value = pp.speed; $('#pp-ls').checked = pp.ls;
     $('#pp-off').value = String(pp.off === null ? zoneOf(pts[0].lon) : pp.off);
     $('#pp-dep').value = new Date(pp.dep).toISOString().slice(0, 16);
-    $('#pp-main').hidden = false; $('#pp-events').hidden = false; $('#pp-save').hidden = false;
+    $('#pp-main').hidden = false; $('#pp-events').hidden = false; $('#pp-save').hidden = false; $('#pp-warn').hidden = false; $('#pp-gmdss').hidden = false;
     $('#pp-hint').hidden = true; $('#pp-file-btn').textContent = 'Choose another file';
     setMsg('#pp-msg', pp.name + (pts.length < route.pts.length ? '. Track thinned from ' + route.pts.length + ' to ' + pts.length + ' points.' : '.'), '');
     if (lib.loaded) { ppPubs(); ppPubScan(); } else libRefresh();
     ppScan();
+    ppGmdss(); ppWarnCheck();
     ppMapInit();
   }
   function ppScan() {
@@ -3828,6 +3996,7 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
       if (m.on) m.on('click', function () { ppMove(e.d); });
     });
     if (pp.osm.length) ppOsmDraw(g, Lf, map);
+    ppExtraDraw(g, Lf, map);
     if ($('#pp-tr').checked) pp.more.forEach(function (e) {
       if (e.px !== 'area' || e.d < rg[0] - 0.01 || e.d > rg[1] + 0.01) return;
       var ll = [e.lat, ppLon(e.d, e.lon)];
@@ -3911,19 +4080,19 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
   $('#pp-speed').addEventListener('change', function () {
     var v = Number(this.value);
     if (!(v >= 1 && v <= 60)) { this.value = pp.speed; return; }
-    pp.speed = v; ppSaveSet(); if (pp.R) ppClock();
+    pp.speed = v; ppSaveSet(); if (pp.R) { ppClock(); ppGmdss(); ppWarnCheck(); }
   });
   $('#pp-dep').addEventListener('change', function () {
     var t = Date.parse(this.value + (this.value.length === 16 ? ':00Z' : 'Z'));
     if (!isFinite(t)) { this.value = new Date(pp.dep).toISOString().slice(0, 16); return; }
-    pp.dep = t; if (pp.R) ppRender();
+    pp.dep = t; if (pp.R) { ppRender(); ppGmdss(); ppWarnCheck(); }
   });
   (function () { var s = $('#pp-off'); for (var z = -11; z <= 12; z++) { var o = el('option', '', zoneName(z)); o.value = String(z); s.appendChild(o); } })();
   $('#pp-off').addEventListener('change', function () { pp.off = Number(this.value); if (pp.R) ppMove(pp.d); });
   function ppNearLabel() { $('#pp-near-lab').textContent = 'Search corridor: ' + pp.corridor + ' nm each side of the track'; $('#pp-more-note').textContent = 'Pilotage at the ends of the route, regulations, and restricted or prohibited areas within ' + pp.corridor + ' nm of the track.'; }
   $('#pp-near').value = String(pp.corridor); ppNearLabel();
   $('#pp-near').addEventListener('input', function () { pp.corridor = Number(this.value); ppNearLabel(); });
-  $('#pp-near').addEventListener('change', function () { pp.corridor = Number(this.value); ppNearLabel(); ppSaveSet(); ppPubScan(); ppOsm(); });
+  $('#pp-near').addEventListener('change', function () { pp.corridor = Number(this.value); ppNearLabel(); ppSaveSet(); ppPubScan(); ppOsm(); ppWarnCheck(); });
   $('#pp-ls').addEventListener('change', function () { pp.ls = this.checked; ppSaveSet(); if (pp.R) ppScan(); });
   $('#pp-view').addEventListener('change', function () { pp.view = Number(this.value); pp.d = ppRange()[0]; pp.near = -1; ppRender(); ppDrawRoute(true); });
   ['pp-tl', 'pp-ta'].forEach(function (id) { $('#' + id).addEventListener('change', function () { ppSaveSet(); ppOverlay(); }); });
@@ -3935,14 +4104,19 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
     if (ev.target.closest && ev.target.closest('.ev-tools')) return;
     var b = ev.target.closest ? ev.target.closest('[data-ev]') : null;
     if (!b || !pp.R) return;
-    ppMove(pp.ev[Number(b.getAttribute('data-ev'))].d);
-    $('#pp-map').scrollIntoView({ block: 'start' });
+    var e = pp.ev[Number(b.getAttribute('data-ev'))];
+    ppMove(e.d);
+    ppMini({ title: e.title, text: e.text, lat: e.lat, lon: e.lon, zoom: e.kind === 'pub' ? 11 : e.kind === 'shore' ? 10 : 8 });
   });
   $('#pp-ev-list').addEventListener('keydown', function (ev) { if (ev.key === 'Enter' && ev.target.hasAttribute && ev.target.hasAttribute('data-ev')) ev.target.click(); });
   $('#pp-more').addEventListener('click', function (ev) {
     if (!ev.target.closest || ev.target.closest('.ev-tools')) return;
     var b = ev.target.closest('[data-d]');
-    if (b && pp.R) { ppMove(Number(b.getAttribute('data-d'))); $('#pp-map').scrollIntoView({ block: 'start' }); }
+    if (b && pp.R) {
+      var e = pp.more.filter(function (x) { return String(x.d) === b.getAttribute('data-d') && b.textContent.indexOf(x.title) >= 0; })[0];
+      ppMove(Number(b.getAttribute('data-d')));
+      if (e) ppMini({ title: e.title, text: e.text, lat: e.lat, lon: e.lon, zoom: 11 });
+    }
   });
   $('#pp-events').addEventListener('change', function (ev) {
     var k = ev.target.getAttribute && ev.target.getAttribute('data-ver');
@@ -3967,6 +4141,7 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
     } else return;
     ppClock();
     if (t.hasAttribute('data-break')) ppPubScan();
+    ppGmdss();
   });
 
   /* ---------- Saved plans ---------- */
@@ -4214,6 +4389,127 @@ button.ev:hover, .ev[data-ev]:hover, .ev.is-now { border-color: var(--accent); }
   });
 
 
+
+
+  /* ---------- Mini map for one entry ---------- */
+  function ppNearLon(lon) { var ref = pp.U ? pp.U[0] : 0, x = lon; while (x - ref > 180) x -= 360; while (x - ref < -180) x += 360; return x; }
+  function ppMini(o) {
+    $('#pp-mini-title').textContent = o.title; $('#pp-mini-text').textContent = o.text || '';
+    $('#pp-mini').hidden = false; setMsg('#pp-mini-msg', '');
+    leafletLoad().then(function (Lf) {
+      if (!pp.mini) {
+        pp.mini = Lf.map('pp-mini-map', { worldCopyJump: false }).setView([o.lat, ppNearLon(o.lon)], o.zoom || 9);
+        Lf.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '© OpenStreetMap contributors' }).addTo(pp.mini);
+        Lf.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(pp.mini);
+      }
+      var map = pp.mini;
+      if (pp.miniG) map.removeLayer(pp.miniG);
+      var g = Lf.layerGroup(), ll = [o.lat, ppNearLon(o.lon)];
+      if (pp.R) Lf.polyline(pp.R.pts.map(function (p, i) { return [p.lat, pp.U[i]]; }), { color: '#0b3d91', weight: 3, opacity: 0.9, interactive: false }).addTo(g);
+      if (pp.R && pp.osm.length) ppOsmDraw(g, Lf, map);
+      if (o.pts && o.pts.length > 1) {
+        var ring = o.pts.map(function (p) { return [p[0], ppNearLon(p[1])]; });
+        (o.area && Lf.polygon ? Lf.polygon(ring, { color: '#f08c00', weight: 3, fillOpacity: 0.15, interactive: false }) : Lf.polyline(ring, { color: '#f08c00', weight: 3, dashArray: '6 4', interactive: false })).addTo(g);
+      }
+      if (o.circleNm && Lf.circle) Lf.circle(ll, { radius: o.circleNm * 1852, color: '#0b7285', weight: 2, dashArray: '6 6', fillOpacity: 0.05, interactive: false }).addTo(g);
+      Lf.circleMarker(ll, { radius: 10, color: '#ffffff', weight: 3, fillColor: o.color || '#c92a2a', fillOpacity: 1, interactive: false }).addTo(g);
+      g.addTo(map); pp.miniG = g;
+      setTimeout(function () {
+        map.invalidateSize();
+        if (o.fit && map.fitBounds) map.fitBounds(o.fit, { padding: [20, 20], maxZoom: 11 }); else map.setView(ll, o.zoom || 9);
+      }, 60);
+    }).catch(function () { setMsg('#pp-mini-msg', 'The map could not load. Check the internet connection.', 'bad'); });
+  }
+  $('#pp-mini-close').addEventListener('click', function () { $('#pp-mini').hidden = true; });
+  $('#pp-mini').addEventListener('click', function (ev) { if (ev.target === $('#pp-mini')) $('#pp-mini').hidden = true; });
+  $('#pp-mini-main').addEventListener('click', function () { $('#pp-mini').hidden = true; $('#pp-map').scrollIntoView({ block: 'start' }); });
+
+  /* ---------- GMDSS: NAVAREAs and NAVTEX ---------- */
+  var NAVTEX_URL = 'https://en.wikipedia.org/w/api.php?action=parse&page=List_of_Navtex_stations&prop=wikitext&format=json&origin=*', NAVTEX_KEY = 'bridge-desk-navtex';
+  (function () {
+    try { var c = JSON.parse(localStorage.getItem(NAVTEX_KEY) || 'null'); if (c && Array.isArray(c.st) && c.st.length > 50) pp.navtex = c; } catch (e) { /* none */ }
+  })();
+  function ppNavtexLoad(force) {
+    if (pp.navtex && !force && Date.now() - pp.navtex.ts < 30 * 86400000) { ppGmdss(); return Promise.resolve(); }
+    setMsg('#pp-gm-msg', 'Loading the NAVTEX station list…', '');
+    return fetch(NAVTEX_URL).then(function (r) { if (!r.ok) throw new Error('http'); return r.json(); }).then(function (j) {
+      var st = navtexParse(j && j.parse && j.parse.wikitext ? j.parse.wikitext['*'] : '');
+      if (st.length < 50) throw new Error('format');
+      pp.navtex = { ts: Date.now(), st: st };
+      try { localStorage.setItem(NAVTEX_KEY, JSON.stringify(pp.navtex)); } catch (e) { /* optional */ }
+      setMsg('#pp-gm-msg', '', ''); ppGmdss();
+    }).catch(function () {
+      setMsg('#pp-gm-msg', pp.navtex ? 'The station list could not be refreshed, so the saved copy is shown.' : 'The NAVTEX station list could not be loaded. Check the internet connection and try again.', 'warn');
+      ppGmdss();
+    });
+  }
+  function ppGmdss() {
+    if (!pp.R) return;
+    var R = pp.R, na = navareasForRoute(R);
+    $('#pp-gm-nav').textContent = na.length ? na.map(function (a) { return a === 'Arctic' ? NAVAREA_NAMES[a] : 'NAVAREA ' + a + ' (' + NAVAREA_NAMES[a] + ')'; }).join(', then ') + '. Select these for SafetyNET on Inmarsat-C.' : 'Not found for this route. Check ALRS Volume 5.';
+    var box = $('#pp-gm-list'); box.textContent = '';
+    $('#pp-gm-load').textContent = pp.navtex ? 'Refresh station list' : 'Load NAVTEX stations';
+    $('#pp-gm-load').className = pp.navtex ? 'btn' : 'btn btn-primary';
+    pp.navRows = [];
+    if (!pp.navtex) { ppDrawRoute(); return; }
+    pp.navRows = navtexForRoute(R, pp.navtex.st.filter(function (s) { return s.khz === '518' || s.khz === '490'; }), 250);
+    if (!pp.navRows.length) box.appendChild(el('p', 'note', 'No listed NAVTEX station reaches this route.'));
+    pp.navRows.forEach(function (r) {
+      var s = r.st, b = el('button', 'ev'), when = el('span', 'when'), what = el('span', 'what'); b.type = 'button';
+      when.appendChild(el('b', '', s.id + '  ' + s.khz + ' kHz')); when.appendChild(document.createTextNode(r.d0.toFixed(0) + ' to ' + r.d1.toFixed(0) + ' nm'));
+      what.appendChild(el('span', 'ttl', s.name + (s.active === 0 ? ' (listed as not active)' : '')));
+      what.appendChild(el('span', 'txt', 'In range from ' + fmtDT(ppTime(r.d0), 0) + ' to ' + fmtDT(ppTime(r.d1), 0) + ' UTC. Closest ' + r.minNm.toFixed(0) + ' nm. ' + (s.times.length ? 'Broadcasts at ' + s.times.join(', ') + ' UTC. ' : 'Broadcast times not listed. ') + (r.assumed ? 'Range not listed, 250 nm assumed.' : 'Listed range ' + r.rangeNm + ' nm.') + (s.khz === '490' ? ' National language service.' : '')));
+      what.appendChild(el('span', 'src', 'NAVAREA ' + s.nav + '. Source: Wikipedia, List of Navtex stations, read ' + fmtDT(pp.navtex.ts, 0).slice(0, 6) + '. Not official, so confirm in ALRS Volume 5.'));
+      b.appendChild(when); b.appendChild(what);
+      b.addEventListener('click', function () { ppMini({ title: 'NAVTEX ' + s.id + ': ' + s.name, text: what.querySelector('.txt').textContent, lat: s.lat, lon: s.lon, zoom: 5, circleNm: r.rangeNm, color: '#0b7285' }); });
+      box.appendChild(b);
+    });
+    ppDrawRoute();
+  }
+  $('#pp-gm-load').addEventListener('click', function () { ppNavtexLoad(true); });
+  $('#pp-tn').addEventListener('change', function () { ppSaveSet(); if (this.checked && !pp.navtex) ppNavtexLoad(false); else ppDrawRoute(); });
+
+  /* ---------- Navigational warnings (pasted) ---------- */
+  var WARN_KEY = 'bridge-desk-warn';
+  (function () { try { $('#pp-warn-text').value = localStorage.getItem(WARN_KEY) || ''; } catch (e) { /* none */ } })();
+  function ppWarnCheck() {
+    if (!pp.R) return;
+    var text = $('#pp-warn-text').value, box = $('#pp-warn-list'); box.textContent = '';
+    pp.warn = text.trim() ? warnParse(text) : [];
+    pp.warnHits = warnMatch(pp.R, pp.warn, pp.corridor);
+    var nopos = pp.warn.filter(function (w) { return !w.pts.length; });
+    $('#pp-warn-count').textContent = pp.warn.length ? pp.warnHits.length + ' on route' : 'None pasted';
+    setMsg('#pp-warn-msg', pp.warn.length ? pp.warnHits.length + ' of ' + pp.warn.length + ' pasted warnings have a position within ' + pp.corridor + ' nm of the track.' + (nopos.length ? ' ' + nopos.length + (nopos.length === 1 ? ' gives' : ' give') + ' no position the app could read, so read ' + (nopos.length === 1 ? 'that one' : 'those') + ' yourself.' : '') : '', pp.warnHits.length ? 'warn' : '');
+    pp.warnHits.forEach(function (h) {
+      var b = el('button', 'ev'), when = el('span', 'when'), what = el('span', 'what'); b.type = 'button';
+      when.appendChild(el('b', '', fmtDT(ppTime(h.d), 0) + ' UTC')); when.appendChild(document.createTextNode(h.d.toFixed(1) + ' nm'));
+      what.appendChild(el('span', 'ttl', h.w.title)); what.appendChild(el('span', 'txt', h.w.text));
+      what.appendChild(el('span', 'src', 'From the text you pasted. Nearest stated position is ' + h.nm.toFixed(1) + ' nm from the track.'));
+      b.appendChild(when); b.appendChild(what);
+      b.addEventListener('click', function () { ppMini({ title: h.w.title, text: h.w.text, lat: h.lat, lon: h.lon, zoom: 9, pts: h.w.pts, area: h.w.area, color: '#f08c00', fit: h.w.pts.length > 1 ? h.w.pts.map(function (p) { return [p[0], ppNearLon(p[1])]; }) : null }); });
+      box.appendChild(b);
+    });
+    nopos.slice(0, 30).forEach(function (w) { var d = el('div', 'ev is-wide'), what = el('span', 'what'); what.appendChild(el('span', 'ttl', w.title)); what.appendChild(el('span', 'txt', w.text.slice(0, 300))); what.appendChild(el('span', 'src', 'No position read from this warning.')); d.appendChild(what); box.appendChild(d); });
+    ppDrawRoute();
+  }
+  $('#pp-warn-go').addEventListener('click', function () { try { localStorage.setItem(WARN_KEY, $('#pp-warn-text').value.slice(0, 400000)); } catch (e) { /* optional */ } ppWarnCheck(); if (!$('#pp-warn-text').value.trim()) setMsg('#pp-warn-msg', 'Paste the warnings text first.', 'warn'); });
+  $('#pp-warn-clear').addEventListener('click', function () { $('#pp-warn-text').value = ''; try { localStorage.removeItem(WARN_KEY); } catch (e) { /* optional */ } ppWarnCheck(); });
+  $('#pp-tw').addEventListener('change', function () { ppSaveSet(); ppDrawRoute(); if (this.checked && !pp.warn.length) { setMsg('#pp-osmmsg', 'No warnings pasted yet. Paste them under Navigational warnings below the events.', 'warn'); } });
+  function ppExtraDraw(g, Lf, map) {
+    if ($('#pp-tw').checked) pp.warnHits.forEach(function (h) {
+      var ring = h.w.pts.map(function (p) { return [p[0], ppNearLon(p[1])]; }), ll = [h.lat, ppNearLon(h.lon)];
+      if (ring.length > 1) (h.w.area && Lf.polygon ? Lf.polygon(ring, { color: '#f08c00', weight: 3, fillOpacity: 0.15, interactive: false }) : Lf.polyline(ring, { color: '#f08c00', weight: 3, dashArray: '6 4', interactive: false })).addTo(g);
+      var m = Lf.circleMarker(ll, { radius: 9, color: '#1a1204', weight: 2, fillColor: '#f08c00', fillOpacity: 1, bubblingMouseEvents: false }).addTo(g);
+      if (m.bindTooltip) m.bindTooltip(h.w.title.slice(0, 28), { permanent: true, direction: 'top', offset: [0, -8], className: 'pp-tip is-wn' });
+      if (m.on) m.on('click', function () { ppMini({ title: h.w.title, text: h.w.text, lat: h.lat, lon: h.lon, zoom: 9, pts: h.w.pts, area: h.w.area, color: '#f08c00' }); });
+    });
+    if ($('#pp-tn').checked) pp.navRows.forEach(function (r) {
+      var s = r.st, ll = [s.lat, ppNearLon(s.lon)];
+      if (Lf.circle) Lf.circle(ll, { radius: r.rangeNm * 1852, color: '#0b7285', weight: 1.5, dashArray: '6 6', fillOpacity: 0.03, interactive: false }).addTo(g);
+      var m = Lf.circleMarker(ll, { radius: 8, color: '#ffffff', weight: 2, fillColor: '#0b7285', fillOpacity: 1, bubblingMouseEvents: false }).addTo(g);
+      if (m.bindTooltip) m.bindTooltip(s.id + ' ' + s.name + (s.khz === '490' ? ' 490' : ''), { permanent: true, direction: 'top', offset: [0, -8], className: 'pp-tip is-nx' });
+    });
+  }
 
   /* ---------- Area outlines from OpenStreetMap ---------- */
   var OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter'];
